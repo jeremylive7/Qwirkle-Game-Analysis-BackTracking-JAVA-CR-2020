@@ -1,16 +1,18 @@
+import java.util.ArrayList;
+
 class Mano
 {
 	//Variables Globales
-	static fichas[] Ficha;
+	static List<Ficha> fichas;
 
 	//Constructor
 	Mano() 
 	{		
-		this.fichas = new Ficha[108];
+		this.fichas = new ArrayList<Ficha>();
 	}
 
 	//Metodos de get y set
-	private Fichas[] getFichas()
+	private ArrayList<Fichas> getFichas()
 	{
 		return this.fichas;
 	}

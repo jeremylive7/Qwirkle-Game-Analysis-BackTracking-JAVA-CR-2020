@@ -1,33 +1,33 @@
 class Margen
 {
 	//Variables Globales
-	static int largo_fila;
-	static int largo_columna;
+	static int x;
+	static int y;
 
 	//Constructor
-	Margen() 
+	Margen(int pX, int pY) 
 	{		
-		this.largo_fila = 0;
-		this.largo_columna = 0;
+		this.x = pX;
+		this.y = pY;
 	}
 
 	//Metodos de get y set
-	private int getLargoFila()
+	private int getX()
 	{
-		return this.largo_fila;
+		return this.x;
 	}
 
-	private int getLargoColuman()
+	private int getY()
 	{
-		return this.largo_columna;
+		return this.y;
 	}
 
-	private void setLargoFila(int pLargo_fila)
+	private void setX(int pX)
 	{
-		this.largo_fila = pLargo_fila;
+		this.x = pX;
 	}
 
-	private void setLargoColumna(int pLargo_columna)
+	private void setY(int pY)
 	{
-		this.largo_columna = pLargo_columna;
+		this.y = pY;
 	}

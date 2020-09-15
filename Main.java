@@ -6,6 +6,7 @@ class Main
 		Qwirkle qwirkle;
 		qwirkle = new Qwirkle();
 
+		System.exit(0);
 	}
 
 }

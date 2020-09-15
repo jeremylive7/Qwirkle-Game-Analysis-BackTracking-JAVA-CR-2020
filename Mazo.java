@@ -1,16 +1,18 @@
+import java.util.ArrayList;
+
 class Mazo
 {
 	//Variables Globales
-	static fichas[] Ficha;
+	static List<Ficha> fichas;
 
 	//Constructor
 	Mazo() 
 	{		
-		this.fichas = new Ficha[108];
+		this.fichas = new ArrayList<Ficha>();
 	}
 
 	//Metodos de get y set
-	private Fichas[] getFichas()
+	private ArrayList<Fichas> getFichas()
 	{
 		return this.fichas;
 	}
@@ -18,7 +20,7 @@ class Mazo
 	//Obtengo largo de Mazo
 	private int getLengthMazo()
 	{
-		return this.fichas.length;
+		return this.fichas.size();
 	}
 
 	//Imprimo mazo
