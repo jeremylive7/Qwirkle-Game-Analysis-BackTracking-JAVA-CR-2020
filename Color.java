@@ -10,7 +10,7 @@ public class Color
 	}
 
 	//Metodos get y set
-	private String getTipo()
+	public String getTipo()
 	{
 		return this.tipo;
 	}

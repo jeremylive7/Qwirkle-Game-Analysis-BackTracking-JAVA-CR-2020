@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 
-class Mano
+class BolsaFichas
 {
 	//Variables Globales
 	static ArrayList<Ficha> fichas;
 
 	//Constructor
-	Mano() 
+	BolsaFichas() 
 	{		
-		this.fichas = new ArrayList<Ficha>(7);
+		this.fichas = new ArrayList<Ficha>(109);
 	}
 
 	//Metodos de get y set
@@ -16,4 +16,12 @@ class Mano
 	{
 		return this.fichas;
 	}
+
+	public int getLengthBolsaFichas()
+	{
+		return this.fichas.size();
+	}
+
+	//Elimino ficha
+
 }

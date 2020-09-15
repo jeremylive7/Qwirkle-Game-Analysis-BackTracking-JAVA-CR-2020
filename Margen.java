@@ -31,3 +31,4 @@ class Margen
 	{
 		this.y = pY;
 	}
+}

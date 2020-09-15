@@ -26,22 +26,22 @@ public class Ficha
 		return this.y;
 	}
 
-	private Figura getFigura()
+	public Figura getFigura()
 	{
 		return this.figura;
 	}
 
-	private Color getColor()
+	public Color getColor()
 	{
 		return this.color;
 	}
 
-	private void setX(pX)
+	private void setX(int pX)
 	{
 		this.x = pX;
 	}
 
-	private void setY(pY)
+	private void setY(int pY)
 	{
 		this.y = pY;
 	}

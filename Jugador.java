@@ -26,7 +26,7 @@ class Jugador
 		return this.score;
 	}
 
-	private Mano getMano()
+	public Mano getMano()
 	{
 		return this.mano;
 	}
