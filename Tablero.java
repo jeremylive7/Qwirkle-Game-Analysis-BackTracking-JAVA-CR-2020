@@ -3,7 +3,7 @@ import java.util.ArrayList;
 class Tablero
 {
 	//Variables Globales
-	static List<Fichas> fichas;
+	static ArrayList<Fichas> fichas;
 	static Margen margen;
 
 	//Constructor
@@ -14,7 +14,12 @@ class Tablero
 	}
 
 	//Metodos de get y set
-	private void setOneFilaFichas(Fichas pFicha)
+	public ArrayList<Fichas> getTablero()
+	{
+		return this.fichas;
+	}
+
+	public void setOneFilaFichas(Fichas pFicha)
 	{
 		this.fichas.add(pFicha);
 	}
