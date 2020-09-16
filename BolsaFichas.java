@@ -22,6 +22,17 @@ class BolsaFichas
 		return this.fichas.size();
 	}
 
-	//Elimino ficha
+	public void setFicha(Ficha pFicha)
+	{
+		this.fichas.add(pFicha);
+	}
 
+	//Elimino ficha
+	public void deletedFicha(Ficha pFicha)
+	{
+		//Encuentro en la bolsa si existe la ficha
+
+		//La borro de la bolsa de ficha
+		
+	}
 }
