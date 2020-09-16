@@ -1,18 +1,18 @@
-import java.util.ArrayList;
+import java.util.*;
 
 class BolsaFichas
 {
 	//Variables Globales
-	static ArrayList<Ficha> fichas;
+	private List<Ficha> fichas;
 
 	//Constructor
-	BolsaFichas() 
+	public BolsaFichas() 
 	{		
 		this.fichas = new ArrayList<Ficha>(109);
 	}
 
 	//Metodos de get y set
-	public ArrayList<Ficha> getFichas()
+	public List<Ficha> getFichas()
 	{
 		return this.fichas;
 	}

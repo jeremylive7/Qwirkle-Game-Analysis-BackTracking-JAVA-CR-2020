@@ -1,27 +1,18 @@
-import java.util.ArrayList;
-
 class Tablero
 {
-	//Variables Globales
-	static ArrayList<Fichas> fichas;
-	static Margen margen;
+	//Variables
+	private Grafito fichas;
 
 	//Constructor
-	Tablero(int x, int y) 
+	public Tablero() 
 	{		
-		this.fichas = new ArrayList<Fichas>();		
-		this.margen = new Margen(x, y);
+		this.fichas = new Grafito();	
 	}
 
 	//Metodos de get y set
-	public ArrayList<Fichas> getTablero()
+	public Grafito getTablero()
 	{
 		return this.fichas;
-	}
-
-	public void setOneFilaFichas(Fichas pFicha)
-	{
-		this.fichas.add(pFicha);
 	}
 
 }

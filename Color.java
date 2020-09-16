@@ -1,10 +1,10 @@
 public class Color
 {
 	//Variables Globales
-	static String tipo;
+	private String tipo;
 
 	//Constructor
-	Color() 
+	public Color() 
 	{		
 		this.tipo = "";		
 	}
@@ -15,7 +15,7 @@ public class Color
 		return this.tipo;
 	}
 
-	private void setTipo(String pTipo)
+	public void setTipo(String pTipo)
 	{
 		this.tipo = pTipo;
 	}
