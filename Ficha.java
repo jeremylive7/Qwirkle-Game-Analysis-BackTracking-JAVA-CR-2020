@@ -1,10 +1,10 @@
 public class Ficha
 {
 	//Variables Globales
-	static int x;
-	static int y;
-	static Figura figura;
-	static Color color;
+	int x;
+	int y;
+	Figura figura;
+	Color color;
 
 	//Constructor
 	Ficha() 

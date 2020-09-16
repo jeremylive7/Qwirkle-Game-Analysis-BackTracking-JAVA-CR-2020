@@ -3,8 +3,8 @@ import java.util.ArrayList;
 class Tablero
 {
 	//Variables Globales
-	static ArrayList<Fichas> fichas;
-	static Margen margen;
+	ArrayList<Fichas> fichas;
+	Margen margen;
 
 	//Constructor
 	Tablero(int x, int y) 

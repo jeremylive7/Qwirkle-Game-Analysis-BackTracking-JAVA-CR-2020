@@ -4,37 +4,49 @@ import javax.swing.*;
 class Qwirkle
 {
 	//Variables Globales
-	static Jugador jugador_humano_1;
-	static Jugador jugador_humano_2;
-	static Tablero tablero;
-	static BolsaFichas bolsa_fichas;
-	static Fichas fichas_totales;
-	static Ficha ficha;
-	static int dimencion_inicial = 6;
-	static int opcion = 0;
+	Jugador jugador_humano_1;
+	Jugador jugador_humano_2;
+	Tablero tablero;
+	BolsaFichas bolsa_fichas;
+	Fichas fichas_totales;
+	Ficha ficha;
+	int dimencion_inicial = 6;
+	int opcion = 0;
+	JFrame frame;
 
 	//Constructor
 	Qwirkle() 
 	{		
 		//Creo jugadores
-		jugador_humano_1 = new Jugador("Jeremy");
-		jugador_humano_2 = new Jugador("Edgerik");
+		this.jugador_humano_1 = new Jugador("Jeremy");
+		this.jugador_humano_2 = new Jugador("Edgerik");
 
 		//Creo tablero
-		tablero = new Tablero(dimencion_inicial, dimencion_inicial);
+		this.tablero = new Tablero(this.dimencion_inicial, this.dimencion_inicial);
 		this.fullMatrizEmpty();
 
 		//Creo BolsaFichas
-		bolsa_fichas = new BolsaFichas();
+		this.bolsa_fichas = new BolsaFichas();
 
-		//Menu
-		this.menu();
+		//Creo jframe
+   		this.frame = new JFrame("Qwirkle");
+    
+		//Ronda del Juego, se encicla hasta que se diga salir del juego
+		while(this.opcion != 4){
+			this.menu(this.jugador_humano_1);
+			this.menu(this.jugador_humano_2);
+		}
+
+
 
 	}
 
 	//Creo Menu
-	private void menu()
+	private void menu(Jugador pJugador_humano)
 	{
+		pJugador_humano.getTurno().setSuTurno(true);
+		JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + pJugador_humano.getNombre());
+
 		do{
 			this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Reseteo de fichas"
 				+ "\n"
@@ -47,21 +59,25 @@ class Qwirkle
 				//Escoge fichas a resetear.
 				case 1:
 					System.out.println("Elegiste reseteo de fichas");
+					pJugador_humano.getTurno().setSuTurno(false);
 					break;
 				//Elige jugada a colocar
 				case 2:
 					System.out.println("Elegiste seleccionar mi jugada");
+					pJugador_humano.getTurno().setSuTurno(false);
 					break;
 				//No tiene fichas
 				case 3:
 					System.out.println("Elegiste no tengo fichas a jugara");
+					pJugador_humano.getTurno().setSuTurno(false);
 					break;
 				//Salir del juego
 				default:
-					System.out.println("Elegiste salir del jeugo");
+					System.out.println("Elegiste salir del juego");
+					pJugador_humano.getTurno().setSuTurno(false);
 			}
 
-		}while(this.opcion!=4);
+		}while(pJugador_humano.getTurno().getSuTurno() != false);
 	}
 
 	//Lleno matriz en blanco

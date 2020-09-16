@@ -1,7 +1,7 @@
 public class Color
 {
 	//Variables Globales
-	static String tipo;
+	String tipo;
 
 	//Constructor
 	Color() 

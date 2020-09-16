@@ -1,7 +1,7 @@
 public class Figura
 {
 	//Variables Globales
-	static String tipo;
+	String tipo;
 
 	//Constructor
 	Figura() 

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 class BolsaFichas
 {
 	//Variables Globales
-	static ArrayList<Ficha> fichas;
+	ArrayList<Ficha> fichas;
 
 	//Constructor
 	BolsaFichas() 

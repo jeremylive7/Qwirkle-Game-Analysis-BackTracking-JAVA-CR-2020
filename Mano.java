@@ -3,12 +3,14 @@ import java.util.ArrayList;
 class Mano
 {
 	//Variables Globales
-	static ArrayList<Ficha> fichas;
+	ArrayList<Ficha> fichas;
+	String nombre_jugador;
 
 	//Constructor
-	Mano() 
+	Mano(String pNombre) 
 	{		
 		this.fichas = new ArrayList<Ficha>(7);
+		this.nombre_jugador = pNombre;
 	}
 
 	//Metodos de get y set

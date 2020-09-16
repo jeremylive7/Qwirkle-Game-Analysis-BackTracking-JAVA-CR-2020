@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class Fichas
 {
 	//Variables Globales
-	static ArrayList<Ficha> fichas_fila;
-	static int cantidad;
+	ArrayList<Ficha> fichas_fila;
+	int cantidad;
 
 	//Constructor
 	Fichas() 

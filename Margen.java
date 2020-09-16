@@ -1,8 +1,8 @@
 class Margen
 {
 	//Variables Globales
-	static int x;
-	static int y;
+	int x;
+	int y;
 
 	//Constructor
 	Margen(int pX, int pY) 

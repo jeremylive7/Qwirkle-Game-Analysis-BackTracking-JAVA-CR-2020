@@ -1,22 +1,22 @@
 class Jugador
 {
 	//Variables Globales
-	static Turno turno;
-	static Score score;
-	static Mano mano;
-	static String nombre;
+	Turno turno;
+	Score score;
+	Mano mano;
+	String nombre;
 
 	//Constructor
 	Jugador(String pNombre) 
 	{		
-		this.turno = new Turno();
-		this.score = new Score();
-		this.mano = new Mano();
+		this.turno = new Turno(pNombre);
+		this.score = new Score(pNombre);
+		this.mano = new Mano(pNombre);
 		this.nombre = pNombre;
 	}
 
 	//Metodos get y set
-	private Turno getTurno()
+	public Turno getTurno()
 	{
 		return this.turno;
 	}
@@ -31,7 +31,7 @@ class Jugador
 		return this.mano;
 	}
 
-	private String getNombre()
+	public String getNombre()
 	{
 		return this.nombre;
 	}
