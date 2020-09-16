@@ -1,11 +1,11 @@
 public class Turno
 {
 	//Variables Globales
-	Boolean su_turno;
-	String nombre_jugador;
+	private Boolean su_turno;
+	private String nombre_jugador;
 	
 	//Constructor
-	Turno(String pNombre) 
+	public Turno(String pNombre) 
 	{		
 		this.su_turno = false;
 		this.nombre_jugador = pNombre;

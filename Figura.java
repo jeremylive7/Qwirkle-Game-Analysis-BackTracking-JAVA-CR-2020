@@ -1,10 +1,10 @@
 public class Figura
 {
 	//Variables Globales
-	String tipo;
+	private String tipo;
 
 	//Constructor
-	Figura() 
+	public Figura() 
 	{		
 		this.tipo = "";	
 	}
@@ -15,7 +15,7 @@ public class Figura
 		return this.tipo;
 	}
 
-	private void setTipo(String pTipo)
+	public  void setTipo(String pTipo)
 	{
 		this.tipo = pTipo;
 	}

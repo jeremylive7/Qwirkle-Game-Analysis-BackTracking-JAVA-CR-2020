@@ -1,13 +1,13 @@
 class Jugador
 {
 	//Variables Globales
-	Turno turno;
-	Score score;
-	Mano mano;
-	String nombre;
+	private Turno turno;
+	private Score score;
+	private Mano mano;
+	private String nombre;
 
 	//Constructor
-	Jugador(String pNombre) 
+	public Jugador(String pNombre) 
 	{		
 		this.turno = new Turno(pNombre);
 		this.score = new Score(pNombre);
@@ -21,7 +21,7 @@ class Jugador
 		return this.turno;
 	}
 
-	private Score getScore()
+	public Score getScore()
 	{
 		return this.score;
 	}
@@ -36,22 +36,22 @@ class Jugador
 		return this.nombre;
 	}
 
-	private void setTurno(Turno pTurno)
+	public void setTurno(Turno pTurno)
 	{
 		this.turno = pTurno;
 	}
 
-	private void setScore(Score pScore)
+	public void setScore(Score pScore)
 	{
 		this.score = pScore;
 	}
 
-	private void setMano(Mano pMano)
+	public void setMano(Mano pMano)
 	{
 		this.mano = pMano;
 	}
 
-	private void setNombre(String pNombre)
+	public void setNombre(String pNombre)
 	{
 		this.nombre = pNombre;
 	}

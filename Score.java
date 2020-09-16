@@ -1,11 +1,11 @@
 public class Score
 {
 	//Variables Globales
-	String nombre_jugador;
-	int pts_totales;
+	private String nombre_jugador;
+	private int pts_totales;
 
 	//Constructor
-	Score(String pNombre) 
+	public Score(String pNombre) 
 	{		
 		this.nombre_jugador = pNombre;
 		this.pts_totales = 0;
