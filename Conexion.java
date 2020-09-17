@@ -3,7 +3,7 @@ public class Conexion
     //Variables
     private Nodito partida;
     private Nodito llegada;
-    private Ficha ficha;
+    Ficha ficha;
 
     //Constructor
     public Conexion(Nodito pPartida, Nodito pLlegada, Ficha pFicha) {
@@ -18,18 +18,9 @@ public class Conexion
         return this.partida;
     }
 
-    public int getIdNoditoPartida() 
-    {
-        return this.partida.getNodeId();
-    }
-
     public Nodito getLlegada() 
     { 
         return this.llegada; 
     }
 
-    public int getIdNoditoLlegada() 
-    {
-        return this.llegada.getNodeId();
-    }
 }
