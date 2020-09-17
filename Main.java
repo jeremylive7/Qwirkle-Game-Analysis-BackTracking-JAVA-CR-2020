@@ -5,7 +5,7 @@ class Main
 		//Empieza el juego
 		Qwirkle qwirkle;
 		qwirkle = new Qwirkle();
-	
+
 		System.exit(0);
 	}
 
