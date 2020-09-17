@@ -10,12 +10,17 @@ class Qwirkle
 	private int opcion;
 	private JFrame frame;
 	private Ficha ficha;
+	private int dimencion_inicial;
+
 
 	//Constructor
 	public Qwirkle() 
 	{		
 		//Creo ficha para trabajar con ella durante el programa
 		this.ficha = new Ficha();
+
+		//
+		this.dimencion_inicial = 35;
 
 		//Creo jframe
    		this.frame = new JFrame("Qwirkle");
@@ -48,7 +53,7 @@ class Qwirkle
 
 		do{
 			//Muestro mano del jugador
-			this.showMano();
+			//this.showMano(jugador_humano_1);
 			
 			//Obtengo el # de la opcion
 			this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Reseteo de fichas"
@@ -81,7 +86,7 @@ class Qwirkle
 					getPtsJugada();
 
 					//Imprimo pts
-					showPtsJugador();
+					showPtsJugador(pJugador_humano);
 					break;
 				//No tiene fichas
 				case 3:
@@ -191,10 +196,10 @@ class Qwirkle
 	{
 		for (int i=0; i<this.dimencion_inicial; i++) {
 			System.out.println( "Figura -> " 
-				+ this.pJugador.getMano().getFichas().get(i).getFigura().getTipo() 
+				+ pJugador.getMano().getFichas().get(i).getFigura().getTipo() 
 				+ "/n" 
 				+ "Color -> "
-				+ this.pJugador.getMano().getFichas().get(i).getColor().getTipo());
+				+ pJugador.getMano().getFichas().get(i).getColor().getTipo());
 		}
 	}
 
@@ -211,10 +216,7 @@ class Qwirkle
 	}
 
 	//Imprimo Tablero grafito
-	public void showTableroGrafito(Grafito pGrafito)
-	{
-		
-	}
+
 
 }
 

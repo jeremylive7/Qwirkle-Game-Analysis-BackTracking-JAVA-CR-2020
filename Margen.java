@@ -5,10 +5,10 @@ class Margen
 	private int y;
 
 	//Constructor
-	public Margen(int pX, int pY) 
+	public Margen() 
 	{		
-		this.x = pX;
-		this.y = pY;
+		this.x = 35;
+		this.y = 35;
 	}
 
 	//Metodos de get y set
@@ -31,3 +31,4 @@ class Margen
 	{
 		this.y = pY;
 	}
+}

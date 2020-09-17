@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class Fichas
 {
@@ -7,13 +9,13 @@ public class Fichas
 	private int cantidad;
 
 	//Constructor
-	Fichas() 
+	public Fichas() 
 	{		
 		this.fichas_fila = new ArrayList<Ficha>();
 	}
 
 	//Metodos get y set
-	public ArrayList<Ficha> getFichasFila()
+	public List<Ficha> getFichasFila()
 	{
 		return this.fichas_fila;
 	}

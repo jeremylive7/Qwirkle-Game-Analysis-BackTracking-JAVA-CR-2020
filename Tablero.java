@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
+
+
 class Tablero
 {
 	//Variables
@@ -8,7 +12,7 @@ class Tablero
 	public Tablero() 
 	{			
 		this.fichas = new ArrayList<Fichas>();		
-		this.margen = new Margen(x, y);
+		this.margen = new Margen();
 	}
 
 	//Metodos de get y set
