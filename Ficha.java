@@ -3,7 +3,12 @@ public class Ficha
 	private String figura;
 	private String color;
 
-	//Constructor
+	public Ficha() 
+	{		
+		this.figura = "";
+		this.color = "";
+	}
+
 	public Ficha(String figura,String color) 
 	{		
 		this.figura = figura;
@@ -17,6 +22,11 @@ public class Ficha
 	public String getColor()
 	{
 		return this.color;
+	}
+
+	public String getFigura()
+	{
+		return this.figura;
 	}
 
 	public void setFigura(String pFigura)

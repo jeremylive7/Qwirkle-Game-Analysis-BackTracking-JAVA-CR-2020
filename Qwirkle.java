@@ -7,144 +7,170 @@ class Qwirkle
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private BolsaFichas bolsa_fichas;
-	private int opcion = 0;
+	private Turno turno;
+	private Ficha ficha;
+	private int opcion;
 	private JFrame frame;
+	private int dimencion_inicial;
 
-	//Constructor
 	public Qwirkle() 
 	{		
-		//Creo jframe
-   		this.frame = new JFrame("Qwirkle");
-
-		//Creo jugadores
+		this.frame = new JFrame("Qwirkle");
 		this.jugador_humano_1 = new Jugador("Jeremy");
 		this.jugador_humano_2 = new Jugador("Edgerik");
-		jugadorActual=jugador_humano_1;
-
-		//Creo tablero
-		this.tablero = new Tablero();
-		tablero.llenarTableroConEjemplo();
-
-		//Creo BolsaFichas
 		this.bolsa_fichas = new BolsaFichas();
+		this.ficha = new Ficha();
+		this.opcion = 0;
+		this.dimencion_inicial = 6;
+		this.tablero = new Tablero();
+
+		//this.llenoBolsaFichas();
+		//tablero.llenarTableroConEjemplo();
+
+		this.controlMenu();
+
+		//Ejemplo#1
+		//qwirkle.printTablero();
+
 		
 	}
 
-	//Creo Menu
-	public void menu()
+	public void controlMenu()
 	{
-		while(this.opcion < 4){
-
-			do{
-				JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
-				//Muestro mano del jugador
-				this.showMano();
-				
-				//Obtengo el # de la opcion
-				this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Reseteo de fichas"
-					+ "\n"
-					+ "2. Seleccionar mi jugada"
-					+ "\n"
-					+ "3. No tengo fichas a jugar"
-					+ "\n"
-					+ "4. Salir del Juego"));
-
-				if(opcion==1)
-				{//Resetear fichas del jugadorActual
-					System.out.println("Elegiste reseteo de fichas");
-					//jugadorActual.resetearFichas(sacarFichasDeLaBolsa(interfaz.cualesFichas(jugadorActual.getMazo())))
-				}	
-				if(opcion==2)
-				{//Elige jugada a colocar
-					System.out.println("Elegiste seleccionar mi jugada");
-					seleccionoJugada();//Empieza turno, selecciono mi jugada
-					setJugadaTablero();//Coloco jugada en el tablero
-					getPtsJugada();//Obtencion de pts por las fichas seteadas
-					showPtsJugador();//Imprimo pts
-				}
-				if(opcion==3)//No tiene fichas
-					System.out.println("Elegiste no tengo fichas a jugara");
-				else	//Salir del juego
-					break;
-						
-				jugadorActual=(jugadorActual==jugador_humano_1?jugador_humano_2:jugador_humano_1);
-
-			}while(true);
+		while(this.opcion < 2)
+		{
+			this.menu(this.jugador_humano_1);
+			this.menu(this.jugador_humano_2);
 		}
 	}
 
-	//Muestro pts totales del jugador
-	public void showPtsJugador()
+	public void menu(Jugador pJugador)
 	{
-		System.out.println(jugadorActual.getScore().getPtsTotales());
-	}
+		//this.showMano(pJugador);
+		pJugador.getTurno().setSuTurno(true);
 
-	//Obtengo pts de la jugada reciente para sumarselos al jugador
-	public void getPtsJugada()
-	{
-		/*jajsakdjflasf
-		*/
+		do{
+			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " 
+				+ pJugador.getNombre());
 
-	}
+			this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar jugada"
+				+ "\n"
+				+ "2. Salir del Juego"));
 
+			if(opcion==1)
+			{
+				pJugador.getTurno().setSuTurno(false);
+			}else 
+				break;
+
+		}while(pJugador.getTurno().getSuTurno() != false);
 	
-	public void setJugadaTablero()
-	{
-		/*
-		Ya escogida la jugada a setear en el tablero
-		Se agaarra como parametro, se coloca en el tablero
-		Preuntando primero donde quiero poner cada ficha 
-		Siguiendo las reglas del juego.
-		*/
 	}
 
-	//
-	public void seleccionoJugada()
+	public void llenoBolsaFichas()
 	{
-		/*
-		Ya mostroadas las opciones que tengo disponibles en la mano
-		Selecciono la jugada de alguna forma
-		*/
-	}
+		//Creo las 108 fichas
+		for (int index=0; index<3; index++) 
+		{
+			this.asignoFicha("circulo", "verde");
+			this.asignoFicha("circulo", "anaranjado");
+			this.asignoFicha("circulo", "amarillo");
+			this.asignoFicha("circulo", "celeste");
+			this.asignoFicha("circulo", "morado");
+			this.asignoFicha("circulo", "rojo");
 
-	//Imprimo mano jugador humano
-	public void showMano()
-	{/*
-		for (Ficha ficha:jugadorActual.getMano()){
-			System.out.println(ficha.toString());
+			this.asignoFicha("cuadrado", "verde");
+			this.asignoFicha("cuadrado", "anaranjado");
+			this.asignoFicha("cuadrado", "amarillo");
+			this.asignoFicha("cuadrado", "celeste");
+			this.asignoFicha("cuadrado", "morado");
+			this.asignoFicha("cuadrado", "rojo");
+
+			this.asignoFicha("estrella", "verde");
+			this.asignoFicha("estrella", "anaranjado");
+			this.asignoFicha("estrella", "amarillo");
+			this.asignoFicha("estrella", "celeste");
+			this.asignoFicha("estrella", "morado");
+			this.asignoFicha("estrella", "rojo");
+
+			this.asignoFicha("trebol", "verde");
+			this.asignoFicha("trebol", "anaranjado");
+			this.asignoFicha("trebol", "amarillo");
+			this.asignoFicha("trebol", "celeste");
+			this.asignoFicha("trebol", "morado");
+			this.asignoFicha("trebol", "rojo");
+
+			this.asignoFicha("corazon", "verde");
+			this.asignoFicha("corazon", "anaranjado");
+			this.asignoFicha("corazon", "amarillo");
+			this.asignoFicha("corazon", "celeste");
+			this.asignoFicha("corazon", "morado");
+			this.asignoFicha("corazon", "rojo");
+
+			this.asignoFicha("ovalo", "verde");
+			this.asignoFicha("ovalo", "anaranjado");
+			this.asignoFicha("ovalo", "amarillo");
+			this.asignoFicha("ovalo", "celeste");
+			this.asignoFicha("ovalo", "morado");
+			this.asignoFicha("ovalo", "rojo");
+
 		}
-		
-		for (int i=0; i<this.dimencion_inicial; i++) {
-			System.out.println( "Figura -> " 
-				+ this.jugadorActual.getMano().getFichas().get(i).getFigura().getTipo() 
-				+ "/n" 
-				+ "Color -> "
-				+ this.jugadorActual.getMano().getFichas().get(i).getColor().getTipo());
-		}*/
 	}
 
-	//Imprimo BlosaDeFichas
+	public void asignoFicha(String pFigura, String pColor)
+	{
+		this.ficha.setFigura(pFigura);
+		this.ficha.setColor(pColor);
+		this.bolsa_fichas.setFicha(this.ficha);
+	}
+
 	public void showBolsaFichas()
-	{/*
+	{
 		for (int i=0; i<this.bolsa_fichas.getLengthBolsaFichas(); i++) {
 			System.out.println( "Figura -> " 
-				+ this.bolsa_fichas.getFichas().get(i).getFigura().getTipo() 
+				+ this.bolsa_fichas.getFichas().get(i).getFigura() 
 				+ "/n" 
 				+ "Color -> "
-				+ this.bolsa_fichas.getFichas().get(i).getColor().getTipo());
-		}*/
+				+ this.bolsa_fichas.getFichas().get(i).getColor());
+		}
 	}
+
+	public void showMano(Jugador pJugador)
+	{
+		for (int i=0; i<this.dimencion_inicial; i++)
+		{
+			System.out.println( "Figura -> " 
+				+ pJugador.getMano().getFichas().get(i).getFigura()
+				+ "/n" 
+				+ "Color -> "
+				+ pJugador.getMano().getFichas().get(i).getColor());
+		}
+	}
+
+	public void showPtsJugador(Jugador pJugador)
+	{
+		System.out.println(pJugador.getScore().getPtsTotales());
+	}
+
+	public void getPtsJugada(){
+
+	}
+
+	public void setJugadaTablero()
+	{
+
+	}
+
+	public void seleccionoJugada()
+	{
+
+	}
+
+	/*
+			EJEMPLO #1
+	*/
 	public void printTablero(){
 		System.out.println(tablero.toString());
-	}
-	public static void main(String[] args) 
-	{		
-		//Empieza el juego
-		Qwirkle qwirkle;
-		qwirkle = new Qwirkle();
-		qwirkle.printTablero();
-
-		System.exit(0);
 	}
 }
 
