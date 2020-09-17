@@ -11,6 +11,7 @@ class Qwirkle
 	private JFrame frame;
 	private Ficha ficha;
 	private int dimencion_inicial;
+	private Fichas fichas_totales;
 
 
 	//Constructor
@@ -18,11 +19,8 @@ class Qwirkle
 	{		
 		//Creo ficha para trabajar con ella durante el programa
 		this.ficha = new Ficha();
-
-		//
+		this.fichas_totales = new Fichas();
 		this.dimencion_inicial = 35;
-
-		//Creo jframe
    		this.frame = new JFrame("Qwirkle");
 
 		//Creo jugadores
@@ -31,12 +29,18 @@ class Qwirkle
 
 		//Creo tablero
 		this.tablero = new Tablero();
+		this.fullMatrizEmpty();
 
 		//Creo y lleno BolsaFichas
 		this.bolsa_fichas = new BolsaFichas();
 		this.llenoBolsaFichas();
     
 		//Ronda del Juego, se encicla hasta que se diga salir del juego
+		this.controlMenu();
+	}
+
+	public void controlMenu()
+	{
 		this.opcion = 0;
 		while(this.opcion < 4){
 			this.menu(this.jugador_humano_1);
@@ -215,17 +219,7 @@ class Qwirkle
 		}
 	}
 
-	//Imprimo Tablero grafito
 
-
-}
-
-
-
-
-
-
-/*	
 	//Lleno matriz en blanco
 	public void fullMatrizEmpty()
 	{
@@ -240,4 +234,13 @@ class Qwirkle
 		}
 
 	}
+}
+
+
+
+
+
+
+/*	
+
 */
