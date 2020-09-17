@@ -4,27 +4,42 @@ import java.util.List;
 
 class Tablero
 {
-	//Variables
-	private List<Fichas> fichas;
-	private Margen margen;
+	private static final int MATRIX_SIDE=8;
+	private Ficha fichas[][] ;
 
 	//Constructor
 	public Tablero() 
-	{			
-		this.fichas = new ArrayList<Fichas>();		
-		this.margen = new Margen();
+	{		
+		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
 	}
-
+	public void llenarTableroConEjemplo(){
+		int mitadDeLaMatriz=MATRIX_SIDE/2;
+		meterFichaEnXY(new Ficha("rombo","rojo"), mitadDeLaMatriz, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("circulo","rojo"), mitadDeLaMatriz+1, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("cuadrado","rojo"), mitadDeLaMatriz+2, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("rombo","azul"), mitadDeLaMatriz, mitadDeLaMatriz+1);
+	}
+	public boolean meterFichaEnXY(Ficha ficha,int x,int y){
+		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
+			return false;
+		fichas[x][y]=ficha;
+		return true;
+	}
+	@Override
+	public String toString(){
+		String out="";
+		for(int i=0;i<MATRIX_SIDE;i++){
+			for(int j=0;j<MATRIX_SIDE;j++)
+				out+="# "+(fichas[i][j]!=null?fichas[i][j].toString():"\t\t\t")+" #";
+			out+="\n";
+		}
+		return out;
+	}
+/*
 	//Metodos de get y set
 	public List<Fichas> getTablero()
 	{
 		return this.fichas;
 	}
-
-	public void setOneFilaFichas(Fichas pFicha)
-	{
-		this.fichas.add(pFicha);
-	}
-
-
+*/
 }

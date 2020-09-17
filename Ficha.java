@@ -1,46 +1,31 @@
 public class Ficha
 {
-	//Variables Globales
-	private Figura figura;
-	private Color color;
-	private	int x;
-	private int y;
+	private String figura;
+	private String color;
 
 	//Constructor
-	public Ficha() 
+	public Ficha(String figura,String color) 
 	{		
-		this.figura = new Figura();
-		this.color = new Color();	
+		this.figura = figura;
+		this.color = color;
 	}
 
-	//Metodos get y set
-	public Figura getFigura()
-	{
-		return this.figura;
+	public String toString(){
+		return "Figura: "+figura+"$Color: "+color;
 	}
 
-	public Color getColor()
+	public String getColor()
 	{
 		return this.color;
 	}
 
-	public void setFigura(Figura pFigura)
+	public void setFigura(String pFigura)
 	{
 		this.figura = pFigura;
 	}
 
-	public void setColor(Color pColor)
+	public void setColor(String pColor)
 	{
 		this.color = pColor;
-	}
-
-	public int getX()
-	{
-		return this.x;
-	}
-
-	public int getY()
-	{
-		return this.y;
 	}
 }
