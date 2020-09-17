@@ -1,3 +1,4 @@
+import java.util.*; 
 import javax.swing.*;
 
 class Qwirkle
@@ -12,6 +13,8 @@ class Qwirkle
 	private int opcion;
 	private JFrame frame;
 	private int dimencion_inicial;
+	private String[] lista_figura = {"circulo", "cuadrado", "estrella", "trebol", "corazon", "ovalo"};
+	private int contador_bolsa;
 
 	public Qwirkle() 
 	{		
@@ -23,16 +26,17 @@ class Qwirkle
 		this.opcion = 0;
 		this.dimencion_inicial = 6;
 		this.tablero = new Tablero();
+		this.contador_bolsa = 0;
 
-		//this.llenoBolsaFichas();
-		//tablero.llenarTableroConEjemplo();
-
+		this.fullFichasToBolsa(this.lista_figura);
+		
+		this.showBolsaFichas();
+		
 		this.controlMenu();
 
 		//Ejemplo#1
+		//tablero.llenarTableroConEjemplo();
 		//qwirkle.printTablero();
-
-		
 	}
 
 	public void controlMenu()
@@ -67,53 +71,26 @@ class Qwirkle
 	
 	}
 
-	public void llenoBolsaFichas()
+	public void fullFichasToBolsa(String[] pLista)
+	{	
+		for (int index=0; index<pLista.length; index++) 
+		{
+			System.out.println(pLista[index]);
+			this.llenoBolsaFichas(pLista[index]);	
+		}
+	}
+
+	public void llenoBolsaFichas(String pFigura)
 	{
 		//Creo las 108 fichas
 		for (int index=0; index<3; index++) 
 		{
-			this.asignoFicha("circulo", "verde");
-			this.asignoFicha("circulo", "anaranjado");
-			this.asignoFicha("circulo", "amarillo");
-			this.asignoFicha("circulo", "celeste");
-			this.asignoFicha("circulo", "morado");
-			this.asignoFicha("circulo", "rojo");
-
-			this.asignoFicha("cuadrado", "verde");
-			this.asignoFicha("cuadrado", "anaranjado");
-			this.asignoFicha("cuadrado", "amarillo");
-			this.asignoFicha("cuadrado", "celeste");
-			this.asignoFicha("cuadrado", "morado");
-			this.asignoFicha("cuadrado", "rojo");
-
-			this.asignoFicha("estrella", "verde");
-			this.asignoFicha("estrella", "anaranjado");
-			this.asignoFicha("estrella", "amarillo");
-			this.asignoFicha("estrella", "celeste");
-			this.asignoFicha("estrella", "morado");
-			this.asignoFicha("estrella", "rojo");
-
-			this.asignoFicha("trebol", "verde");
-			this.asignoFicha("trebol", "anaranjado");
-			this.asignoFicha("trebol", "amarillo");
-			this.asignoFicha("trebol", "celeste");
-			this.asignoFicha("trebol", "morado");
-			this.asignoFicha("trebol", "rojo");
-
-			this.asignoFicha("corazon", "verde");
-			this.asignoFicha("corazon", "anaranjado");
-			this.asignoFicha("corazon", "amarillo");
-			this.asignoFicha("corazon", "celeste");
-			this.asignoFicha("corazon", "morado");
-			this.asignoFicha("corazon", "rojo");
-
-			this.asignoFicha("ovalo", "verde");
-			this.asignoFicha("ovalo", "anaranjado");
-			this.asignoFicha("ovalo", "amarillo");
-			this.asignoFicha("ovalo", "celeste");
-			this.asignoFicha("ovalo", "morado");
-			this.asignoFicha("ovalo", "rojo");
-
+			this.asignoFicha(pFigura, "verde");
+			this.asignoFicha(pFigura, "anaranjado");
+			this.asignoFicha(pFigura, "amarillo");
+			this.asignoFicha(pFigura, "celeste");
+			this.asignoFicha(pFigura, "morado");
+			this.asignoFicha(pFigura, "rojo");
 		}
 	}
 
@@ -121,17 +98,21 @@ class Qwirkle
 	{
 		this.ficha.setFigura(pFigura);
 		this.ficha.setColor(pColor);
-		this.bolsa_fichas.setFicha(this.ficha);
+		this.bolsa_fichas.setFicha(this.ficha, this.contador_bolsa);
+		System.out.println(this.contador_bolsa);
+		this.contador_bolsa++;
 	}
 
 	public void showBolsaFichas()
 	{
+		System.out.println(this.bolsa_fichas.getLengthBolsaFichas());		
 		for (int i=0; i<this.bolsa_fichas.getLengthBolsaFichas(); i++) {
+			System.out.println(i);
 			System.out.println( "Figura -> " 
-				+ this.bolsa_fichas.getFichas().get(i).getFigura() 
-				+ "/n" 
+				+ this.bolsa_fichas.getFichas()[i].getFigura() 
+				+ "\n" 
 				+ "Color -> "
-				+ this.bolsa_fichas.getFichas().get(i).getColor());
+				+ this.bolsa_fichas.getFichas()[i].getColor());
 		}
 	}
 
@@ -141,7 +122,7 @@ class Qwirkle
 		{
 			System.out.println( "Figura -> " 
 				+ pJugador.getMano().getFichas().get(i).getFigura()
-				+ "/n" 
+				+ "\n" 
 				+ "Color -> "
 				+ pJugador.getMano().getFichas().get(i).getColor());
 		}
