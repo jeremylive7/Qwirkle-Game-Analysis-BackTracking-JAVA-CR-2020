@@ -1,6 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
+
 class Tablero
 {
-	private static final int MATRIX_SIDE=5;
+	private static final int MATRIX_SIDE=8;
 	private Ficha fichas[][] ;
 
 	//Constructor
@@ -10,10 +14,16 @@ class Tablero
 	}
 	public void llenarTableroConEjemplo(){
 		int mitadDeLaMatriz=MATRIX_SIDE/2;
-		fichas[mitadDeLaMatriz][mitadDeLaMatriz]=new Ficha("rombo","rojo");
-		fichas[mitadDeLaMatriz+1][mitadDeLaMatriz]=new Ficha("circulo","rojo");
-		fichas[mitadDeLaMatriz+2][mitadDeLaMatriz]=new Ficha("cuadrado","rojo");
-		fichas[mitadDeLaMatriz][mitadDeLaMatriz+1]=new Ficha("rombo","azul");
+		meterFichaEnXY(new Ficha("rombo","rojo"), mitadDeLaMatriz, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("circulo","rojo"), mitadDeLaMatriz+1, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("cuadrado","rojo"), mitadDeLaMatriz+2, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("rombo","azul"), mitadDeLaMatriz, mitadDeLaMatriz+1);
+	}
+	public boolean meterFichaEnXY(Ficha ficha,int x,int y){
+		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
+			return false;
+		fichas[x][y]=ficha;
+		return true;
 	}
 	@Override
 	public String toString(){
@@ -27,7 +37,7 @@ class Tablero
 	}
 /*
 	//Metodos de get y set
-	public Grafito getTablero()
+	public List<Fichas> getTablero()
 	{
 		return this.fichas;
 	}

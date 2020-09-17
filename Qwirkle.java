@@ -2,7 +2,6 @@ import javax.swing.*;
 
 class Qwirkle
 {
-	static final private int dimencion_inicial=6;
 	private Jugador jugador_humano_1;
 	private Jugador jugador_humano_2;
 	private Jugador jugadorActual;
@@ -134,12 +133,6 @@ class Qwirkle
 				+ "Color -> "
 				+ this.bolsa_fichas.getFichas().get(i).getColor().getTipo());
 		}*/
-	} 
-	public void showTableroGrafito(Grafito pGrafito)
-	{
-		/*
-		Imprimo Tablero grafito
-		*/
 	}
 	public void printTablero(){
 		System.out.println(tablero.toString());
