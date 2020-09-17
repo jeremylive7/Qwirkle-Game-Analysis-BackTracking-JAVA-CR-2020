@@ -24,20 +24,20 @@ class Qwirkle
 
 		//Creo tablero
 		this.tablero = new Tablero();
+		tablero.llenarTableroConEjemplo();
 
 		//Creo BolsaFichas
 		this.bolsa_fichas = new BolsaFichas();
 		
-		menu();
 	}
 
 	//Creo Menu
 	public void menu()
 	{
 		while(this.opcion < 4){
-			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
 
 			do{
+				JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
 				//Muestro mano del jugador
 				this.showMano();
 				
@@ -114,26 +114,26 @@ class Qwirkle
 		for (Ficha ficha:jugadorActual.getMano()){
 			System.out.println(ficha.toString());
 		}
-		*/
+		
 		for (int i=0; i<this.dimencion_inicial; i++) {
 			System.out.println( "Figura -> " 
 				+ this.jugadorActual.getMano().getFichas().get(i).getFigura().getTipo() 
 				+ "/n" 
 				+ "Color -> "
 				+ this.jugadorActual.getMano().getFichas().get(i).getColor().getTipo());
-		}
+		}*/
 	}
 
 	//Imprimo BlosaDeFichas
 	public void showBolsaFichas()
-	{
+	{/*
 		for (int i=0; i<this.bolsa_fichas.getLengthBolsaFichas(); i++) {
 			System.out.println( "Figura -> " 
 				+ this.bolsa_fichas.getFichas().get(i).getFigura().getTipo() 
 				+ "/n" 
 				+ "Color -> "
 				+ this.bolsa_fichas.getFichas().get(i).getColor().getTipo());
-		}
+		}*/
 	} 
 	public void showTableroGrafito(Grafito pGrafito)
 	{
@@ -141,7 +141,18 @@ class Qwirkle
 		Imprimo Tablero grafito
 		*/
 	}
+	public void printTablero(){
+		System.out.println(tablero.toString());
+	}
+	public static void main(String[] args) 
+	{		
+		//Empieza el juego
+		Qwirkle qwirkle;
+		qwirkle = new Qwirkle();
+		qwirkle.printTablero();
 
+		System.exit(0);
+	}
 }
 
 
