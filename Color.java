@@ -1,4 +1,22 @@
-public enum Color
+public class Color
 {
-	ROJO,VERDE,AMARILLO,AZUL,MORADO,CELESTE
+	//Variables Globales
+	private String tipo;
+
+	//Constructor
+	public Color() 
+	{		
+		this.tipo = "";		
+	}
+
+	//Metodos get y set
+	public String getTipo()
+	{
+		return this.tipo;
+	}
+
+	public void setTipo(String pTipo)
+	{
+		this.tipo = pTipo;
+	}
 }

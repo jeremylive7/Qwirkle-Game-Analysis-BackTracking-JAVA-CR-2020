@@ -1,10 +1,15 @@
 public class Ficha
 {
-	private Figura figura;
-	private Color color;
+	private String figura;
+	private String color;
 
-	//Constructor
-	public Ficha(Figura figura,Color color) 
+	public Ficha() 
+	{		
+		this.figura = "";
+		this.color = "";
+	}
+
+	public Ficha(String figura,String color) 
 	{		
 		this.figura = figura;
 		this.color = color;
@@ -14,17 +19,22 @@ public class Ficha
 		return "Figura: "+figura+"$Color: "+color;
 	}
 
-	public Color getColor()
+	public String getColor()
 	{
 		return this.color;
 	}
 
-	public void setFigura(Figura pFigura)
-  {
+	public String getFigura()
+	{
+		return this.figura;
+	}
+
+	public void setFigura(String pFigura)
+	{
 		this.figura = pFigura;
 	}
 
-	public void setColor(Color pColor)
+	public void setColor(String pColor)
 	{
 		this.color = pColor;
 	}

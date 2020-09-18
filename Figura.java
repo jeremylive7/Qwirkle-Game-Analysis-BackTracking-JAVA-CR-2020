@@ -1,4 +1,23 @@
-public enum Figura
+public class Figura
 {
-	ESTRELLA,SOL,ROMBO,CUADRADO,CIRCULO,X
+	//Variables Globales
+	private String tipo;
+
+	//Constructor
+	public Figura() 
+	{		
+		this.tipo = "";	
+	}
+
+	//Metodos get y set
+	public String getTipo()
+	{
+		return this.tipo;
+	}
+
+	public  void setTipo(String pTipo)
+	{
+		this.tipo = pTipo;
+	}
+
 }
