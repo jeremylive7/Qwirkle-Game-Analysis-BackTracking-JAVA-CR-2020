@@ -20,7 +20,7 @@ public class Ficha
 	}
 
 	public void setFigura(Figura pFigura)
-	{
+  {
 		this.figura = pFigura;
 	}
 

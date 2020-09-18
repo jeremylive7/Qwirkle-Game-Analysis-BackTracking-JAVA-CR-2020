@@ -1,3 +1,4 @@
+import java.util.*; 
 import javax.swing.*;
 
 class Qwirkle
@@ -7,144 +8,150 @@ class Qwirkle
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private BolsaFichas bolsa_fichas;
-	private int opcion = 0;
+	private Turno turno;
+	private Ficha ficha;
+	private int opcion;
 	private JFrame frame;
+	private int dimencion_inicial;
+	private String[] lista_figura = {"circulo", "cuadrado", "estrella", "trebol", "corazon", "ovalo"};
+	private int contador_bolsa;
 
-	//Constructor
 	public Qwirkle() 
 	{		
-		//Creo jframe
-   		this.frame = new JFrame("Qwirkle");
-
-		//Creo jugadores
+		this.frame = new JFrame("Qwirkle");
 		this.jugador_humano_1 = new Jugador("Jeremy");
 		this.jugador_humano_2 = new Jugador("Edgerik");
-		jugadorActual=jugador_humano_1;
-
-		//Creo tablero
-		this.tablero = new Tablero();
-		tablero.llenarTableroConEjemplo();
-
-		//Creo BolsaFichas
 		this.bolsa_fichas = new BolsaFichas();
+		this.ficha = new Ficha();
+		this.opcion = 0;
+		this.dimencion_inicial = 6;
+		this.tablero = new Tablero();
+		this.contador_bolsa = 0;
+
+		this.fullFichasToBolsa(this.lista_figura);
 		
+		this.showBolsaFichas();
+		
+		this.controlMenu();
+
+		//Ejemplo#1
+		//tablero.llenarTableroConEjemplo();
+		//qwirkle.printTablero();
 	}
 
-	//Creo Menu
-	public void menu()
+	public void controlMenu()
 	{
-		while(this.opcion < 4){
-
-			do{
-				JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
-				//Muestro mano del jugador
-				this.showMano();
-				
-				//Obtengo el # de la opcion
-				this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Reseteo de fichas"
-					+ "\n"
-					+ "2. Seleccionar mi jugada"
-					+ "\n"
-					+ "3. No tengo fichas a jugar"
-					+ "\n"
-					+ "4. Salir del Juego"));
-
-				if(opcion==1)
-				{//Resetear fichas del jugadorActual
-					System.out.println("Elegiste reseteo de fichas");
-					//jugadorActual.resetearFichas(sacarFichasDeLaBolsa(interfaz.cualesFichas(jugadorActual.getMazo())))
-				}	
-				if(opcion==2)
-				{//Elige jugada a colocar
-					System.out.println("Elegiste seleccionar mi jugada");
-					seleccionoJugada();//Empieza turno, selecciono mi jugada
-					setJugadaTablero();//Coloco jugada en el tablero
-					getPtsJugada();//Obtencion de pts por las fichas seteadas
-					showPtsJugador();//Imprimo pts
-				}
-				if(opcion==3)//No tiene fichas
-					System.out.println("Elegiste no tengo fichas a jugara");
-				else	//Salir del juego
-					break;
-						
-				jugadorActual=(jugadorActual==jugador_humano_1?jugador_humano_2:jugador_humano_1);
-
-			}while(true);
+		while(this.opcion < 2)
+		{
+			this.menu(this.jugador_humano_1);
+			this.menu(this.jugador_humano_2);
 		}
 	}
 
-	//Muestro pts totales del jugador
-	public void showPtsJugador()
+	public void menu(Jugador pJugador)
 	{
-		System.out.println(jugadorActual.getScore().getPtsTotales());
-	}
+		//this.showMano(pJugador);
+		pJugador.getTurno().setSuTurno(true);
 
-	//Obtengo pts de la jugada reciente para sumarselos al jugador
-	public void getPtsJugada()
-	{
-		/*jajsakdjflasf
-		*/
+		do{
+			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " 
+				+ pJugador.getNombre());
 
-	}
+			this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar jugada"
+				+ "\n"
+				+ "2. Salir del Juego"));
 
+			if(opcion==1)
+			{
+				pJugador.getTurno().setSuTurno(false);
+			}else 
+				break;
+
+		}while(pJugador.getTurno().getSuTurno() != false);
 	
+	}
+
+	public void fullFichasToBolsa(String[] pLista)
+	{	
+		for (int index=0; index<pLista.length; index++) 
+		{
+			System.out.println(pLista[index]);
+			this.llenoBolsaFichas(pLista[index]);	
+		}
+	}
+
+	public void llenoBolsaFichas(String pFigura)
+	{
+		//Creo las 108 fichas
+		for (int index=0; index<3; index++) 
+		{
+			this.asignoFicha(pFigura, "verde");
+			this.asignoFicha(pFigura, "anaranjado");
+			this.asignoFicha(pFigura, "amarillo");
+			this.asignoFicha(pFigura, "celeste");
+			this.asignoFicha(pFigura, "morado");
+			this.asignoFicha(pFigura, "rojo");
+		}
+	}
+
+	public void asignoFicha(String pFigura, String pColor)
+	{
+		this.ficha.setFigura(pFigura);
+		this.ficha.setColor(pColor);
+		this.bolsa_fichas.setFicha(this.ficha, this.contador_bolsa);
+		System.out.println(this.contador_bolsa);
+		this.contador_bolsa++;
+	}
+
+	public void showBolsaFichas()
+	{
+		System.out.println(this.bolsa_fichas.getLengthBolsaFichas());		
+		for (int i=0; i<this.bolsa_fichas.getLengthBolsaFichas(); i++) {
+			System.out.println(i);
+			System.out.println( "Figura -> " 
+				+ this.bolsa_fichas.getFichas()[i].getFigura() 
+				+ "\n" 
+				+ "Color -> "
+				+ this.bolsa_fichas.getFichas()[i].getColor());
+		}
+	}
+
+	public void showMano(Jugador pJugador)
+	{
+		for (int i=0; i<this.dimencion_inicial; i++)
+		{
+			System.out.println( "Figura -> " 
+				+ pJugador.getMano().getFichas().get(i).getFigura()
+				+ "\n" 
+				+ "Color -> "
+				+ pJugador.getMano().getFichas().get(i).getColor());
+		}
+	}
+
+	public void showPtsJugador(Jugador pJugador)
+	{
+		System.out.println(pJugador.getScore().getPtsTotales());
+	}
+
+	public void getPtsJugada(){
+
+	}
+
 	public void setJugadaTablero()
 	{
-		/*
-		Ya escogida la jugada a setear en el tablero
-		Se agaarra como parametro, se coloca en el tablero
-		Preuntando primero donde quiero poner cada ficha 
-		Siguiendo las reglas del juego.
-		*/
+
 	}
 
-	//
 	public void seleccionoJugada()
 	{
-		/*
-		Ya mostroadas las opciones que tengo disponibles en la mano
-		Selecciono la jugada de alguna forma
-		*/
+
 	}
 
-	//Imprimo mano jugador humano
-	public void showMano()
-	{/*
-		for (Ficha ficha:jugadorActual.getMano()){
-			System.out.println(ficha.toString());
-		}
-		
-		for (int i=0; i<this.dimencion_inicial; i++) {
-			System.out.println( "Figura -> " 
-				+ this.jugadorActual.getMano().getFichas().get(i).getFigura().getTipo() 
-				+ "/n" 
-				+ "Color -> "
-				+ this.jugadorActual.getMano().getFichas().get(i).getColor().getTipo());
-		}*/
-	}
-
-	//Imprimo BlosaDeFichas
-	public void showBolsaFichas()
-	{/*
-		for (int i=0; i<this.bolsa_fichas.getLengthBolsaFichas(); i++) {
-			System.out.println( "Figura -> " 
-				+ this.bolsa_fichas.getFichas().get(i).getFigura().getTipo() 
-				+ "/n" 
-				+ "Color -> "
-				+ this.bolsa_fichas.getFichas().get(i).getColor().getTipo());
-		}*/
-	}
+	/*
+			EJEMPLO #1
+	*/
 	public void printTablero(){
 		System.out.println(tablero.toString());
-	}
-	public static void main(String[] args) 
-	{		
-		//Empieza el juego
-		Qwirkle qwirkle;
-		qwirkle = new Qwirkle();
-		qwirkle.printTablero();
-
-		System.exit(0);
 	}
 }
 
