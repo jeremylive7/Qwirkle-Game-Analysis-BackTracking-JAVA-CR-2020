@@ -3,13 +3,16 @@ import java.util.*;
 
 class Tablero
 {
-	private static final int MATRIX_SIDE=8;
+	static final int MATRIX_SIDE=8;
 	private Ficha fichas[][] ;
 
 	//Constructor
 	public Tablero() 
 	{		
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
+	}
+	public Ficha[][]getFichas(){
+		return fichas;
 	}
 	public void llenarTableroConEjemplo(){
 		int mitadDeLaMatriz=MATRIX_SIDE/2;

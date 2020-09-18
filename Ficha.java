@@ -1,6 +1,6 @@
 public class Ficha
 {
-	private Figura figura;
+	Figura figura;
 	private Color color;
 
 	//Constructor
@@ -17,6 +17,10 @@ public class Ficha
 	public Color getColor()
 	{
 		return this.color;
+	}
+
+	public Figura getFigura(){
+		return figura;
 	}
 
 	public void setFigura(Figura pFigura)
