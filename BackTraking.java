@@ -1,18 +1,17 @@
 public class BackTraking
 {
-	//Variables Globales
+	Ficha[][] matriz;
 
-	//Constructor
-	BackTraking(Matrizx) 
+	BackTraking(Ficha[][] pMatriz) 
 	{		
-		
+		this.matriz = pMatriz;		
 	}
 
 	//cada posible solucion que busque una solucion.
 
-	//buscar las filas y columnas disponibles y comparalas con la mano.
+	//buscar las filas y columnas disponibles en el tablero y comparalas con la mano.
 
-	//Una backtra.. en cada posicion.
+	//Hacer un backtraking en cada posicion.
 
 	
 
