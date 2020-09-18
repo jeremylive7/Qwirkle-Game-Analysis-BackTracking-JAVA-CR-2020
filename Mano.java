@@ -2,20 +2,27 @@ import java.util.*;
 
 class Mano
 {
-	//Variables Globales
-	ArrayList<Ficha> fichas;
-	String nombre_jugador;
+	private ArrayList<Ficha> fichas;
+	private String nombre_jugador;
 
-	//Constructor
-	Mano(String pNombre) 
+	public Mano(String pNombre) 
 	{		
-		this.fichas = new ArrayList<Ficha>(7);
+		this.fichas = new ArrayList<Ficha>(6);
 		this.nombre_jugador = pNombre;
 	}
 
-	//Metodos de get y set
 	public ArrayList<Ficha> getFichas()
 	{
 		return this.fichas;
+	}
+
+	public void setFicha(Ficha pFicha)
+	{
+		this.fichas.add(pFicha);
+	}
+
+	public Ficha getFichaXIndex(int pIndex)
+	{
+		return this.fichas.get(pIndex);
 	}
 }

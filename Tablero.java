@@ -3,7 +3,7 @@ import java.util.*;
 
 class Tablero
 {
-	private static final int MATRIX_SIDE=8;
+	private static final int MATRIX_SIDE=108;
 	private Ficha fichas[][] ;
 
 	//Constructor

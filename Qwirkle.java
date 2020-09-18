@@ -5,6 +5,7 @@ class Qwirkle
 {
 	private Jugador jugador_humano_1;
 	private Jugador jugador_humano_2;
+	private Jugador jugador_humano_3;
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private BolsaFichas bolsa_fichas;
@@ -20,11 +21,11 @@ class Qwirkle
 	{		
 		this.frame = new JFrame("Qwirkle");
 		this.jugador_humano_1 = new Jugador("Jeremy");
-		this.jugador_humano_2 = new Jugador("Edgerik");
+		this.jugador_humano_2 = new Jugador("Esteban");
+		this.jugador_humano_3 = new Jugador("Edgerik");
 		this.bolsa_fichas = new BolsaFichas();
-		this.ficha = new Ficha();
 		this.opcion = 0;
-		this.dimencion_inicial = 6;
+		this.dimencion_inicial = 5;
 		this.tablero = new Tablero();
 		this.contador_bolsa = 0;
 
@@ -32,6 +33,11 @@ class Qwirkle
 		
 		this.showBolsaFichas();
 		
+		this.giveHandPlayer(this.jugador_humano_1);
+		this.giveHandPlayer(this.jugador_humano_2);
+		this.giveHandPlayer(this.jugador_humano_3);
+
+
 		this.controlMenu();
 
 		//Ejemplo#1
@@ -71,11 +77,23 @@ class Qwirkle
 	
 	}
 
+	public void giveHandPlayer(Jugador pJugador)
+	{
+		int pRandom = (int) ((Math.random() * this.bolsa_fichas.getLengthBolsaFichas() ));
+
+		System.out.println("El # random es : " + pRandom);
+
+		pJugador.getMano().setFicha(this.bolsa_fichas.getFichaXIndex(pRandom));
+		this.bolsa_fichas.clearFichaXIndex(pRandom);
+
+	}
+
 	public void fullFichasToBolsa(String[] pLista)
 	{	
 		for (int index=0; index<pLista.length; index++) 
 		{
-			System.out.println(pLista[index]);
+			System.out.println("Estoy dentro del for x6, largo de la lista figuras: " + pLista[index]);
+
 			this.llenoBolsaFichas(pLista[index]);	
 		}
 	}
@@ -96,35 +114,43 @@ class Qwirkle
 
 	public void asignoFicha(String pFigura, String pColor)
 	{
-		this.ficha.setFigura(pFigura);
-		this.ficha.setColor(pColor);
-		this.bolsa_fichas.setFicha(this.ficha, this.contador_bolsa);
-		System.out.println(this.contador_bolsa);
+		Ficha ficha = new Ficha();
+		ficha.setFigura(pFigura);
+		ficha.setColor(pColor);
+		this.bolsa_fichas.setFicha(ficha, this.contador_bolsa);
 		this.contador_bolsa++;
+		
+		System.out.println("Contador de la bolsa de fichas, donde se esta insertando : " + this.contador_bolsa);
+		System.out.println("Inserto la Figura : " + ficha.getFigura() + "\nInseto el Color : " + ficha.getColor());	
 	}
 
 	public void showBolsaFichas()
 	{
 		System.out.println(this.bolsa_fichas.getLengthBolsaFichas());		
-		for (int i=0; i<this.bolsa_fichas.getLengthBolsaFichas(); i++) {
-			System.out.println(i);
+
+		for (int index=0; index<this.bolsa_fichas.getLengthBolsaFichas(); index++) 
+		{
+			System.out.println("Estoy en el indice de la bolsa de fichas : " + index);
+
 			System.out.println( "Figura -> " 
-				+ this.bolsa_fichas.getFichas()[i].getFigura() 
+				+ this.bolsa_fichas.getFichaXIndex(index).getFigura() 
 				+ "\n" 
 				+ "Color -> "
-				+ this.bolsa_fichas.getFichas()[i].getColor());
+				+ this.bolsa_fichas.getFichaXIndex(index).getColor());
 		}
 	}
 
 	public void showMano(Jugador pJugador)
 	{
-		for (int i=0; i<this.dimencion_inicial; i++)
+		System.out.println("Esta es la mano del jugador : " + pJugador);
+
+		for (int index=0; index<this.dimencion_inicial; index++)
 		{
 			System.out.println( "Figura -> " 
-				+ pJugador.getMano().getFichas().get(i).getFigura()
+				+ pJugador.getMano().getFichas().get(index).getFigura()
 				+ "\n" 
 				+ "Color -> "
-				+ pJugador.getMano().getFichas().get(i).getColor());
+				+ pJugador.getMano().getFichas().get(index).getColor());
 		}
 	}
 
