@@ -13,10 +13,10 @@ class Tablero
 	}
 	public void llenarTableroConEjemplo(){
 		int mitadDeLaMatriz=MATRIX_SIDE/2;
-		meterFichaEnXY(new Ficha("rombo","rojo"), mitadDeLaMatriz, mitadDeLaMatriz);
-		meterFichaEnXY(new Ficha("circulo","rojo"), mitadDeLaMatriz+1, mitadDeLaMatriz);
-		meterFichaEnXY(new Ficha("cuadrado","rojo"), mitadDeLaMatriz+2, mitadDeLaMatriz);
-		meterFichaEnXY(new Ficha("rombo","azul"), mitadDeLaMatriz, mitadDeLaMatriz+1);
+		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha(Figura.CIRCULO,Color.ROJO), mitadDeLaMatriz+1, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha(Figura.CUADRADO,Color.ROJO),mitadDeLaMatriz+2, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.AZUL), mitadDeLaMatriz, mitadDeLaMatriz+1);
 	}
 	public boolean meterFichaEnXY(Ficha ficha,int x,int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
