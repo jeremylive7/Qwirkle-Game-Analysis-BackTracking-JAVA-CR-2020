@@ -3,7 +3,7 @@ import java.util.*;
 class BolsaFichas
 {
 	//Variables Globales
-	private static final int MATRIX_SIDE=108;
+	private static final int MATRIX_SIDE=109;
 	private Ficha[] fichas;
 
 	//Constructor
