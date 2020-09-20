@@ -9,16 +9,16 @@ class Qwirkle
 	private Tablero tablero;
 	private List<Ficha> bolsa_fichas;
 	private int opcion;
-	private JFrame frame;
+	private InterfazDeUsuario frame;
 	private static final Figura[]FIGURAS = {Figura.CIRCULO,Figura.CUADRADO,Figura.SOL, Figura.TREBOL,Figura.X, Figura.ROMBO};
-	private static final Color[]COLORES={Color.AMARILLO,Color.AZUL,Color.CELESTE,Color.MORADO,Color.ROJO,Color.VERDE};
+	private static final Color[]COLORES={Color.AMARILLO,Color.AZUL,Color.NARANJA,Color.MORADO,Color.ROJO,Color.VERDE};
 	private static final int CANT_CARTAS_EN_LA_MANO=6;
 
 	public Qwirkle() 
 	{		
-		this.frame = new JFrame("Qwirkle");
 		this.bolsa_fichas = new ArrayList<>();
-		this.setTablero(new Tablero());
+		tablero=new Tablero();
+		this.frame = new InterfazDeUsuario(tablero);
 		this.fullFichasToBolsa();
 		this.jugador_humano_1 = new Jugador("Jeremy",getFichasDeLaBolsa(6));
 		this.jugador_humano_2 = new Jugador("Edgerik",getFichasDeLaBolsa(6));
@@ -26,7 +26,20 @@ class Qwirkle
 		this.showBolsaFichas();
 		
 	}
-
+	public void mostrarVentana(){
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+			  frame.setVisible(true);
+			}
+		  });
+	}
+	public static void main(String[]args){
+		
+		Qwirkle qwirkle = new Qwirkle();
+		qwirkle.getTablero().llenarTableroConEjemplo();
+		qwirkle.mostrarVentana();
+		qwirkle.frame.mostrarTablero();
+	}
 	public Tablero getTablero() {
 		return tablero;
 	}
@@ -97,8 +110,8 @@ class Qwirkle
 			return "Am";
 		else if(c==Color.AZUL)
 			return "Az";
-		else if(c==Color.CELESTE)
-			return "Ce";
+		else if(c==Color.NARANJA)
+			return "Na";
 		else if(c==Color.MORADO)
 			return "Mo";
 		else if(c==Color.ROJO)
@@ -178,7 +191,7 @@ class Qwirkle
 		return out;
 	}
 	public Ficha popRandomFicha(){
-		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-2)+1));
+		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
 	public void seleccionoJugada(Jugador j)
 	{

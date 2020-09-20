@@ -3,13 +3,68 @@ import java.util.*;
 
 class Tablero
 {
-	static final int MATRIX_SIDE=8;
+	static final int MATRIX_SIDE=20;
 	private Ficha fichas[][] ;
 
 	//Constructor
 	public Tablero() 
 	{		
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
+	}
+	public int getCantPuntos(int x,int y,Ficha ficha){
+		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 todo
+		int puntos=1;
+		ArrayList<Ficha>hileraHorizontal=new ArrayList<>(),hileraVertical=new ArrayList<>();
+		int inicioHilera=x,finHilera=x;
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[finHilera+1][y]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==x) hileraVertical.add(ficha);
+			else hileraVertical.add(fichas[i][y]);
+		}
+		inicioHilera=finHilera=y;
+		while(inicioHilera>0){
+			if(fichas[x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==y)hileraHorizontal.add(ficha);
+			else hileraHorizontal.add(fichas[x][i]);
+		}
+		//buscar repetidos
+		Map<Figura,Map<Color,Boolean>>mapaParaEncontrarRepetidos=new HashMap<>();
+		for(Ficha f:hileraHorizontal){
+			if(mapaParaEncontrarRepetidos.containsKey(f.figura)&&mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		mapaParaEncontrarRepetidos=new HashMap<>();
+		for(Ficha f:hileraVertical){
+			if(mapaParaEncontrarRepetidos.containsKey(f.figura)&&mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size()-1;
+		if(hileraVertical.size()>1)puntos+=hileraVertical.size()-1;
+		if(hileraVertical.size()==6)puntos+=6;
+		if(hileraHorizontal.size()==6)puntos+=6;
+		return puntos;
 	}
 	public Ficha[][]getFichas(){
 		return fichas;

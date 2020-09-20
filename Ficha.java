@@ -1,7 +1,7 @@
 public class Ficha
 {
-	Figura figura;
-	private Color color;
+	public Figura figura;
+	public Color color;
 
 	//Constructor
 	public Ficha(Figura figura,Color color) 
