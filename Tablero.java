@@ -50,6 +50,15 @@ class Tablero
 		for(Ficha f:hileraHorizontal){
 			if(mapaParaEncontrarRepetidos.containsKey(f.figura)&&mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
 				return 0;
+
+			ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
+
+ 
+			//recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
+			Boolean canI = canIDoPutFicha(pFichas_disponibles);
+
+
+
 			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
 			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
 		}
@@ -60,11 +69,41 @@ class Tablero
 			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
 			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
 		}
-		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size()-1;
-		if(hileraVertical.size()>1)puntos+=hileraVertical.size()-1;
+		System.out.println("pts horizonaral : "+hileraHorizontal.size() + "\npts vertical : "+hileraVertical.size());
+		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size();
+		if(hileraVertical.size()>1)puntos+=hileraVertical.size();
 		if(hileraVertical.size()==6)puntos+=6;
 		if(hileraHorizontal.size()==6)puntos+=6;
 		return puntos;
+	}
+	public Boolean canIDoPutFicha(ArrayList<Ficha> pFichas_pDisponibles)
+	{
+
+	}
+	public ArrayList<Ficha> getFichasDisponiblesAJugar(ArrayList<Ficha> pJugadas_tablero)
+	{
+		ArrayList<Ficha> pFichas_disponibles = new ArrayList<Ficha>();
+		String[] pFiguras_disponibles = {"TREBOL","SOL","ROMBO","CUADRADO","CIRCULO","X"};
+		String[] pColores_disponibles = {"ROJO","VERDE","AMARILLO","AZUL","MORADO","NARANJA"};
+
+		for (pFicha : pJugadas_tablero) 
+		{
+			for (int pIndex=0; pIndex<pFichas_disponibles.length; pIndex++) 
+			{
+				if(pFicha.getFigura()==pFiguras_disponibles[pIndex])
+				{
+					if(pFicha.getColor()==pColores_disponibles[pIndex])
+					{
+
+					}
+				}
+				pFiguras_disponibles[pIndex];
+			}
+
+			pFichas_disponibles.add(pFicha);
+		}
+
+		return pFichas_disponibles;
 	}
 	public Ficha[][]getFichas(){
 		return fichas;
