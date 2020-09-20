@@ -24,12 +24,18 @@ public class Ficha
 	}
 
 	public void setFigura(Figura pFigura)
-  {
+    {
 		this.figura = pFigura;
 	}
 
 	public void setColor(Color pColor)
 	{
 		this.color = pColor;
+	}
+
+	public String getFicha()
+	{
+		String ficha = getFigura()+getColor();
+		return ficha;
 	}
 }
