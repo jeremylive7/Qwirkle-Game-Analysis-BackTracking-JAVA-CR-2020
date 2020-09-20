@@ -1,38 +1,19 @@
 import java.util.*;
-
 class BolsaFichas
 {
 	//Variables Globales
+	public static final int CANT_FICHAS=108;
 	private List<Ficha> fichas;
 
 	//Constructor
 	public BolsaFichas() 
 	{		
-		this.fichas = new ArrayList<Ficha>(109);
+		this.fichas = new ArrayList<>();
 	}
 
-	//Metodos de get y set
-	public List<Ficha> getFichas()
-	{
-		return this.fichas;
+	public void addFicha(Ficha f){
+		fichas.add(f);
 	}
 
-	public int getLengthBolsaFichas()
-	{
-		return this.fichas.size();
-	}
-
-	public void setFicha(Ficha pFicha)
-	{
-		this.fichas.add(pFicha);
-	}
-
-	//Elimino ficha
-	public void deletedFicha(Ficha pFicha)
-	{
-		//Encuentro en la bolsa si existe la ficha
-
-		//La borro de la bolsa de ficha
-		
-	}
+	
 }
