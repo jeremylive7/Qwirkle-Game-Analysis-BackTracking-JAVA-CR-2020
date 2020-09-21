@@ -3,15 +3,14 @@ import javax.swing.*;
 
 class Qwirkle
 {
-	private Jugador jugador_humano_1;
-	private Jugador jugador_humano_2;
+	private Jugador jugador1,jugador2,jugador3;
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private List<Ficha> bolsa_fichas;
 	private int opcion;
 	private InterfazDeUsuario frame;
-	private static final Figura[]FIGURAS = {Figura.CIRCULO,Figura.CUADRADO,Figura.SOL, Figura.TREBOL,Figura.X, Figura.ROMBO};
-	private static final Color[]COLORES={Color.AMARILLO,Color.AZUL,Color.NARANJA,Color.MORADO,Color.ROJO,Color.VERDE};
+	public static final Figura[]FIGURAS = {Figura.CIRCULO,Figura.CUADRADO,Figura.SOL, Figura.TREBOL,Figura.X, Figura.ROMBO};
+	public static final Color[]COLORES={Color.AMARILLO,Color.AZUL,Color.NARANJA,Color.MORADO,Color.ROJO,Color.VERDE};
 	private static final int CANT_CARTAS_EN_LA_MANO=6;
 
 	public Qwirkle() 
@@ -20,11 +19,36 @@ class Qwirkle
 		tablero=new Tablero();
 		this.frame = new InterfazDeUsuario(tablero);
 		this.fullFichasToBolsa();
-		this.jugador_humano_1 = new Jugador("Jeremy",getFichasDeLaBolsa(6));
-		this.jugador_humano_2 = new Jugador("Edgerik",getFichasDeLaBolsa(6));
-		jugadorActual=jugador_humano_1;
+		this.jugador1 = new Jugador("Jeremy",getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador2 = new Jugador("Edgerik",getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		jugador3=new Jugador("Roberto",getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		jugadorActual=jugador1;
 		this.showBolsaFichas();
 		
+	}
+	public void jugadorHumanoHizoSuJugada(){
+		BackTraking algortimo;
+		//juega algoritmo básico
+		int cantFichasQuePuso=0;
+		/*
+		algortimo = new BackTraking(jugador2, tablero);
+		while(algoritmo.puedeJugar()){
+			tablero.procesarJugada(algoritmo.getJugadaBasico());
+			cantFichasQuePuso++;
+		}
+		jugador2.getMano().addAll(getFichasDeLaBolsa(cantFichasQuePuso));
+		actualizarVentana();
+		//juega algoritmo mejorado
+		Thread.sleep(5000);//Para que haya un tiempo entre las jugadas de cada uno
+		cantFichasQuePuso=0;
+		algortimo = new BackTraking(jugador3, tablero);
+		while(algortimo.puedeJugar()){
+			tablero.procesarJugada(algortimo.getJugadaMejorado());
+			cantFichasQuePuso++;
+		}
+		jugador3.getMano().addAll(getFichasDeLaBolsa(cantFichasQuePuso));
+		actualizarVentana();
+		*/
 	}
 	public void mostrarVentana(){
 		java.awt.EventQueue.invokeLater(new Runnable() {
@@ -34,11 +58,10 @@ class Qwirkle
 		  });
 	}
 	public static void main(String[]args){
-		
 		Qwirkle qwirkle = new Qwirkle();
 		qwirkle.getTablero().llenarTableroConEjemplo();
-		qwirkle.mostrarVentana();
-		qwirkle.frame.mostrarTablero();
+		List<Ficha>f=qwirkle.getTablero().getCualesPuedoPoner(9, 10);
+		System.out.println("JAJA");
 	}
 	public Tablero getTablero() {
 		return tablero;
@@ -84,7 +107,7 @@ class Qwirkle
 				else	//Salir del juego
 					break;
 						
-				jugadorActual=(jugadorActual==jugador_humano_1?jugador_humano_2:jugador_humano_1);
+				jugadorActual=(jugadorActual==jugador1?jugador2:jugador1);
 
 			}while(true);
 		}
@@ -173,7 +196,7 @@ class Qwirkle
 
 	public void showPtsJugador(Jugador pJugador)
 	{
-		System.out.println(pJugador.getScore().getPtsTotales());
+		//System.out.println(pJugador.getScore().getPtsTotales());
 	}
 
 	public void getPtsJugada(Jugador j){

@@ -14,6 +14,10 @@ public class Ficha
 		return "Figura: "+figura+"$Color: "+color;
 	}
 
+	public boolean equals(Ficha f){
+		return figura==f.figura&&color==f.color;
+	}
+
 	public Color getColor()
 	{
 		return this.color;
@@ -31,5 +35,10 @@ public class Ficha
 	public void setColor(Color pColor)
 	{
 		this.color = pColor;
+	}
+
+	public boolean noCombina(Ficha ficha) {
+		if (ficha==null) return false;
+		return equals(ficha)||(figura!=ficha.figura&&color!=ficha.color);
 	}
 }
