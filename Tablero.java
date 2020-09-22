@@ -1,22 +1,31 @@
 import java.util.*;
 
+import sun.security.ec.point.Point;
+
 
 class Tablero
 {
 	static final int MATRIX_SIDE=20;
-	private final Ficha fichas[][] ;
+	private final Ficha[][] fichas;
+	private List<java.awt.Point>lugaresDondeSePuedeJugar;
 
 	//Constructor
 	public Tablero() 
 	{		
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
+		lugaresDondeSePuedeJugar= new ArrayList<>();
+
+	}
+	public List<Point>getLugaresDondeSePuedeJugar(){
+		return lugaresDondeSePuedeJugar;
 	}
 	public List<Ficha>getCualesPuedoPoner(int x,int y){
 		List<Ficha>todasLasFichas=new ArrayList<>();
 		for (Figura figura:Qwirkle.FIGURAS)
 			for(Color color:Qwirkle.COLORES)
 				todasLasFichas.add(new Ficha(figura,color));
-		int inicioHilera=x,finHilera=x;
+		int inicioHilera=x;
+		int finHilera=x;
 		while(inicioHilera>0){
 			if(fichas[inicioHilera-1][y]==null)
 				break;
@@ -64,7 +73,8 @@ class Tablero
 		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 todo
 		int puntos=1;
 		final ArrayList<Ficha>hileraHorizontal=new ArrayList<>(),hileraVertical=new ArrayList<>();
-		int inicioHilera=x,finHilera=x;
+		int inicioHilera=x;
+		int finHilera=x;
 		while(inicioHilera>0){
 			if(fichas[inicioHilera-1][y]==null)
 				break;
@@ -131,9 +141,13 @@ class Tablero
 		meterFichaEnXY(new Ficha(Figura.CUADRADO,Color.ROJO),mitadDeLaMatriz+2, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha(Figura.SOL,Color.AZUL), mitadDeLaMatriz-1, mitadDeLaMatriz+1);
 	}
-	public boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
+	boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
+		if(x+1<MATRIX_SIDE&&fichas[x+1][y]==null)lugaresDondeSePuedeJugar.add(new Point(x+1,y));
+		if(x>0&&fichas[x-1][y]==null)lugaresDondeSePuedeJugar.add(new Point(x-1,y));
+		if(y+1<MATRIX_SIDE&&fichas[x][y+1]==null)lugaresDondeSePuedeJugar.add(new Point(x,y+1));
+		if(y>0&&fichas[x][y-1]==null)lugaresDondeSePuedeJugar.add(new  Point(x,y-1));
 		fichas[x][y]=ficha;
 		return true;
 	}
