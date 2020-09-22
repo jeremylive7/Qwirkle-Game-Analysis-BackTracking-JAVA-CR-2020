@@ -32,8 +32,8 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
           for (int j = 0; j < Tablero.MATRIX_SIDE; j++)
             if (tablero.getFichas()[i][j] != null)
               botones[i][j].setIcon(new javax.swing.ImageIcon(
-                  "D:\\xllEs\\Documents\\2020 - IISem\\Análisis de Algoritmos\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\imagenes\\"
-                      + tablero.getFichas()[i][j].figura + tablero.getFichas()[i][j].color + ".png"));
+                "C:\\Users\\Jerem\\Desktop\\Proyecto JAVA\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\imagenes\\"
+                   + tablero.getFichas()[i][j].figura + tablero.getFichas()[i][j].color + ".png"));
       }
 
       private void jButton1ActionPerformed(final java.awt.event.ActionEvent evt, final int i, final int j) {
@@ -41,8 +41,8 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
         System.out.println(cantPuntos);
         if (cantPuntos > 0){
           botones[i][j].setIcon(new javax.swing.ImageIcon(
-              "D:\\xllEs\\Documents\\2020 - IISem\\Análisis de Algoritmos\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\imagenes\\"
-                  + Figura.ROMBO + Color.ROJO + ".png"));
+              "C:\\Users\\Jerem\\Desktop\\Proyecto JAVA\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\imagenes\\"
+                + Figura.ROMBO + Color.ROJO + ".png"));
           tablero.getFichas()[i][j]=new Ficha(Figura.ROMBO, Color.ROJO);
         }
       }

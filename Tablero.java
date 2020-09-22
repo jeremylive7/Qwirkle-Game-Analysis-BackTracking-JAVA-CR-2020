@@ -13,7 +13,7 @@ class Tablero
 	}
 	public int getCantPuntos(int x,int y,Ficha ficha){
 		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 todo
-		int puntos=1;
+		int puntos=0;
 		ArrayList<Ficha>hileraHorizontal=new ArrayList<>(),hileraVertical=new ArrayList<>();
 		int inicioHilera=x,finHilera=x;
 		while(inicioHilera>0){
@@ -51,11 +51,11 @@ class Tablero
 			if(mapaParaEncontrarRepetidos.containsKey(f.figura)&&mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
 				return 0;
 
-			ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
+			// ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
 
  
-			//recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
-			Boolean canI = canIDoPutFicha(pFichas_disponibles);
+			// //recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
+			// Boolean canI = canIDoPutFicha(pFichas_disponibles);
 
 
 
@@ -76,7 +76,7 @@ class Tablero
 		if(hileraHorizontal.size()==6)puntos+=6;
 		return puntos;
 	}
-	public Boolean canIDoPutFicha(ArrayList<Ficha> pFichas_pDisponibles)
+/* 	public Boolean canIDoPutFicha(ArrayList<Ficha> pFichas_pDisponibles)
 	{
 
 	}
@@ -104,7 +104,7 @@ class Tablero
 		}
 
 		return pFichas_disponibles;
-	}
+	} */
 	public Ficha[][]getFichas(){
 		return fichas;
 	}

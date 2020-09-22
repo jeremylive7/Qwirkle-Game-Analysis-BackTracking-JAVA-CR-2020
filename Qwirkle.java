@@ -64,6 +64,7 @@ class Qwirkle
 					+ "\n"
 					+ "3. No tengo fichas a jugar"
 					+ "\n"
+					
 					+ "4. Salir del Juego"));
 
 				if(opcion==1)
