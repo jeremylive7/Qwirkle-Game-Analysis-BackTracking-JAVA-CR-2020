@@ -26,25 +26,32 @@ class Qwirkle
 		this.showBolsaFichas();
 		
 	}
-	public void mostrarVentana(){
+
+	public void mostrarVentana()
+	{
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 			  frame.setVisible(true);
 			}
 		  });
 	}
-	public static void main(String[]args){
+
+	public static void main(String[]args)
+	{
 		
 		Qwirkle qwirkle = new Qwirkle();
 		qwirkle.getTablero().llenarTableroConEjemplo();
 		qwirkle.mostrarVentana();
 		qwirkle.frame.mostrarTablero();
 	}
-	public Tablero getTablero() {
+
+	public Tablero getTablero() 
+	{
 		return tablero;
 	}
 
-	public void setTablero(Tablero tablero) {
+	public void setTablero(Tablero tablero) 
+	{
 		this.tablero = tablero;
 	}
 
@@ -122,6 +129,7 @@ class Qwirkle
 		else return "";
 		
 	}
+
 	private String getSimboloFigura(Figura f)
 	{
 		switch(f){
@@ -140,11 +148,13 @@ class Qwirkle
 		}
 		return "";
 	}
+
 	private String fichaToSimbol(Ficha ficha)
 	{
 		if(ficha==null)return "---";
 		return getSimboloFigura(ficha.getFigura())+getSimboloColor(ficha.getColor());
 	}
+
 	public void showBolsaFichas()
 	{
 		System.out.println(bolsa_fichas.size());		
@@ -152,7 +162,9 @@ class Qwirkle
 			System.out.print( fichaToSimbol(bolsa_fichas.get(i))+", ");
 		}
 	}
-	public void imprimirTablero(){
+
+	public void imprimirTablero()
+	{
 		String out="";
 		for(int i=0;i<Tablero.MATRIX_SIDE;i++){
 			for(int j=0;j<Tablero.MATRIX_SIDE;j++)
@@ -185,26 +197,118 @@ class Qwirkle
 	{
 
 	}
+
 	public List<Ficha>getFichasDeLaBolsa(int cantFichas){
 		List<Ficha>out=new ArrayList<>();
 		while(cantFichas-->0)
 			out.add(popRandomFicha());
 		return out;
 	}
+
 	public Ficha popRandomFicha(){
 		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
-	public void seleccionoJugada(Jugador j)
-	{
-
-	}
-
 	/*
 			EJEMPLO #1
 	*/
 	public void printTablero(){
 		System.out.println(getTablero().toString());
 	}
+
+	public int getCantPuntos(int x,int y,Ficha ficha)
+	{
+		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 todo
+		int puntos=0;
+		ArrayList<Ficha>hileraHorizontal=new ArrayList<>(),hileraVertical=new ArrayList<>();
+		int inicioHilera=x,finHilera=x;
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[finHilera+1][y]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==x) hileraVertical.add(ficha);
+			else hileraVertical.add(fichas[i][y]);
+		}
+		inicioHilera=finHilera=y;
+		while(inicioHilera>0){
+			if(fichas[x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==y)hileraHorizontal.add(ficha);
+			else hileraHorizontal.add(fichas[x][i]);
+		}
+		//buscar repetidos
+		Map<Figura,Map<Color,Boolean>>mapaParaEncontrarRepetidos=new HashMap<>();
+		for(Ficha f:hileraHorizontal){
+			if(mapaParaEncontrarRepetidos.containsKey(f.figura)&&mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			// ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
+			// //recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
+			// Boolean canI = canIDoPutFicha(pFichas_disponibles);
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		mapaParaEncontrarRepetidos=new HashMap<>();
+		for(Ficha f:hileraVertical){
+			if(mapaParaEncontrarRepetidos.containsKey(f.figura)&&mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		System.out.println("pts horizonaral : "+hileraHorizontal.size() + "\npts vertical : "+hileraVertical.size());
+		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size();
+		if(hileraVertical.size()>1)puntos+=hileraVertical.size();
+		if(hileraVertical.size()==6)puntos+=6;
+		if(hileraHorizontal.size()==6)puntos+=6;
+		return puntos;
+	}
+
+	public Ficha[][]getFichas()
+	{
+		return fichas;
+	}
+
+	public void llenarTableroConEjemplo()
+	{
+		int mitadDeLaMatriz=MATRIX_SIDE/2;
+		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha(Figura.CIRCULO,Color.ROJO), mitadDeLaMatriz+1, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha(Figura.CUADRADO,Color.ROJO),mitadDeLaMatriz+2, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.AZUL), mitadDeLaMatriz, mitadDeLaMatriz+1);
+	}
+
+	public boolean meterFichaEnXY(Ficha ficha,int x,int y)
+	{
+		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
+			return false;
+		fichas[x][y]=ficha;
+		return true;
+	}
+
+	public String toString()
+	{
+		String out="";
+		for(int i=0;i<MATRIX_SIDE;i++){
+			for(int j=0;j<MATRIX_SIDE;j++)
+				out+="# "+(fichas[i][j]!=null?fichas[i][j].toString():"\t\t\t")+" #";
+			out+="\n";
+		}
+		return out;
+	}
+
 }
 
 

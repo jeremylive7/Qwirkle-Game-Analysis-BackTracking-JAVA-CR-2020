@@ -1,14 +1,163 @@
+import java.util.*;
+
 public class BackTraking
 {
-	private ArrayList<ArrayList<Ficha>> matrix_fichas;
-	private ArrayList<Ficha> mano_fichas;
+	private ArrayList<HashMap<String, String>> possible_combinations;
 
-	public BackTraking(ArrayList<ArrayList<Ficha>> pMatriz, ArrayList<Ficha> pMano) 
-	{		
-		this.matrix_fichas = pMatriz;
-		this.mano_fichas = pMano;
+	public BackTraking()
+	{
+		this.possible_combinations = new ArrayList<HashMap<String, String>>();
+		this.fillCombinations();
 	}
-	//1.Darme las jugadas que pueda jugar
+
+	public void fillCombinations()
+	{
+		String[] colores = {"ROJO", "VERDE", "AMARILLO", "AZUL", "MORADO", "NARANJA"};
+		String[] figuras = {"TREBOL", "SOL", "ROMBO", "CUADRADO", "CIRCULO", "X"};
+		HashMap<String, String> combinacion_1 = new HashMap<String, String>();
+		HashMap<String, String> combinacion_2 = new HashMap<String, String>();
+
+		for (color : colores) 
+		{
+			for (figura : figuras) 
+			{
+				combinacion_1.put(figura, color);
+			}
+			this.possible_combinations.add(combinacion_1);
+			combinacion_1 = new HashMap<String, String>();
+		}
+
+		for (figura : figuras) 
+		{
+			for (color : colores) 
+			{
+				combinacion_2.put(figura, color);
+			}
+			this.possible_combinations.add(combinacion_2);
+			combinacion_2 = new HashMap<String, String>();
+		}
+	}
+
+	public void printPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays)
+	{
+		for (play : pPlays) 
+		{
+			for (ficha : play) 
+			{
+				System.out.println(ficha.getFigura()+ficha.getColor()+"-");			
+			}	
+			System.out.println("\n");
+		}
+	}
+
+	public void getFullPossibleCombinations()
+	{
+		int contador = 0;
+		for (ficha_possible_combinations : this.possible_combinations) 
+		{
+
+			for (ficha_mano : pMano) 
+			{
+				
+			}
+				
+		}
+	}
+
+	public void getPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays, 
+								ArrayList<ArrayList<Ficha>> pTablero, 
+								ArrayList<Ficha> pMano)
+	{	
+		if(pMano.size() == 0)
+		{
+			printPossiblePlays(pPlays);
+		}
+		else if()
+		{
+
+		}
+		else
+		{
+			getFullPossibleCombinations();
+			//getPossiblePlays(pPlays, pMano, pTablero);
+
+		}
+	}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*	private ArrayList<ArrayList<Ficha>> matriz_fichas;
+	private ArrayList<ArrayList<Ficha>> possible_plays;
+	private ArrayList<Ficha> mano_fichas;
+	
+	public BackTraking() 
+	{		
+		this.matriz_fichas = new ArrayList<ArrayList<Ficha>>();
+		this.possible_plays = new ArrayList<ArrayList<Ficha>>();
+		this.mano_fichas = new ArrayList<Ficha>();
+	}
+
+	public ArrayList<ArrayList<Ficha>> getMatrizFichas()
+	{
+		return this.matriz_fichas;
+	}
+
+	public ArrayList<ArrayList<Ficha>> getPossiblePlays()
+	{
+		return this.possible_plays;
+	}
+
+	public ArrayList<Ficha> getManoFichas()
+	{
+		return this.mano_fichas;
+	}
+
+	public void setMatrixFichas(ArrayList<ArrayList<Ficha>> pMatriz)
+	{
+		this.matriz_fichas = pMatriz;
+	}
+
+	public void setPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays)
+	{
+		this.possible_plays = pPlays;
+	}
+
+	public void setManoFichas(ArrayList<Ficha> pMano)
+	{
+		this.mano_fichas = pMano;
+	}*/
+
+
+
+
+
+
+
+
+
+
+
+/*
+	//Darme las jugadas que pueda jugar
 	public void ArrayList<Ficha> getJugadasToSet()
 	{
 		boolean exist_ficha = false;
@@ -44,7 +193,7 @@ public class BackTraking
 
 		return matrix_jugadas_seters;
 	}
-	//2.Darme las jugadas del largo mas alto
+	//Darme las jugadas del largo mas alto
 	public void ArrayList<ArrayList<Ficha>> getJugadasHigher(ArrayList<ArrayList<Ficha>> pJugadas_tablero)
 	{
 		ArrayList<ArrayList<Ficha>> jugadas_higher = new ArrayList<ArrayList<Ficha>>();
@@ -61,6 +210,7 @@ public class BackTraking
 				largo_jugadas_tablero++;
 			}
 			jugadas_sizes[contador] = largo_jugadas_tablero;
+			largo_jugadas_tablero = 0;
 			contador++;
 		}
 
@@ -77,7 +227,7 @@ public class BackTraking
 			}
 		}
 
-		for (int pInt=0; pInt<largo_jugadas_tablero; pInt++)
+		for (int pInt=0; pInt<contador; pInt++)
 		{
 			if(jugadas_sizes_higher[pInt] != 0)
 			{
@@ -86,6 +236,4 @@ public class BackTraking
 		}
 
 		return jugadas_higher;
-	}
-
-}
+	}*/

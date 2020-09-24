@@ -1,35 +1,48 @@
 public class Ficha
 {
-	public Figura figura;
-	public Color color;
+	private String figura;
+	private String color;
+	private int x;
+	private int y;
 
-	//Constructor
-	public Ficha(Figura figura,Color color) 
+	public Ficha(String figura, String color) 
 	{		
 		this.figura = figura;
 		this.color = color;
+		this.x = -1;
+		this.y = -1;
 	}
 
-	public String toString(){
-		return "Figura: "+figura+"$Color: "+color;
+	public Ficha(String figura, String color, int pX, int pY) 
+	{		
+		this.figura = figura;
+		this.color = color;
+		this.x = pX;
+		this.y = pY;
 	}
 
-	public Color getColor()
+	public String getColor()
 	{
 		return this.color;
 	}
 
-	public Figura getFigura(){
+	public String getFigura(){
 		return figura;
 	}
 
-	public void setFigura(Figura pFigura)
-  {
+	public void setFigura(String pFigura)
+    {
 		this.figura = pFigura;
 	}
 
-	public void setColor(Color pColor)
+	public void setColor(String pColor)
 	{
 		this.color = pColor;
 	}
+
+	public String toString()
+	{
+		return "Figura: "+figura+"$Color: "+color;
+	}
+
 }
