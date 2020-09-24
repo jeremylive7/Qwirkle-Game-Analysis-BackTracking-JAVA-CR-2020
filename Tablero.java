@@ -3,12 +3,12 @@ import java.util.*;
 
 class Tablero
 {
-	static final int MATRIX_SIDE=20;
+	private static final int MATRIX_SIDE=20;
 	private Ficha fichas[][];
 
 	public Tablero() 
 	{		
-		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
+		this.fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
 	}
 
 	public List<Fichas> getTablero()

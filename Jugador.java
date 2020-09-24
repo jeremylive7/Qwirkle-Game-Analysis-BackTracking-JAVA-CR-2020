@@ -3,14 +3,12 @@ import java.util.List;
 
 class Jugador
 {
-	//Variables Globales
 	private Turno turno;
 	private Score score;
 	private ArrayList<Ficha> mano;
 	private String nombre;
 
-	//Constructor
-	public Jugador(String pNombre,List<Ficha>manoInicial) 
+	public Jugador(String pNombre,List<Ficha> manoInicial) 
 	{		
 		this.turno = new Turno(pNombre);
 		this.score = new Score(pNombre);
@@ -18,7 +16,6 @@ class Jugador
 		this.nombre = pNombre;
 	}
 
-	//Metodos get y set
 	public Turno getTurno()
 	{
 		return this.turno;

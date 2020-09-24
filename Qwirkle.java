@@ -3,21 +3,21 @@ import javax.swing.*;
 
 class Qwirkle
 {
-	private Jugador jugador_humano_1;
-	private Jugador jugador_humano_2;
-	private Jugador jugadorActual;
-	private Tablero tablero;
-	private List<Ficha> bolsa_fichas;
-	private int opcion;
-	private InterfazDeUsuario frame;
-	private static final Figura[]FIGURAS = {Figura.CIRCULO,Figura.CUADRADO,Figura.SOL, Figura.TREBOL,Figura.X, Figura.ROMBO};
-	private static final Color[]COLORES={Color.AMARILLO,Color.AZUL,Color.NARANJA,Color.MORADO,Color.ROJO,Color.VERDE};
+	private static final Figura[] FIGURAS = {Figura.CIRCULO,
+		Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X, Figura.ROMBO};
+	private static final Color[] COLORES = {Color.AMARILLO,
+		Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO, Color.VERDE};
 	private static final int CANT_CARTAS_EN_LA_MANO=6;
+	private Jugador jugador_humano_1, jugador_humano_2, jugadorActual;
+	private Tablero tablero;
+	private InterfazDeUsuario frame;
+	private ArrayList<Ficha> bolsa_fichas;
+	private int opcion;
 
 	public Qwirkle() 
 	{		
-		this.bolsa_fichas = new ArrayList<>();
-		tablero=new Tablero();
+		this.bolsa_fichas = new ArrayList<Ficha>();
+		this.tablero = new Tablero();
 		this.frame = new InterfazDeUsuario(tablero);
 		this.fullFichasToBolsa();
 		this.jugador_humano_1 = new Jugador("Jeremy",getFichasDeLaBolsa(6));
@@ -25,6 +25,21 @@ class Qwirkle
 		jugadorActual=jugador_humano_1;
 		this.showBolsaFichas();
 		
+	}
+
+	public void fullFichasToBolsa()
+	{	
+		for (Figura figura:FIGURAS) 
+		{
+			System.out.println(figura);
+			for (int index=0; index<3; index++) 
+			{
+				for(Color color:COLORES)
+				{
+					bolsa_fichas.add(new Ficha(figura,color));
+				}
+			}
+		}
 	}
 
 	public void mostrarVentana()
@@ -98,20 +113,7 @@ class Qwirkle
 		}
 	}
 
-	public void fullFichasToBolsa()
-	{	
-		for (Figura figura:FIGURAS) 
-		{
-			System.out.println(figura);
-			for (int index=0; index<3; index++) 
-			{
-				for(Color color:COLORES)
-				{
-					bolsa_fichas.add(new Ficha(figura,color));
-				}
-			}
-		}
-	}
+
 	private String getSimboloColor(Color c)
 	{
 		if(c==Color.AMARILLO)
