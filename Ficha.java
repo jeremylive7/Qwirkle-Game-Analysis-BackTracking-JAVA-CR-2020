@@ -5,6 +5,14 @@ public class Ficha
 	private int x;
 	private int y;
 
+	public Ficha()
+	{
+		this.figura = "";
+		this.color = "";
+		this.x = -1;
+		this.y = -1;
+	}
+
 	public Ficha(String figura, String color) 
 	{		
 		this.figura = figura;

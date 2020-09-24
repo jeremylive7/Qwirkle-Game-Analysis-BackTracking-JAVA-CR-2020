@@ -8,11 +8,11 @@ class Jugador
 	private ArrayList<Ficha> mano;
 	private String nombre;
 
-	public Jugador(String pNombre,List<Ficha> manoInicial) 
+	public Jugador(String pNombre,ArrayList<Ficha> pMano) 
 	{		
 		this.turno = new Turno(pNombre);
 		this.score = new Score(pNombre);
-		this.mano = new ArrayList<>(manoInicial);
+		this.mano = pMano;
 		this.nombre = pNombre;
 	}
 
@@ -46,8 +46,14 @@ class Jugador
 		this.score = pScore;
 	}
 
-	public void setMano(Mano pMano)
+	public void setMano(ArrayList<Ficha> pMano)
 	{
+		this.mano = pMano;
+	}
+
+	public void setFicha(Ficha pFicha)
+	{
+		this.mano.add(pFicha);
 	}
 
 	public void setNombre(String pNombre)
