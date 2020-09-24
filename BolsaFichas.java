@@ -2,12 +2,11 @@ import java.util.*;
 
 class BolsaFichas
 {
-	private static final int CANT_FICHAS=108;
 	private ArrayList<Ficha> fichas;
 
 	public BolsaFichas() 
 	{		
-		this.fichas = new ArrayList<Ficha>();
+		this.fichas = new ArrayList<Ficha>(109);
 	}
 
 	public void addFicha(Ficha f){
