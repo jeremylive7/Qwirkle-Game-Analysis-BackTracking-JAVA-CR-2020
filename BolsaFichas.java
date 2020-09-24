@@ -2,16 +2,13 @@ import java.util.*;
 
 class BolsaFichas
 {
-	//Variables Globale
 	private ArrayList<Ficha> fichas;
 
-	//Constructor
 	public BolsaFichas() 
 	{		
-		this.fichas = new ArrayList<Ficha>(108);	
+		this.fichas = new ArrayList<Ficha>(109);
 	}
 
-	//Metodos de get y set
 	public ArrayList<Ficha> getFichas()
 	{
 		return this.fichas;
@@ -37,4 +34,10 @@ class BolsaFichas
 	{
 		this.fichas.add(pIndex, pFicha);
 	}
+
+	public void addFicha(Ficha f)
+	{
+		this.fichas.add(f);
+	}
+
 }

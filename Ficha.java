@@ -2,21 +2,31 @@ public class Ficha
 {
 	private String figura;
 	private String color;
+	private int x;
+	private int y;
 
-	public Ficha() 
-	{		
+	public Ficha()
+	{
 		this.figura = "";
 		this.color = "";
+		this.x = -1;
+		this.y = -1;
 	}
 
-	public Ficha(String figura,String color) 
+	public Ficha(String figura, String color) 
 	{		
 		this.figura = figura;
 		this.color = color;
+		this.x = -1;
+		this.y = -1;
 	}
 
-	public String toString(){
-		return "Figura: "+figura+"$Color: "+color;
+	public Ficha(String figura, String color, int pX, int pY) 
+	{		
+		this.figura = figura;
+		this.color = color;
+		this.x = pX;
+		this.y = pY;
 	}
 
 	public String getColor()
@@ -24,13 +34,12 @@ public class Ficha
 		return this.color;
 	}
 
-	public String getFigura()
-	{
-		return this.figura;
+	public String getFigura(){
+		return figura;
 	}
 
 	public void setFigura(String pFigura)
-	{
+    {
 		this.figura = pFigura;
 	}
 
@@ -38,4 +47,10 @@ public class Ficha
 	{
 		this.color = pColor;
 	}
+
+	public String toString()
+	{
+		return "Figura: "+figura+"$Color: "+color;
+	}
+
 }

@@ -1,21 +1,21 @@
+import java.util.ArrayList;
+import java.util.List;
+
 class Jugador
 {
-	//Variables Globales
 	private Turno turno;
 	private Score score;
-	private Mano mano;
+	private ArrayList<Ficha> mano;
 	private String nombre;
 
-	//Constructor
-	public Jugador(String pNombre) 
+	public Jugador(String pNombre,ArrayList<Ficha> pMano) 
 	{		
 		this.turno = new Turno(pNombre);
 		this.score = new Score(pNombre);
-		this.mano = new Mano(pNombre);
+		this.mano = pMano;
 		this.nombre = pNombre;
 	}
 
-	//Metodos get y set
 	public Turno getTurno()
 	{
 		return this.turno;
@@ -26,7 +26,7 @@ class Jugador
 		return this.score;
 	}
 
-	public Mano getMano()
+	public ArrayList<Ficha> getMano()
 	{
 		return this.mano;
 	}
@@ -46,9 +46,14 @@ class Jugador
 		this.score = pScore;
 	}
 
-	public void setMano(Mano pMano)
+	public void setMano(ArrayList<Ficha> pMano)
 	{
 		this.mano = pMano;
+	}
+
+	public void setFicha(Ficha pFicha)
+	{
+		this.mano.add(pFicha);
 	}
 
 	public void setNombre(String pNombre)

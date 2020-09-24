@@ -3,112 +3,67 @@ import javax.swing.*;
 
 class Qwirkle
 {
-	private Jugador jugador_humano_1;
-	private Jugador jugador_humano_2;
-	private Jugador jugador_humano_3;
-	private Jugador jugadorActual;
+	private JFrame frame;
+	private Jugador jugador_1, jugador_2, jugador_3;
 	private Tablero tablero;
 	private BolsaFichas bolsa_fichas;
-	private Turno turno;
-	private Ficha ficha;
+	private	String[] colores = {"ROJO", "VERDE", "AMARILLO", "AZUL", "MORADO", "NARANJA"};
+	private	String[] figuras = {"TREBOL", "SOL", "ROMBO", "CUADRADO", "CIRCULO", "X"};
 	private int opcion;
-	private JFrame frame;
-	private int dimencion_inicial;
-	private String[] lista_figura = {"circulo", "cuadrado", "estrella", "trebol", "corazon", "ovalo"};
-	private int contador_bolsa;
+	private int size_tablero;
 
 	public Qwirkle() 
 	{		
-		this.frame = new JFrame("Qwirkle");
-		this.jugador_humano_1 = new Jugador("Jeremy");
-		this.jugador_humano_2 = new Jugador("Esteban");
-		this.jugador_humano_3 = new Jugador("Edgerik");
+		this.frame = new JFrame();
+
 		this.bolsa_fichas = new BolsaFichas();
-		this.opcion = 0;
-		this.dimencion_inicial = 5;
-		this.tablero = new Tablero();
-		this.contador_bolsa = 0;
-
-		this.fullFichasToBolsa(this.lista_figura);
-		
+		this.fullFichasToBolsa(this.figuras);
 		this.showBolsaFichas();
+
+		this.jugador_1 = new Jugador("Jeremy", getFichasDeLaBolsa(6));
+		this.jugador_2 = new Jugador("Esteban", getFichasDeLaBolsa(6));
+		this.jugador_3 = new Jugador("Computadora", getFichasDeLaBolsa(6));
+
+		this.giveHandPlayer(this.jugador_1);
+		this.giveHandPlayer(this.jugador_2);
+		this.giveHandPlayer(this.jugador_3);
+
+		this.size_tablero = 20;
+		this.tablero = new Tablero(this.size_tablero);
+		//llenarTableroNulos();
+
+		this.llenarTableroConEjemplo();
+		this.imprimirTablero();
 		
-		this.giveHandPlayer(this.jugador_humano_1);
-		this.giveHandPlayer(this.jugador_humano_2);
-		this.giveHandPlayer(this.jugador_humano_3);
-
-
+		this.opcion = 0;
 		this.controlMenu();
-
-		//Ejemplo#1
-		//tablero.llenarTableroConEjemplo();
-		//qwirkle.printTablero();
 	}
 
-	public void controlMenu()
+	public Tablero getTablero()
 	{
-		while(this.opcion < 2)
-		{
-			this.menu(this.jugador_humano_1);
-			this.menu(this.jugador_humano_2);
-		}
+		return this.tablero;
 	}
 
-	public void menu(Jugador pJugador)
+	public int getSizeTablero()
 	{
-		//this.showMano(pJugador);
-		pJugador.getTurno().setSuTurno(true);
-
-		do{
-			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " 
-				+ pJugador.getNombre());
-
-			this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar jugada"
-				+ "\n"
-				+ "2. Salir del Juego"));
-
-			if(opcion==1)
-			{
-				pJugador.getTurno().setSuTurno(false);
-			}else 
-				break;
-
-		}while(pJugador.getTurno().getSuTurno() != false);
-	
-	}
-
-	public void giveHandPlayer(Jugador pJugador)
-	{
-		int pRandom = (int) ((Math.random() * this.bolsa_fichas.getLengthBolsaFichas() ));
-
-		System.out.println("El # random es : " + pRandom);
-
-		pJugador.getMano().setFicha(this.bolsa_fichas.getFichaXIndex(pRandom));
-		this.bolsa_fichas.clearFichaXIndex(pRandom);
-
+		return this.size_tablero;
 	}
 
 	public void fullFichasToBolsa(String[] pLista)
 	{	
 		for (int index=0; index<pLista.length; index++) 
 		{
-			System.out.println("Estoy dentro del for x6, largo de la lista figuras: " + pLista[index]);
-
 			this.llenoBolsaFichas(pLista[index]);	
 		}
 	}
 
 	public void llenoBolsaFichas(String pFigura)
 	{
-		//Creo las 108 fichas
 		for (int index=0; index<3; index++) 
 		{
-			this.asignoFicha(pFigura, "verde");
-			this.asignoFicha(pFigura, "anaranjado");
-			this.asignoFicha(pFigura, "amarillo");
-			this.asignoFicha(pFigura, "celeste");
-			this.asignoFicha(pFigura, "morado");
-			this.asignoFicha(pFigura, "rojo");
+			for (String color : this.colores) {
+				this.asignoFicha(pFigura, color);		
+			}
 		}
 	}
 
@@ -117,11 +72,20 @@ class Qwirkle
 		Ficha ficha = new Ficha();
 		ficha.setFigura(pFigura);
 		ficha.setColor(pColor);
-		this.bolsa_fichas.setFicha(ficha, this.contador_bolsa);
-		this.contador_bolsa++;
+		this.bolsa_fichas.addFicha(ficha);
 		
-		System.out.println("Contador de la bolsa de fichas, donde se esta insertando : " + this.contador_bolsa);
 		System.out.println("Inserto la Figura : " + ficha.getFigura() + "\nInseto el Color : " + ficha.getColor());	
+	}
+
+	public void giveHandPlayer(Jugador pJugador)
+	{
+		int pRandom = (int) ((Math.random() * this.bolsa_fichas.getLengthBolsaFichas() ));
+
+		System.out.println("El # random es : " + pRandom);
+
+		pJugador.setFicha(this.bolsa_fichas.getFichaXIndex(pRandom));
+		this.bolsa_fichas.clearFichaXIndex(pRandom);
+
 	}
 
 	public void showBolsaFichas()
@@ -140,18 +104,46 @@ class Qwirkle
 		}
 	}
 
-	public void showMano(Jugador pJugador)
+	public void controlMenu()
 	{
-		System.out.println("Esta es la mano del jugador : " + pJugador);
-
-		for (int index=0; index<this.dimencion_inicial; index++)
+		while(this.opcion < 2)
 		{
-			System.out.println( "Figura -> " 
-				+ pJugador.getMano().getFichas().get(index).getFigura()
-				+ "\n" 
-				+ "Color -> "
-				+ pJugador.getMano().getFichas().get(index).getColor());
+			this.menu(this.jugador_1);
+			this.menu(this.jugador_2);
+			this.menu(this.jugador_3);
 		}
+	}
+
+	public void menu(Jugador pJugador)
+	{
+		//this.showMano(pJugador);
+		pJugador.getTurno().setSuTurno(true);
+
+		do{
+			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " 
+				+ pJugador.getNombre());
+
+			this.opcion = Integer.parseInt(JOptionPane.showInputDialog("0. Pasar de turno.\n"
+				+ "1. Seleccionar jugada de la mano.\n"
+				+ "2. Solicitas salir del Juego al final de la ronda de turnos."));
+
+			if(opcion==0)
+			{
+				JOptionPane.showMessageDialog(this.frame, "No seleccionaste nada, pasas de turno." );
+				pJugador.getTurno().setSuTurno(false);
+			}
+			else if(opcion==1)
+			{
+				JOptionPane.showMessageDialog(this.frame, "Se esta pensando que jugada seleccionar." );
+				pJugador.getTurno().setSuTurno(false);
+			}
+			else 
+				JOptionPane.showMessageDialog(this.frame, "El juego terminara cuando el jugador 3 termine su turno." );
+				pJugador.getTurno().setSuTurno(false);
+				break;
+
+		}while(pJugador.getTurno().getSuTurno() != false);
+	
 	}
 
 	public void showPtsJugador(Jugador pJugador)
@@ -159,27 +151,244 @@ class Qwirkle
 		System.out.println(pJugador.getScore().getPtsTotales());
 	}
 
-	public void getPtsJugada(){
 
-	}
+	//------------------------------------------------------------------
 
-	public void setJugadaTablero()
+	public ArrayList<Ficha> getFichasDeLaBolsa(int cantFichas)
 	{
-
+		ArrayList<Ficha> out = new ArrayList<Ficha>();
+		while(cantFichas-->0)
+			out.add(popRandomFicha());
+		return out;
 	}
-
-	public void seleccionoJugada()
+ 
+	public Ficha popRandomFicha()
 	{
-
+		return this.bolsa_fichas.getFichas().remove((int)(Math.random()*(this.bolsa_fichas.getFichas().size()-1)));
 	}
+
+	public void showMano(Jugador pJugador)
+	{
+		String out="\n[ ";
+		for (Ficha ficha:pJugador.getMano())
+		{
+			out+= fichaToSimbol(ficha)+", ";
+		}
+		System.out.println(out+"]");
+	}
+
+	private String getSimboloColor(String c)
+	{
+		if(c=="AMARILLO")
+			return "Am";
+		else if(c=="AZUL")
+			return "Az";
+		else if(c=="NARANJA")
+			return "Na";
+		else if(c=="MORADO")
+			return "Mo";
+		else if(c=="ROJO")
+			return "Ro";
+		else if(c=="VERDE")
+			return "Ve";
+		else return "";
+		
+	}
+
+	private String getSimboloFigura(String f)
+	{
+		switch(f){
+			case "CIRCULO":
+				return "O";
+			case "CUADRADO":
+				return "■";
+			case "ROMBO":
+				return "÷";
+			case "SOL":
+				return "§";
+			case "TREBOL":
+				return "¤";
+			case "X":
+				return "×";
+		}
+		return "";
+	}
+
+	private String fichaToSimbol(Ficha ficha)
+	{
+		if(ficha==null)return "---";
+		return getSimboloFigura(ficha.getFigura())+getSimboloColor(ficha.getColor());
+	}
+
+	public void imprimirTablero()
+	{
+		String out="";
+		for(int i=0;i<this.size_tablero;i++){
+			for(int j=0;j<this.size_tablero;j++)
+				out+="# "+fichaToSimbol(this.tablero.getTablero()[i][j]) + " #";
+			out+="\n";
+		}
+		System.out.println("\n"+out);
+	}
+
+	public void llenarTableroConEjemplo()
+	{
+		int mitadDeLaMatriz=this.size_tablero/2;
+		meterFichaEnXY(new Ficha("ROMBO","AMARILLO"), mitadDeLaMatriz, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("SOL","AMARILLO"), mitadDeLaMatriz+1, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("TREBOL","AMARILLO"), mitadDeLaMatriz+2, mitadDeLaMatriz);
+		meterFichaEnXY(new Ficha("CIRCULO","AMARILLO"), mitadDeLaMatriz, mitadDeLaMatriz+1);
+	}
+
+	public boolean meterFichaEnXY(Ficha ficha,int x,int y)
+	{
+		if(x<0||y<0||x>=this.size_tablero||y>=this.size_tablero)
+			return false;
+		this.tablero.setTablero(x,y,ficha);
+		return true;
+	}
+
+
+}
+
+
 
 	/*
 			EJEMPLO #1
+			Main ----> 
+			this.llenarTableroConEjemplo();
+			this.imprimirTablero();
+
 	*/
-	public void printTablero(){
-		System.out.println(tablero.toString());
+/*
+
+
+	public int getCantPuntos(int x,int y,Ficha ficha)
+	{
+		ArrayList<Ficha> hileraHorizontal=new ArrayList<Ficha>();
+		ArrayList<Ficha> hileraVertical=new ArrayList<Ficha>();
+		int inicioHilera=x,finHilera=x;
+		int puntos=0;
+
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<size_tablero-1){
+			if(fichas[finHilera+1][y]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==x) hileraVertical.add(ficha);
+			else hileraVertical.add(fichas[i][y]);
+		}
+		inicioHilera=finHilera=y;
+		while(inicioHilera>0){
+			if(fichas[x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<size_tablero-1){
+			if(fichas[x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==y)hileraHorizontal.add(ficha);
+			else hileraHorizontal.add(fichas[x][i]);
+		}
+		//buscar repetidos
+		Map<Figura,Map<Color,Boolean>> mapaParaEncontrarRepetidos = new HashMap<>();
+
+		for(Ficha f:hileraHorizontal){
+			if(mapaParaEncontrarRepetidos.containsKey(f.getFigura)&&mapaParaEncontrarRepetidos.get(f.getFigura).containsKey(f.getColor()))
+				return 0;
+			// ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
+			// //recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
+			// Boolean canI = canIDoPutFicha(pFichas_disponibles);
+			mapaParaEncontrarRepetidos.putIfAbsent(f.getFigura,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.getFigura).put(f.getColor(), true);
+		}
+		mapaParaEncontrarRepetidos=new HashMap<>();
+		for(Ficha f:hileraVertical){
+			if(mapaParaEncontrarRepetidos.containsKey(f.getFigura)&&mapaParaEncontrarRepetidos.get(f.getFigura).containsKey(f.getColor()))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.getFigura,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.getFigura).put(f.getColor(), true);
+		}
+		System.out.println("pts horizonaral : "+hileraHorizontal.size() + "\npts vertical : "+hileraVertical.size());
+		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size();
+		if(hileraVertical.size()>1)puntos+=hileraVertical.size();
+		if(hileraVertical.size()==6)puntos+=6;
+		if(hileraHorizontal.size()==6)puntos+=6;
+		return puntos;
+	}*/
+
+
+
+/*
+public List<Ficha>getCualesPuedoPoner(int x,int y){
+		List<Ficha>todasLasFichas=new ArrayList<>();
+		for (Figura figura:Qwirkle.FIGURAS)
+			for(Color color:Qwirkle.COLORES)
+				todasLasFichas.add(new Ficha(figura,color));
+		int inicioHilera=x;
+		int finHilera=x;
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[finHilera+1][y]==null)
+				break;
+			else finHilera++;
+		}
+		if(finHilera - inicioHilera>=6)return new ArrayList<>();
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i!=x) {
+				for(int j=0;j<todasLasFichas.size();){
+					if(todasLasFichas.get(j).noCombina(fichas[i][y])){
+						todasLasFichas.remove(j);
+					} else j++;
+				}
+			}
+		}
+		inicioHilera=finHilera=y;
+		while(inicioHilera>0){
+			if(fichas[x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		if(finHilera - inicioHilera>=6)return new ArrayList<>();
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i!=y){
+				for(int j=0;j<todasLasFichas.size();){
+					if(todasLasFichas.get(j).noCombina(fichas[x][i])){
+						todasLasFichas.remove(j);
+					}else j++;
+				}
+			}
+		}
+		return todasLasFichas;		
 	}
-}
+
+
+
+
+		public String getFicha()
+	{
+		String ficha = getFigura()+getColor();
+		return ficha;
+	}
+*/
 
 
 
@@ -202,3 +411,37 @@ class Qwirkle
 
 	}
 */
+
+
+
+
+
+/* 	public Boolean canIDoPutFicha(ArrayList<Ficha> pFichas_pDisponibles)
+	{
+
+	}
+	public ArrayList<Ficha> getFichasDisponiblesAJugar(ArrayList<Ficha> pJugadas_tablero)
+	{
+		ArrayList<Ficha> pFichas_disponibles = new ArrayList<Ficha>();
+		String[] pFiguras_disponibles = {"TREBOL","SOL","ROMBO","CUADRADO","CIRCULO","X"};
+		String[] pColores_disponibles = {"ROJO","VERDE","AMARILLO","AZUL","MORADO","NARANJA"};
+
+		for (pFicha : pJugadas_tablero) 
+		{
+			for (int pIndex=0; pIndex<pFichas_disponibles.length; pIndex++) 
+			{
+				if(pFicha.getFigura()==pFiguras_disponibles[pIndex])
+				{
+					if(pFicha.getColor()==pColores_disponibles[pIndex])
+					{
+
+					}
+				}
+				pFiguras_disponibles[pIndex];
+			}
+
+			pFichas_disponibles.add(pFicha);
+		}
+
+		return pFichas_disponibles;
+	} */
