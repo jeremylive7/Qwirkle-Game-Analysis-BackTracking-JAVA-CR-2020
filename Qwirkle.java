@@ -289,6 +289,64 @@ class Qwirkle
 	}
 }
 
+
+
+
+/*
+
+	public void setPossiblePlaysHand(ArrayList<Ficha> pFichas)
+	{
+		int cant_man = pFichas.size();
+		System.out.println("\nsize de la mano: " + cant_man);
+
+		this.grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+
+		for(int pI=0; pI<cant_man; pI++)
+		{
+			ArrayList<Ficha> lista_fichas_combina = new ArrayList<Ficha>();
+
+			for(int pJ=pI+1; pJ<cant_man; pJ++)
+			{
+				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
+				{
+					lista_fichas_combina.add(pFichas.get(pJ));
+				}
+			}
+
+			ArrayList<ArrayList<Ficha>> lista_fichas_combinaciones = new ArrayList<ArrayList<Ficha>>();
+			ArrayList<Ficha> lista_fichas_grupito = new ArrayList<Ficha>();
+
+			int cant_lista_jugadas = lista_fichas_combina.size();
+			System.out.println("\nsize lista fichas jugadas: " + cant_lista_jugadas);
+
+			for (int indeX=0; indeX<cant_lista_jugadas; indeX++) 
+			{
+				for (int indexY=indeX+1; indexY<cant_lista_jugadas; indexY++) 
+				{
+					if(!lista_fichas_combina.get(indeX).noCombina(lista_fichas_combina.get(indexY)))
+					{
+						lista_fichas_grupito.add(lista_fichas_combina.get(indeX));
+					}
+				}
+				lista_fichas_combinaciones.add(lista_fichas_grupito);
+				lista_fichas_combinaciones = new ArrayList<ArrayList<Ficha>>();
+			}
+
+
+			this.grupitos.put(pFichas.get(pI), lista_fichas_combinaciones);
+		}
+	}
+*/ 
+
+
+
+
+
+
+
+
+
+
 /*
 
 	public int getCantPuntos(int x,int y,Ficha ficha)
