@@ -38,6 +38,11 @@ class Qwirkle
 		this.controlMenu();
 	}
 
+	public void modifyGrupitos()
+	{
+		
+	}
+
 	public void removeRepeatsMano(Jugador pJugador)
 	{
 		int largo_mano = pJugador.getCantMano()-1;
@@ -171,6 +176,9 @@ class Qwirkle
 				this.imprimirMano(this.work_fichas_mano);
 				this.setPossiblePlaysHand(this.work_fichas_mano);
 				this.showPossiblePlaysHand();
+
+				this.modifyGrupitos();
+
 			}
 			else 
 				JOptionPane.showMessageDialog(this.frame, "El juego terminara cuando el jugador 3 termine su turno." );

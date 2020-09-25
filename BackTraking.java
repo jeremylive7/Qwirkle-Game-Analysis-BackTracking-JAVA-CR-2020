@@ -15,14 +15,15 @@ public class BackTraking
 		{
 			printPossiblePlays(pPlays);
 		}
+
 		else if()
 		{
 
 		}
 		else
 		{
-			getFullPossibleCombinations();
-			//getPossiblePlays(pPlays, pMano, pTablero);
+			
+			getPossiblePlays(pPlays, pMano, pTablero);
 
 		}
 	}
@@ -97,6 +98,11 @@ public class BackTraking
 			}
 				
 		}
+
+
+
+
+		getFullPossibleCombinations();
 	}*/
 
 
