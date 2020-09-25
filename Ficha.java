@@ -53,4 +53,12 @@ public class Ficha
 		return "Figura: "+figura+"$Color: "+color;
 	}
 
+	public boolean equals(Ficha f){
+		return figura==f.figura&&color==f.color;
+	}
+
+	public boolean noCombina(Ficha ficha) {
+		if (ficha==null) return false;
+		return equals(ficha)||(figura!=ficha.figura&&color!=ficha.color);
+	}
 }

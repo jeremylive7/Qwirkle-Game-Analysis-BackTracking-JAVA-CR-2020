@@ -11,7 +11,7 @@ class Qwirkle
 	private	String[] figuras = {"TREBOL", "SOL", "ROMBO", "CUADRADO", "CIRCULO", "X"};
 	private int opcion;
 	private int size_tablero;
-	private Map<Ficha, ArrayList<Fichas>> grupitos;
+	private Map<Ficha, ArrayList<Ficha>> grupitos;
 
 	public Qwirkle() 
 	{		
@@ -23,7 +23,7 @@ class Qwirkle
 		this.jugador_1 = new Jugador("Jeremy");
 		this.jugador_2 = new Jugador("Esteban");
 		this.jugador_3 = new Jugador("Computadora");
-		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
+		this.grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
 		this.dealCards();
 
 		this.size_tablero = 20;
@@ -36,21 +36,17 @@ class Qwirkle
 		this.controlMenu();
 	}
 
-	public void printPlays(ArrayList<Fichas> pJugadas)
-	{
-		for (Ficha ficha : pJugadas) 
-		{
-			System.out.println(fichaToSimbol(ficha));	
-		}
-	}
-
 	public void showPossiblePlaysHand()
 	{
-		for(Map.Entry<Ficha, ArrayList<Fichas>> entry:this.grupitos.entrySet())
+		for(Map.Entry<Ficha, ArrayList<Ficha>> entry:this.grupitos.entrySet())
 		{    
         	Ficha key = entry.getKey();  
-        	ArrayList<Fichas> value = entry.getValue(); 
-        	System.out.println("\nFicha:" + key + "\nJugadas:" + printPlays(value));
+        	ArrayList<Ficha> value = entry.getValue(); 
+        	System.out.println("\nFicha:" + key );
+        	for (Ficha ficha : value) 
+			{
+				System.out.println("\nJugadas:" + fichaToSimbol(ficha));	
+			}
 		}
 	}
 
@@ -58,14 +54,14 @@ class Qwirkle
 	{
 		int cant_man = pJugador.getCantMano();
 		ArrayList<Ficha> fichas_mano = pJugador.getMano();
-		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
+		this.grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
 
 		for(int pI=0; pI<cant_man; pI++)
 		{
 			Ficha ficha = fichas_mano.get(pI);
 			System.out.println("Key: "+ficha.getFigura()+ficha.getColor());			
 
-			Arralist<Ficha> lista_fichas_combina = ArrayList<Fichas>();
+			ArrayList<Ficha> lista_fichas_combina = new ArrayList<Ficha>();
 
 			for(int pJ=pI+1; pJ<cant_man; pJ++)
 			{
