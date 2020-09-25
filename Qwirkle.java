@@ -54,33 +54,32 @@ class Qwirkle
 		}
 	}
 
-	public Map<Ficha, ArrayList<Fichas>> getPossiblePlaysHand(Jugador pJugador)
+	public void setPossiblePlaysHand(Jugador pJugador)
 	{
 		int cant_man = pJugador.getCantMano();
+		ArrayList<Ficha> fichas_mano = pJugador.getMano();
 		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
 
 		for(int pI=0; pI<cant_man; pI++)
 		{
+			Ficha ficha = fichas_mano.get(pI);
+			System.out.println("Key: "+ficha.getFigura()+ficha.getColor());			
+
+			Arralist<Ficha> lista_fichas_combina = ArrayList<Fichas>();
+
 			for(int pJ=pI+1; pJ<cant_man; pJ++)
 			{
-				if(!pJugador.getMano().get(pI).noCombina(pJugador.getMano().get(pJ)))
+				if(!fichas_mano.get(pI).noCombina(fichas_mano.get(pJ)))
 				{
-					Ficha ficha = pJugador.getMano().get(pI);
-					System.out.println("Corrida mano, ficha: "+ficha.getFigura()+ficha.getColor());
-					
-					Arralist<Ficha> lista_fichas_combina = grupitos.get(ficha);
-					for (int pX; pX<lista_fichas_combina.size(); pX++) 
-					{
-						System.out.println("Corrida lista_fichas_combina, lista: "+lista_fichas_combina.get(pX));
-					}
+					Ficha ficha_value = fichas_mano.get(pJ);
+					System.out.println("Value: "+ficha_value.getFigura()+ficha_value.getColor());
 
-					lista_fichas_combina.add(pJugador.getMano().get(pJ));
-										
-
+					lista_fichas_combina.add(ficha_value);
 				}
 			}
+
+			this.grupitos.put(ficha, lista_fichas_combina);
 		}
-		return this.grupitos;
 	}
 
 	public void dealCards()
@@ -159,7 +158,7 @@ class Qwirkle
 				JOptionPane.showMessageDialog(this.frame, "Se esta pensando que jugada seleccionar." );
 				pJugador.getTurno().setSuTurno(false);
 
-				this.getPossiblePlaysHand(pJugador);
+				this.setPossiblePlaysHand(pJugador);
 				this.showPossiblePlaysHand();
 			}
 			else 
