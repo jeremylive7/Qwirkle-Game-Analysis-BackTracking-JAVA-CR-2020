@@ -80,7 +80,7 @@ class Qwirkle
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
-		int cant_man = pFichas.size();
+		int cant_man = pFichas.size()-1;
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
 		for(int pI=0; pI<cant_man; pI++)
@@ -89,7 +89,7 @@ class Qwirkle
 			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
 			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
 
-			for(int pJ=pI+1; pJ<cant_man; pJ++)
+			for(int pJ=pI+1; pJ<=cant_man; pJ++)
 			{
 				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
 				{
@@ -97,12 +97,16 @@ class Qwirkle
 						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
 					{
 						combination_list_1.add(pFichas.get(pJ));
+						System.out.println("Combinacion_1: ");
+						this.imprimirMano(combination_list_1);
 						lista_fichas_slices.add(combination_list_1);
 					}
 					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
 						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
 					{
 						combination_list_2.add(pFichas.get(pJ));
+						System.out.println("Combinacion_2: ");
+						this.imprimirMano(combination_list_2);
 						lista_fichas_slices.add(combination_list_2);
 					}
 				}
