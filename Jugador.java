@@ -36,6 +36,11 @@ class Jugador
 		return this.nombre;
 	}
 
+	public int getCantMano()
+	{
+		return this.mano.size();
+	}
+
 	public void setTurno(Turno pTurno)
 	{
 		this.turno = pTurno;

@@ -23,15 +23,12 @@ class Qwirkle
 		this.jugador_1 = new Jugador("Jeremy");
 		this.jugador_2 = new Jugador("Esteban");
 		this.jugador_3 = new Jugador("Computadora");
+		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
 		this.dealCards();
 
 		this.size_tablero = 20;
 		this.tablero = new Tablero(this.size_tablero);
 		
-		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
-		this.getPossiblePlaysHand();
-		this.showPossiblePlaysHand();
-
 		this.llenarTableroConEjemplo();
 		this.imprimirTablero();
 		
@@ -57,15 +54,28 @@ class Qwirkle
 		}
 	}
 
-	public Map<Ficha, ArrayList<Fichas>> getPossiblePlaysHand()
+	public Map<Ficha, ArrayList<Fichas>> getPossiblePlaysHand(Jugador pJugador)
 	{
-		for(int indice_i=0;indice_i<CANT_FICHAS_MANO;indice_i++)
+		int cant_man = pJugador.getCantMano();
+		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
+
+		for(int pI=0; pI<cant_man; pI++)
 		{
-			for(int indice_j=indice_i+1;indice_j<CANT_FICHAS_MANO;indice_j++)
+			for(int pJ=pI+1; pJ<cant_man; pJ++)
 			{
-				if(!mano.get(indice_i).noCombina(mano.get(indice_j)))
+				if(!pJugador.getMano().get(pI).noCombina(pJugador.getMano().get(pJ)))
 				{
-					grupitos[mano.get(indice_i)].append(mano.get(indice_j));
+					Ficha ficha = pJugador.getMano().get(pI);
+					System.out.println("Corrida mano, ficha: "+ficha.getFigura()+ficha.getColor());
+					
+					Arralist<Ficha> lista_fichas_combina = grupitos.get(ficha);
+					for (int pX; pX<lista_fichas_combina.size(); pX++) 
+					{
+						System.out.println("Corrida lista_fichas_combina, lista: "+lista_fichas_combina.get(pX));
+					}
+
+					lista_fichas_combina.add(pJugador.getMano().get(pJ));
+										
 
 				}
 			}
@@ -148,6 +158,9 @@ class Qwirkle
 			{
 				JOptionPane.showMessageDialog(this.frame, "Se esta pensando que jugada seleccionar." );
 				pJugador.getTurno().setSuTurno(false);
+
+				this.getPossiblePlaysHand(pJugador);
+				this.showPossiblePlaysHand();
 			}
 			else 
 				JOptionPane.showMessageDialog(this.frame, "El juego terminara cuando el jugador 3 termine su turno." );
