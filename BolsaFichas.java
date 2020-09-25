@@ -21,8 +21,7 @@ class BolsaFichas
 
 	public void clearFichaXIndex(int pIndex)
 	{
-		Ficha pFicha = new Ficha();
-		this.fichas.add(pIndex, pFicha);
+		this.fichas.remove(pIndex);
 	}
 
 	public Ficha getFichaXIndex(int pIndex)

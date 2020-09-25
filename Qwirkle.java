@@ -18,20 +18,15 @@ class Qwirkle
 
 		this.bolsa_fichas = new BolsaFichas();
 		this.fullFichasToBolsa(this.figuras);
-		this.showBolsaFichas();
 
-		this.jugador_1 = new Jugador("Jeremy", getFichasDeLaBolsa(6));
-		this.jugador_2 = new Jugador("Esteban", getFichasDeLaBolsa(6));
-		this.jugador_3 = new Jugador("Computadora", getFichasDeLaBolsa(6));
-
-		this.giveHandPlayer(this.jugador_1);
-		this.giveHandPlayer(this.jugador_2);
-		this.giveHandPlayer(this.jugador_3);
+		this.jugador_1 = new Jugador("Jeremy");
+		this.jugador_2 = new Jugador("Esteban");
+		this.jugador_3 = new Jugador("Computadora");
+		this.dealCards();
 
 		this.size_tablero = 20;
 		this.tablero = new Tablero(this.size_tablero);
-		//llenarTableroNulos();
-
+		
 		this.llenarTableroConEjemplo();
 		this.imprimirTablero();
 		
@@ -39,14 +34,26 @@ class Qwirkle
 		this.controlMenu();
 	}
 
-	public Tablero getTablero()
+	public void dealCards()
 	{
-		return this.tablero;
+		for (int index=0; index<6; index++) 
+		{
+			this.giveHandPlayer(this.jugador_1);
+			this.giveHandPlayer(this.jugador_2);
+			this.giveHandPlayer(this.jugador_3);
+		}
 	}
 
-	public int getSizeTablero()
+	public void giveHandPlayer(Jugador pJugador)
 	{
-		return this.size_tablero;
+		int pRandom = (int) ((Math.random() *  this.bolsa_fichas.getLengthBolsaFichas()));
+		pJugador.setFicha(this.bolsa_fichas.getFichaXIndex(pRandom));
+		this.bolsa_fichas.clearFichaXIndex(pRandom);
+	}
+
+	public void getNearlyPossicion()
+	{
+
 	}
 
 	public void fullFichasToBolsa(String[] pLista)
@@ -73,35 +80,6 @@ class Qwirkle
 		ficha.setFigura(pFigura);
 		ficha.setColor(pColor);
 		this.bolsa_fichas.addFicha(ficha);
-		
-		System.out.println("Inserto la Figura : " + ficha.getFigura() + "\nInseto el Color : " + ficha.getColor());	
-	}
-
-	public void giveHandPlayer(Jugador pJugador)
-	{
-		int pRandom = (int) ((Math.random() * this.bolsa_fichas.getLengthBolsaFichas() ));
-
-		System.out.println("El # random es : " + pRandom);
-
-		pJugador.setFicha(this.bolsa_fichas.getFichaXIndex(pRandom));
-		this.bolsa_fichas.clearFichaXIndex(pRandom);
-
-	}
-
-	public void showBolsaFichas()
-	{
-		System.out.println(this.bolsa_fichas.getLengthBolsaFichas());		
-
-		for (int index=0; index<this.bolsa_fichas.getLengthBolsaFichas(); index++) 
-		{
-			System.out.println("Estoy en el indice de la bolsa de fichas : " + index);
-
-			System.out.println( "Figura -> " 
-				+ this.bolsa_fichas.getFichaXIndex(index).getFigura() 
-				+ "\n" 
-				+ "Color -> "
-				+ this.bolsa_fichas.getFichaXIndex(index).getColor());
-		}
 	}
 
 	public void controlMenu()
@@ -116,7 +94,7 @@ class Qwirkle
 
 	public void menu(Jugador pJugador)
 	{
-		//this.showMano(pJugador);
+		this.showMano(pJugador);
 		pJugador.getTurno().setSuTurno(true);
 
 		do{
@@ -154,18 +132,6 @@ class Qwirkle
 
 	//------------------------------------------------------------------
 
-	public ArrayList<Ficha> getFichasDeLaBolsa(int cantFichas)
-	{
-		ArrayList<Ficha> out = new ArrayList<Ficha>();
-		while(cantFichas-->0)
-			out.add(popRandomFicha());
-		return out;
-	}
- 
-	public Ficha popRandomFicha()
-	{
-		return this.bolsa_fichas.getFichas().remove((int)(Math.random()*(this.bolsa_fichas.getFichas().size()-1)));
-	}
 
 	public void showMano(Jugador pJugador)
 	{
@@ -180,17 +146,17 @@ class Qwirkle
 	private String getSimboloColor(String c)
 	{
 		if(c=="AMARILLO")
-			return "Am";
+			return "am";
 		else if(c=="AZUL")
-			return "Az";
+			return "az";
 		else if(c=="NARANJA")
-			return "Na";
+			return "na";
 		else if(c=="MORADO")
-			return "Mo";
+			return "mo";
 		else if(c=="ROJO")
-			return "Ro";
+			return "ro";
 		else if(c=="VERDE")
-			return "Ve";
+			return "ve";
 		else return "";
 		
 	}
@@ -201,15 +167,15 @@ class Qwirkle
 			case "CIRCULO":
 				return "O";
 			case "CUADRADO":
-				return "■";
+				return "C";
 			case "ROMBO":
-				return "÷";
+				return "R";
 			case "SOL":
-				return "§";
+				return "S";
 			case "TREBOL":
-				return "¤";
+				return "T";
 			case "X":
-				return "×";
+				return "X";
 		}
 		return "";
 	}
@@ -237,7 +203,7 @@ class Qwirkle
 		meterFichaEnXY(new Ficha("ROMBO","AMARILLO"), mitadDeLaMatriz, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha("SOL","AMARILLO"), mitadDeLaMatriz+1, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha("TREBOL","AMARILLO"), mitadDeLaMatriz+2, mitadDeLaMatriz);
-		meterFichaEnXY(new Ficha("CIRCULO","AMARILLO"), mitadDeLaMatriz, mitadDeLaMatriz+1);
+		meterFichaEnXY(new Ficha("CIRCULO","AMARILLO"), mitadDeLaMatriz-1, mitadDeLaMatriz);
 	}
 
 	public boolean meterFichaEnXY(Ficha ficha,int x,int y)
@@ -250,6 +216,46 @@ class Qwirkle
 
 
 }
+
+
+
+
+
+
+
+/*	public void showBolsaFichas()
+	{
+		System.out.println(this.bolsa_fichas.getLengthBolsaFichas());		
+
+		for (int index=0; index<this.bolsa_fichas.getLengthBolsaFichas(); index++) 
+		{
+			System.out.println("Estoy en el indice de la bolsa de fichas : " + index);
+
+			System.out.println( "Figura -> " 
+				+ this.bolsa_fichas.getFichaXIndex(index).getFigura() 
+				+ "\n" 
+				+ "Color -> "
+				+ this.bolsa_fichas.getFichaXIndex(index).getColor());
+		}
+	}*/
+
+
+
+
+
+/*
+	public Tablero getTablero()
+	{
+		return this.tablero;
+	}
+
+	public int getSizeTablero()
+	{
+		return this.size_tablero;
+	}
+*/
+
+
 
 
 

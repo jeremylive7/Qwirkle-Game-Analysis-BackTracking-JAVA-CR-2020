@@ -65,7 +65,7 @@ public class BackTraking
 	}
 
 	public void getPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays, 
-								ArrayList<ArrayList<Ficha>> pTablero, 
+								Fichas[][] pTablero, 
 								ArrayList<Ficha> pMano)
 	{	
 		if(pMano.size() == 0)
