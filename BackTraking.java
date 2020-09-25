@@ -7,7 +7,7 @@ public class BackTraking
 		
 	}
 
-	public void getPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays, 
+	public void getPossiblePlays(Map<Ficha, ArrayList<ArrayList<Ficha>>> pPlays, 
 								Fichas[][] pTablero, 
 								ArrayList<Ficha> pMano)
 	{	
@@ -22,9 +22,13 @@ public class BackTraking
 		}
 		else
 		{
-			
+			//
+			//
+			//
 			getPossiblePlays(pPlays, pMano, pTablero);
-
+			//
+			//
+			//
 		}
 	}
 

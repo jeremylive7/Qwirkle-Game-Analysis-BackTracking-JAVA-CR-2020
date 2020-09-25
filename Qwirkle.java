@@ -9,10 +9,8 @@ class Qwirkle
 	private BolsaFichas bolsa_fichas;
 	private	String[] colores = {"ROJO", "VERDE", "AMARILLO", "AZUL", "MORADO", "NARANJA"};
 	private	String[] figuras = {"TREBOL", "SOL", "ROMBO", "CUADRADO", "CIRCULO", "X"};
-	private int opcion;
 	private int size_tablero;
-	private Map<Ficha, ArrayList<Ficha>> grupitos;
-	private ArrayList<Ficha> work_fichas_mano;
+	private int opcion;
 
 	public Qwirkle() 
 	{		
@@ -21,8 +19,6 @@ class Qwirkle
 		this.bolsa_fichas = new BolsaFichas();
 		this.fullFichasToBolsa(this.figuras);
 
-		this.grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
-		this.work_fichas_mano = new ArrayList<Ficha>();
 		this.jugador_1 = new Jugador("Jeremy");
 		this.jugador_2 = new Jugador("Esteban");
 		this.jugador_3 = new Jugador("Computadora");
@@ -43,14 +39,14 @@ class Qwirkle
 		
 	}
 
-	public void removeRepeatsMano(Jugador pJugador)
+	public ArrayList<Ficha> removeRepeatsMano(Jugador pJugador)
 	{
 		int largo_mano = pJugador.getCantMano()-1;
 		ArrayList<Ficha> mano_fichas = pJugador.getMano();
 
 		for (int index=0; index<largo_mano; index++) 
 		{
-			for (int indey=index+1; indey<largo_mano; indey++) 
+			for (int indey=index+1; indey<=largo_mano; indey++) 
 			{	
 				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
 					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
@@ -59,12 +55,12 @@ class Qwirkle
 				}
 			}
 		}
-		this.work_fichas_mano = mano_fichas;
+		return mano_fichas;
 	}
 
-	public void showPossiblePlaysHand()
+	public void showPossiblePlaysHand(Map<Ficha, ArrayList<Ficha>> pGrupo)
 	{
-		for(Map.Entry<Ficha, ArrayList<Ficha>> entry:this.grupitos.entrySet())
+		for(Map.Entry<Ficha, ArrayList<Ficha>> entry:pGrupo.entrySet())
 		{    
         	Ficha key = entry.getKey();  
         	ArrayList<Ficha> value = entry.getValue(); 
@@ -76,24 +72,25 @@ class Qwirkle
 		}
 	}
 
-	public void setPossiblePlaysHand(ArrayList<Ficha> pFichas)
+	public Map<Ficha, ArrayList<Ficha>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
 		int cant_man = pFichas.size()-1;
-		this.grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
+		Map<Ficha, ArrayList<Ficha>> grupos = new HashMap<Ficha, ArrayList<Ficha>>();
 
 		for(int pI=0; pI<cant_man; pI++)
 		{
 			ArrayList<Ficha> lista_fichas_combina = new ArrayList<Ficha>();
 
-			for(int pJ=pI+1; pJ<cant_man; pJ++)
+			for(int pJ=pI+1; pJ<=cant_man; pJ++)
 			{
 				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
 				{
 					lista_fichas_combina.add(pFichas.get(pJ));
 				}
 			}
-			this.grupitos.put(pFichas.get(pI), lista_fichas_combina);
+			grupos.put(pFichas.get(pI), lista_fichas_combina);
 		}
+		return grupos;
 	}
 
 	public void dealCards()
@@ -141,7 +138,7 @@ class Qwirkle
 
 	public void controlMenu()
 	{
-		while(this.opcion < 2)
+		while(opcion < 2)
 		{
 			this.menu(this.jugador_1);
 			this.menu(this.jugador_2);
@@ -151,6 +148,9 @@ class Qwirkle
 
 	public void menu(Jugador pJugador)
 	{
+		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
+		Map<Ficha, ArrayList<Ficha>> grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
+
 		this.showMano(pJugador);
 		pJugador.getTurno().setSuTurno(true);
 
@@ -162,20 +162,20 @@ class Qwirkle
 				+ "1. Seleccionar jugada de la mano.\n"
 				+ "2. Solicitas salir del Juego al final de la ronda de turnos."));
 
-			if(opcion==0)
+			if(this.opcion==0)
 			{
 				JOptionPane.showMessageDialog(this.frame, "No seleccionaste nada, pasas de turno." );
 				pJugador.getTurno().setSuTurno(false);
 			}
-			else if(opcion==1)
+			else if(this.opcion==1)
 			{
 				JOptionPane.showMessageDialog(this.frame, "Se esta pensando que jugada seleccionar." );
 				pJugador.getTurno().setSuTurno(false);
 
-				this.removeRepeatsMano(pJugador);
-				this.imprimirMano(this.work_fichas_mano);
-				this.setPossiblePlaysHand(this.work_fichas_mano);
-				this.showPossiblePlaysHand();
+				work_fichas_mano = this.removeRepeatsMano(pJugador);
+				this.imprimirMano(work_fichas_mano);
+				grupitos = this.getPossiblePlaysHand(work_fichas_mano);
+				this.showPossiblePlaysHand(grupitos);
 
 				this.modifyGrupitos();
 
