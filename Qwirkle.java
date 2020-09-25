@@ -58,37 +58,56 @@ class Qwirkle
 		return mano_fichas;
 	}
 
-	public void showPossiblePlaysHand(Map<Ficha, ArrayList<Ficha>> pGrupo)
+	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
 	{
-		for(Map.Entry<Ficha, ArrayList<Ficha>> entry:pGrupo.entrySet())
+		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
 		{    
         	Ficha key = entry.getKey();  
-        	ArrayList<Ficha> value = entry.getValue(); 
-        	System.out.println("\nLa ficha: " + fichaToSimbol(key) + ", tiene las siguientes jugadas: ");
-        	for (Ficha ficha : value) 
+        	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
+        	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
+        		+ ", tiene las siguientes jugadas: ");
+        	
+        	for (ArrayList<Ficha> playList : value) 
 			{
-				System.out.println("\n" + fichaToSimbol(ficha));	
+				for (Ficha ficha : playList) 
+				{
+					System.out.println(fichaToSimbol(ficha));		
+				}
+				System.out.println("-");
 			}
 		}
 	}
 
-	public Map<Ficha, ArrayList<Ficha>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
+	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
-		int cant_man = pFichas.size()-1;
-		Map<Ficha, ArrayList<Ficha>> grupos = new HashMap<Ficha, ArrayList<Ficha>>();
+		int cant_man = pFichas.size();
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
 		for(int pI=0; pI<cant_man; pI++)
 		{
-			ArrayList<Ficha> lista_fichas_combina = new ArrayList<Ficha>();
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
+			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
+			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
 
-			for(int pJ=pI+1; pJ<=cant_man; pJ++)
+			for(int pJ=pI+1; pJ<cant_man; pJ++)
 			{
 				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
 				{
-					lista_fichas_combina.add(pFichas.get(pJ));
+					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
+					{
+						combination_list_1.add(pFichas.get(pJ));
+						lista_fichas_slices.add(combination_list_1);
+					}
+					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
+					{
+						combination_list_2.add(pFichas.get(pJ));
+						lista_fichas_slices.add(combination_list_2);
+					}
 				}
 			}
-			grupos.put(pFichas.get(pI), lista_fichas_combina);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
 		}
 		return grupos;
 	}
@@ -149,7 +168,7 @@ class Qwirkle
 	public void menu(Jugador pJugador)
 	{
 		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
-		Map<Ficha, ArrayList<Ficha>> grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
 		this.showMano(pJugador);
 		pJugador.getTurno().setSuTurno(true);
