@@ -73,7 +73,7 @@ class Qwirkle
 
 	public void setPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
-		int cant_man = pFichas.size();
+		int cant_man = pFichas.size()-1;
 		this.grupitos = new HashMap<Ficha, ArrayList<Ficha>>();
 
 		for(int pI=0; pI<cant_man; pI++)
