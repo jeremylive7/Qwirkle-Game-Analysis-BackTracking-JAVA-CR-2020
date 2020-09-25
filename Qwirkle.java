@@ -11,6 +11,7 @@ class Qwirkle
 	private	String[] figuras = {"TREBOL", "SOL", "ROMBO", "CUADRADO", "CIRCULO", "X"};
 	private int opcion;
 	private int size_tablero;
+	private Map<Ficha, ArrayList<Fichas>> grupitos;
 
 	public Qwirkle() 
 	{		
@@ -27,11 +28,49 @@ class Qwirkle
 		this.size_tablero = 20;
 		this.tablero = new Tablero(this.size_tablero);
 		
+		this.grupitos = new HashMap<Ficha, ArrayList<Fichas>>();
+		this.getPossiblePlaysHand();
+		this.showPossiblePlaysHand();
+
 		this.llenarTableroConEjemplo();
 		this.imprimirTablero();
 		
 		this.opcion = 0;
 		this.controlMenu();
+	}
+
+	public void printPlays(ArrayList<Fichas> pJugadas)
+	{
+		for (Ficha ficha : pJugadas) 
+		{
+			System.out.println(fichaToSimbol(ficha));	
+		}
+	}
+
+	public void showPossiblePlaysHand()
+	{
+		for(Map.Entry<Ficha, ArrayList<Fichas>> entry:this.grupitos.entrySet())
+		{    
+        	Ficha key = entry.getKey();  
+        	ArrayList<Fichas> value = entry.getValue(); 
+        	System.out.println("\nFicha:" + key + "\nJugadas:" + printPlays(value));
+		}
+	}
+
+	public Map<Ficha, ArrayList<Fichas>> getPossiblePlaysHand()
+	{
+		for(int indice_i=0;indice_i<CANT_FICHAS_MANO;indice_i++)
+		{
+			for(int indice_j=indice_i+1;indice_j<CANT_FICHAS_MANO;indice_j++)
+			{
+				if(!mano.get(indice_i).noCombina(mano.get(indice_j)))
+				{
+					grupitos[mano.get(indice_i)].append(mano.get(indice_j));
+
+				}
+			}
+		}
+		return this.grupitos;
 	}
 
 	public void dealCards()
@@ -49,11 +88,6 @@ class Qwirkle
 		int pRandom = (int) ((Math.random() *  this.bolsa_fichas.getLengthBolsaFichas()));
 		pJugador.setFicha(this.bolsa_fichas.getFichaXIndex(pRandom));
 		this.bolsa_fichas.clearFichaXIndex(pRandom);
-	}
-
-	public void getNearlyPossicion()
-	{
-
 	}
 
 	public void fullFichasToBolsa(String[] pLista)
@@ -213,11 +247,130 @@ class Qwirkle
 		this.tablero.setTablero(x,y,ficha);
 		return true;
 	}
-
-
 }
 
+/*
 
+	public int getCantPuntos(int x,int y,Ficha ficha)
+	{
+		ArrayList<Ficha> hileraHorizontal=new ArrayList<Ficha>();
+		ArrayList<Ficha> hileraVertical=new ArrayList<Ficha>();
+		int inicioHilera=x,finHilera=x;
+		int puntos=0;
+
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<size_tablero-1){
+			if(fichas[finHilera+1][y]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==x) hileraVertical.add(ficha);
+			else hileraVertical.add(fichas[i][y]);
+		}
+		inicioHilera=finHilera=y;
+		while(inicioHilera>0){
+			if(fichas[x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<size_tablero-1){
+			if(fichas[x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i==y)hileraHorizontal.add(ficha);
+			else hileraHorizontal.add(fichas[x][i]);
+		}
+		//buscar repetidos
+		Map<Figura,Map<Color,Boolean>> mapaParaEncontrarRepetidos = new HashMap<>();
+
+		for(Ficha f:hileraHorizontal){
+			if(mapaParaEncontrarRepetidos.containsKey(f.getFigura()&&mapaParaEncontrarRepetidos.get(f.getFigura().containsKey(f.getColor()))
+				return 0;
+			// ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
+			// //recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
+			// Boolean canI = canIDoPutFicha(pFichas_disponibles);
+			mapaParaEncontrarRepetidos.putIfAbsent(f.getFigura(,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.getFigura().put(f.getColor(), true);
+		}
+		mapaParaEncontrarRepetidos=new HashMap<>();
+		for(Ficha f:hileraVertical){
+			if(mapaParaEncontrarRepetidos.containsKey(f.getFigura)&&mapaParaEncontrarRepetidos.get(f.getFigura().containsKey(f.getColor()))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.getFigura(,new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.getFigura().put(f.getColor(), true);
+		}
+		System.out.println("pts horizonaral : "+hileraHorizontal.size() + "\npts vertical : "+hileraVertical.size());
+		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size();
+		if(hileraVertical.size()>1)puntos+=hileraVertical.size();
+		if(hileraVertical.size()==6)puntos+=6;
+		if(hileraHorizontal.size()==6)puntos+=6;
+		return puntos;
+	}
+
+*/
+
+/*
+
+	public List<Ficha> getCualesPuedoPoner(int x,int y)
+	{
+		List<Ficha>todasLasFichas=new ArrayList<>();
+		for (Figura figura:Qwirkle.FIGURAS)
+			for(Color color:Qwirkle.COLORES)
+				 	.add(new Ficha(figura,color));
+		int inicioHilera=x;
+		int finHilera=x;
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[finHilera+1][y]==null)
+				break;
+			else finHilera++;
+		}
+		if(finHilera - inicioHilera>=6)return new ArrayList<>();
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i!=x) {
+				for(int j=0;j<todasLasFichas.size();){
+					if(todasLasFichas.get(j).noCombina(fichas[i][y])){
+						todasLasFichas.remove(j);
+					} else j++;
+				}
+			}
+		}
+		inicioHilera=finHilera=y;
+		while(inicioHilera>0){
+			if(fichas[x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		if(finHilera - inicioHilera>=6)return new ArrayList<>();
+		for(int i=inicioHilera;i<=finHilera;i++){
+			if(i!=y){
+				for(int j=0;j<todasLasFichas.size();){
+					if(todasLasFichas.get(j).noCombina(fichas[x][i])){
+						todasLasFichas.remove(j);
+					}else j++;
+				}
+			}
+		}
+		return todasLasFichas;		
+	}
+
+*/
 
 
 
@@ -269,122 +422,12 @@ class Qwirkle
 /*
 
 
-	public int getCantPuntos(int x,int y,Ficha ficha)
-	{
-		ArrayList<Ficha> hileraHorizontal=new ArrayList<Ficha>();
-		ArrayList<Ficha> hileraVertical=new ArrayList<Ficha>();
-		int inicioHilera=x,finHilera=x;
-		int puntos=0;
-
-		while(inicioHilera>0){
-			if(fichas[inicioHilera-1][y]==null)
-				break;
-			else inicioHilera--;
-		}
-		while(finHilera<size_tablero-1){
-			if(fichas[finHilera+1][y]==null)
-				break;
-			else finHilera++;
-		}
-		for(int i=inicioHilera;i<=finHilera;i++){
-			if(i==x) hileraVertical.add(ficha);
-			else hileraVertical.add(fichas[i][y]);
-		}
-		inicioHilera=finHilera=y;
-		while(inicioHilera>0){
-			if(fichas[x][inicioHilera-1]==null)
-				break;
-			else inicioHilera--;
-		}
-		while(finHilera<size_tablero-1){
-			if(fichas[x][finHilera+1]==null)
-				break;
-			else finHilera++;
-		}
-		for(int i=inicioHilera;i<=finHilera;i++){
-			if(i==y)hileraHorizontal.add(ficha);
-			else hileraHorizontal.add(fichas[x][i]);
-		}
-		//buscar repetidos
-		Map<Figura,Map<Color,Boolean>> mapaParaEncontrarRepetidos = new HashMap<>();
-
-		for(Ficha f:hileraHorizontal){
-			if(mapaParaEncontrarRepetidos.containsKey(f.getFigura)&&mapaParaEncontrarRepetidos.get(f.getFigura).containsKey(f.getColor()))
-				return 0;
-			// ArrayList<Ficha> pFichas_disponibles = getFichasDisponiblesAJugar(hileraHorizontal);
-			// //recorrer pFichas_disponibles para saber si puedo poner la ficha que estoy colocando.
-			// Boolean canI = canIDoPutFicha(pFichas_disponibles);
-			mapaParaEncontrarRepetidos.putIfAbsent(f.getFigura,new HashMap<>());
-			mapaParaEncontrarRepetidos.get(f.getFigura).put(f.getColor(), true);
-		}
-		mapaParaEncontrarRepetidos=new HashMap<>();
-		for(Ficha f:hileraVertical){
-			if(mapaParaEncontrarRepetidos.containsKey(f.getFigura)&&mapaParaEncontrarRepetidos.get(f.getFigura).containsKey(f.getColor()))
-				return 0;
-			mapaParaEncontrarRepetidos.putIfAbsent(f.getFigura,new HashMap<>());
-			mapaParaEncontrarRepetidos.get(f.getFigura).put(f.getColor(), true);
-		}
-		System.out.println("pts horizonaral : "+hileraHorizontal.size() + "\npts vertical : "+hileraVertical.size());
-		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size();
-		if(hileraVertical.size()>1)puntos+=hileraVertical.size();
-		if(hileraVertical.size()==6)puntos+=6;
-		if(hileraHorizontal.size()==6)puntos+=6;
-		return puntos;
-	}*/
+	*/
 
 
 
 /*
-public List<Ficha>getCualesPuedoPoner(int x,int y){
-		List<Ficha>todasLasFichas=new ArrayList<>();
-		for (Figura figura:Qwirkle.FIGURAS)
-			for(Color color:Qwirkle.COLORES)
-				todasLasFichas.add(new Ficha(figura,color));
-		int inicioHilera=x;
-		int finHilera=x;
-		while(inicioHilera>0){
-			if(fichas[inicioHilera-1][y]==null)
-				break;
-			else inicioHilera--;
-		}
-		while(finHilera<MATRIX_SIDE-1){
-			if(fichas[finHilera+1][y]==null)
-				break;
-			else finHilera++;
-		}
-		if(finHilera - inicioHilera>=6)return new ArrayList<>();
-		for(int i=inicioHilera;i<=finHilera;i++){
-			if(i!=x) {
-				for(int j=0;j<todasLasFichas.size();){
-					if(todasLasFichas.get(j).noCombina(fichas[i][y])){
-						todasLasFichas.remove(j);
-					} else j++;
-				}
-			}
-		}
-		inicioHilera=finHilera=y;
-		while(inicioHilera>0){
-			if(fichas[x][inicioHilera-1]==null)
-				break;
-			else inicioHilera--;
-		}
-		while(finHilera<MATRIX_SIDE-1){
-			if(fichas[x][finHilera+1]==null)
-				break;
-			else finHilera++;
-		}
-		if(finHilera - inicioHilera>=6)return new ArrayList<>();
-		for(int i=inicioHilera;i<=finHilera;i++){
-			if(i!=y){
-				for(int j=0;j<todasLasFichas.size();){
-					if(todasLasFichas.get(j).noCombina(fichas[x][i])){
-						todasLasFichas.remove(j);
-					}else j++;
-				}
-			}
-		}
-		return todasLasFichas;		
-	}
+
 
 
 

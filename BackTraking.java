@@ -2,14 +2,49 @@ import java.util.*;
 
 public class BackTraking
 {
-	private ArrayList<HashMap<String, String>> possible_combinations;
+	public BackTraking()
+	{
+		
+	}
+
+	public void getPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays, 
+								Fichas[][] pTablero, 
+								ArrayList<Ficha> pMano)
+	{	
+		if(pMano.size() == 0)
+		{
+			printPossiblePlays(pPlays);
+		}
+		else if()
+		{
+
+		}
+		else
+		{
+			getFullPossibleCombinations();
+			//getPossiblePlays(pPlays, pMano, pTablero);
+
+		}
+	}
+
+
+}
+
+
+
+/*	private ArrayList<HashMap<String, String>> possible_combinations;
 
 	public BackTraking()
 	{
 		this.possible_combinations = new ArrayList<HashMap<String, String>>();
 		this.fillCombinations();
 	}
+*/
 
+
+
+
+/*
 	public void fillCombinations()
 	{
 		String[] colores = {"ROJO", "VERDE", "AMARILLO", "AZUL", "MORADO", "NARANJA"};
@@ -62,33 +97,7 @@ public class BackTraking
 			}
 				
 		}
-	}
-
-	public void getPossiblePlays(ArrayList<ArrayList<Ficha>> pPlays, 
-								Fichas[][] pTablero, 
-								ArrayList<Ficha> pMano)
-	{	
-		if(pMano.size() == 0)
-		{
-			printPossiblePlays(pPlays);
-		}
-		else if()
-		{
-
-		}
-		else
-		{
-			getFullPossibleCombinations();
-			//getPossiblePlays(pPlays, pMano, pTablero);
-
-		}
-	}
-
-
-}
-
-
-
+	}*/
 
 
 
