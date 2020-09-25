@@ -1,70 +1,72 @@
-import java.util.*; 
+import java.util.*;
 import javax.swing.*;
 
-class Qwirkle
-{
-	private Jugador jugador1,jugador2,jugador3;
+class Qwirkle {
+	private Jugador jugador1, jugador2, jugador3;
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private List<Ficha> bolsa_fichas;
 	private int opcion;
 	private InterfazDeUsuario frame;
-	public static final Figura[]FIGURAS = {Figura.CIRCULO,Figura.CUADRADO,Figura.SOL, Figura.TREBOL,Figura.X, Figura.ROMBO};
-	public static final Color[]COLORES={Color.AMARILLO,Color.AZUL,Color.NARANJA,Color.MORADO,Color.ROJO,Color.VERDE};
-	private static final int CANT_CARTAS_EN_LA_MANO=6;
+	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
+			Figura.ROMBO };
+	public static final Color[] COLORES = { Color.AMARILLO, Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO,
+			Color.VERDE };
+	private static final int CANT_CARTAS_EN_LA_MANO = 6;
 
-	public Qwirkle() 
-	{		
+	public Qwirkle() {
 		this.bolsa_fichas = new ArrayList<>();
-		tablero=new Tablero();
+		tablero = new Tablero();
 		this.frame = new InterfazDeUsuario(tablero);
 		this.fullFichasToBolsa();
-		this.jugador1 = new Jugador("Jeremy",getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		this.jugador2 = new Jugador("Edgerik",getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		jugador3=new Jugador("Roberto",getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		jugadorActual=jugador1;
+		this.jugador1 = new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		jugadorActual = jugador1;
 		this.showBolsaFichas();
-		
+
 	}
-	public boolean procesarJugada(Jugador jugador,Jugada jugada){
-		int cantPuntos=tablero.getCantPuntos(jugada.x,jugada.y, jugada.ficha);
-		if(cantPuntos==0)return false;
+
+	private boolean procesarJugada(Jugador jugador, Jugada jugada) {
+		int cantPuntos = tablero.getCantPuntos(jugada.x, jugada.y, jugada.ficha);
+		if (cantPuntos == 0)
+			return false;
 		frame.mostrarJugada(jugada);
 		tablero.meterFichaEnXY(jugada.ficha, jugada.x, jugada.y);
-		jugador.procesarJugada(jugada);
+		jugador.procesarJugada(jugada.ficha, cantPuntos);
 		return true;
 	}
-	public void turno(Jugador jugador2){
-		BackTraking algortimo = new BackTraking(jugador2, tablero);
-		while(true)
-			if(!procesarJugada(algoritmo.getJugadaBasico(),jugador2))
-			//procesar jugada devuelve false si no se puede procesar la jugada
-			//Y devuelve true si la procesa con éxito
+
+	private void turno(Jugador jugador) {
+		BackTraking algoritmo = new BackTraking(jugador, tablero);
+		while (true)
+			if (!procesarJugada(jugador, algoritmo.getJugadaBasico(jugador, tablero)))
+				// procesar jugada devuelve false si no se puede procesar la jugada
+				// Y devuelve true si la procesa con éxito
 				break;
-		jugador2.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO-jugador2.getMano().size()));
-		
+		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
 	}
-	public void jugadorHumanoHizoSuJugada(){
-		
-		//juega algoritmo básico
+
+	public void jugadorHumanoHizoSuJugada() {
+
+		// juega algoritmo básico
 		turno(jugador2);
-		//juega algoritmo mejorado
-		Thread.sleep(5000);//Para que haya un tiempo entre las jugadas de cada uno
+		// juega algoritmo mejorado
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+		} // Para que haya un tiempo entre las jugadas de cada uno
 		turno(jugador3);
 		
 	}
 	public void mostrarVentana(){
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-			  frame.setVisible(true);
-			}
-		  });
+		frame.setVisible(true);
 	}
 	public static void main(String[]args){
 		Qwirkle qwirkle = new Qwirkle();
 		qwirkle.getTablero().llenarTableroConEjemplo();
-		List<Ficha>f=qwirkle.getTablero().getCualesPuedoPoner(9, 10);
-		System.out.println("JAJA");
+		qwirkle.mostrarVentana();
+		qwirkle.frame.mostrarTablero();
 	}
 	public Tablero getTablero() {
 		return tablero;

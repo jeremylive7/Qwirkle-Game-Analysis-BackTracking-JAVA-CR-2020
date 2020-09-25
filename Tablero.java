@@ -1,13 +1,28 @@
 import java.util.*;
 
-import sun.security.ec.point.Point;
+import java.awt.Point;
 
 
 class Tablero
 {
-	static final int MATRIX_SIDE=20;
+	private class JugadaCompleta {
+		public List<Jugada>jugadas=new ArrayList<>();
+		public int puntos=0;
+		public JugadaCompleta copy(){
+			JugadaCompleta n=new JugadaCompleta();
+			n.jugadas=new ArrayList<>(this.jugadas);
+			n.puntos=this.puntos;
+			return n;
+		}
+
+		public void deshacerUltimaJugada() {
+			Jugada ultima=jugadas.remove(jugadas.size()-1);
+			puntos-=ultima
+		}
+	}
+	static final int MATRIX_SIDE=15;
 	private final Ficha[][] fichas;
-	private List<java.awt.Point>lugaresDondeSePuedeJugar;
+	private List<Point>lugaresDondeSePuedeJugar;
 
 	//Constructor
 	public Tablero() 
@@ -15,6 +30,74 @@ class Tablero
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
 		lugaresDondeSePuedeJugar= new ArrayList<>();
 
+	}
+
+	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,Ficha fichaInicial,List<JugadaCompleta>jugadasCompletas, JugadaCompleta jugadaActual,int x,int y,Boolean esPorFila){
+		//lo que ingresa es sí o sí una jugada válida
+		fichasQueFaltanPorColocar.remove(fichaInicial);
+		fichas[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
+		jugadaActual.jugadas.add(new Jugada(x, y, fichaInicial));
+		jugadaActual.puntos+=getCantPuntos(x, y, fichaInicial);
+		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
+			jugadasCompletas.add(jugadaActual.copy());
+		}
+		else{
+			boolean flag=false;
+			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
+				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
+				if(esPorFila==null||esPorFila){
+					int nextY=y;
+					while(fichas[x][nextY]!=null)nextY++;//Busca por fila a la derecha algún lugar nulo
+					if(getCualesPuedoPoner(x,nextY).contains(fichaPorColocar)){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugadaActual, x,nextY,true);
+						fichasQueFaltanPorColocar.add(indiceFichasPorColocar,fichaPorColocar);
+						flag=true;
+					}	
+					nextY=y;
+					while(fichas[x][nextY]!=null)nextY--;//
+					if(getCualesPuedoPoner(x,nextY).contains(fichaPorColocar)){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugadaActual, x,nextY,true);
+						fichasQueFaltanPorColocar.add(indiceFichasPorColocar,fichaPorColocar);
+						flag=true;
+					}	
+				}if (esPorFila==null||!esPorFila){
+					int nextX=x;
+					while(fichas[nextX][y]!=null)nextX++;
+					if(getCualesPuedoPoner(nextX, y).contains(fichaPorColocar)){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugadaActual, nextX, y,false);
+						fichasQueFaltanPorColocar.add(indiceFichasPorColocar,fichaPorColocar);
+						flag=true;
+					}
+					nextX=x;
+					while(fichas[nextX][y]!=null)nextX--;
+					if(getCualesPuedoPoner(nextX, y).contains(fichaPorColocar)){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugadaActual, nextX, y,false);
+						fichasQueFaltanPorColocar.add(indiceFichasPorColocar,fichaPorColocar);
+						flag=true;
+					}
+				}
+			}//Si no encontró lugar para poner 
+			if(!flag) jugadasCompletas.add(jugadaActual.copy());
+		}
+		fichas[x][y]=null;
+		jugadaActual.jugadas.remove(jugadaActual.jugadas.size()-1);
+		jugadaActual.puntos-=getCantPuntos(x, y, fichaInicial);
+	}
+
+	public List<List<Jugada>>getJugadas(Map<Ficha,List<Ficha>[]>grupitos){
+		List<JugadaCompleta>todasLasPosiblesJugadasCompletas=new ArrayList<>();
+		JugadaCompleta tmpJCompleta;
+		Jugada jugadaActual;
+		for(Point lugarQuePuedoJugar:lugaresDondeSePuedeJugar){
+			for(Ficha fichaInicial:grupitos.keySet()){
+				if(getCualesPuedoPoner(lugarQuePuedoJugar.x,lugarQuePuedoJugar.y).contains(fichaInicial)){
+					tmpJCompleta=new JugadaCompleta();
+					generarArbolDeJugadas(grupitos.get(fichaInicial)[0], fichaInicial, todasLasPosiblesJugadasCompletas, tmpJCompleta, lugarQuePuedoJugar.x, lugarQuePuedoJugar.y, null);
+					generarArbolDeJugadas(grupitos.get(fichaInicial)[1], fichaInicial, todasLasPosiblesJugadasCompletas, tmpJCompleta, lugarQuePuedoJugar.x, lugarQuePuedoJugar.y, null);
+				}
+			}
+		}
+		return null;
 	}
 	public List<Point>getLugaresDondeSePuedeJugar(){
 		return lugaresDondeSePuedeJugar;
@@ -46,6 +129,7 @@ class Tablero
 				}
 			}
 		}
+		if(todasLasFichas.isEmpty())return todasLasFichas;
 		inicioHilera=finHilera=y;
 		while(inicioHilera>0){
 			if(fichas[x][inicioHilera-1]==null)
@@ -70,6 +154,7 @@ class Tablero
 		return todasLasFichas;		
 	}
 	public int getCantPuntos(final int x,final int y,final Ficha ficha){
+		if(fichas[x][y]!=null)return 0;
 		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 todo
 		int puntos=1;
 		final ArrayList<Ficha>hileraHorizontal=new ArrayList<>(),hileraVertical=new ArrayList<>();
@@ -144,6 +229,13 @@ class Tablero
 	boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
+		for(int i=0;i<lugaresDondeSePuedeJugar.size();i++){
+			Point point=lugaresDondeSePuedeJugar.get(i);
+			if(point.x==x&&point.y==y){
+				lugaresDondeSePuedeJugar.remove(i);
+				break;
+			}
+		}
 		if(x+1<MATRIX_SIDE&&fichas[x+1][y]==null)lugaresDondeSePuedeJugar.add(new Point(x+1,y));
 		if(x>0&&fichas[x-1][y]==null)lugaresDondeSePuedeJugar.add(new Point(x-1,y));
 		if(y+1<MATRIX_SIDE&&fichas[x][y+1]==null)lugaresDondeSePuedeJugar.add(new Point(x,y+1));

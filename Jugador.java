@@ -15,6 +15,11 @@ class Jugador
 		this.nombre = pNombre;
 	}
 
+	public void procesarJugada(Ficha ficha, int cantPuntos){
+		score+=cantPuntos;
+		mano.remove(ficha);
+	}
+
 	public ArrayList<Ficha> getMano()
 	{
 		return this.mano;

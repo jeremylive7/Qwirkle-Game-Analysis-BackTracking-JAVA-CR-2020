@@ -14,8 +14,15 @@ public class Ficha
 		return "Figura: "+figura+"$Color: "+color;
 	}
 
-	public boolean equals(Ficha f){
-		return figura==f.figura&&color==f.color;
+	@Override
+	public boolean equals(Object f){
+		Ficha ficha;
+		try{
+			ficha=(Ficha) f;
+			return ficha!=null&&figura==ficha.figura&&color==ficha.color;
+		}catch (Exception e){
+			return false;
+		}
 	}
 
 	public Color getColor()

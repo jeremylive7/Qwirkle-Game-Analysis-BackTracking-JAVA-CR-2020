@@ -7,6 +7,8 @@ public class BackTraking
 	{		
 		
 	}
+	public BackTraking(Jugador jugador, Tablero tablero) {
+	}
 	public Jugada getJugadaBasico(Jugador jugador,Tablero tablero){
 		return null;
 	}
