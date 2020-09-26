@@ -34,11 +34,6 @@ class Qwirkle
 		this.controlMenu();
 	}
 
-	public void modifyGrupitos()
-	{
-		
-	}
-
 	public ArrayList<Ficha> removeRepeatsMano(Jugador pJugador)
 	{
 		int largo_mano = pJugador.getCantMano()-1;
@@ -90,29 +85,35 @@ class Qwirkle
 			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
 
 			for(int pJ=pI+1; pJ<=cant_man; pJ++)
-			{
+			{			
 				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
 				{
 					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
 						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
 					{
-						combination_list_1.add(pFichas.get(pJ));
-						System.out.println("Combinacion_1: ");
-						this.imprimirMano(combination_list_1);
-						lista_fichas_slices.add(combination_list_1);
+						combination_list_1.add(pFichas.get(pJ));	
 					}
 					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
 						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
 					{
 						combination_list_2.add(pFichas.get(pJ));
-						System.out.println("Combinacion_2: ");
-						this.imprimirMano(combination_list_2);
-						lista_fichas_slices.add(combination_list_2);
 					}
 				}
 			}
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
+			if(combination_list_1.size()>0)
+			{
+				lista_fichas_slices.add(combination_list_1);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+			else if(combination_list_2.size()>0)
+			{			
+				lista_fichas_slices.add(combination_list_2);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+			
 		}
+		
+
 		return grupos;
 	}
 
@@ -174,7 +175,9 @@ class Qwirkle
 		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
+		System.out.println("Mano original: ");
 		this.showMano(pJugador);
+
 		pJugador.getTurno().setSuTurno(true);
 
 		do{
@@ -196,11 +199,14 @@ class Qwirkle
 				pJugador.getTurno().setSuTurno(false);
 
 				work_fichas_mano = this.removeRepeatsMano(pJugador);
+
+				System.out.println("\nNueva mano con repetidas eliminadas: ");
 				this.imprimirMano(work_fichas_mano);
+				
 				grupitos = this.getPossiblePlaysHand(work_fichas_mano);
 				this.showPossiblePlaysHand(grupitos);
 
-				this.modifyGrupitos();
+				//
 
 			}
 			else 
