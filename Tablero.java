@@ -1,5 +1,5 @@
 import java.util.*;
-
+import java.util.Map.Entry;
 import java.awt.Point;
 
 
@@ -14,11 +14,6 @@ class Tablero
 			n.puntos=this.puntos;
 			return n;
 		}
-
-		public void deshacerUltimaJugada() {
-			Jugada ultima=jugadas.remove(jugadas.size()-1);
-			puntos-=ultima
-		}
 	}
 	static final int MATRIX_SIDE=15;
 	private final Ficha[][] fichas;
@@ -32,7 +27,9 @@ class Tablero
 
 	}
 
-	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,Ficha fichaInicial,List<JugadaCompleta>jugadasCompletas, JugadaCompleta jugadaActual,int x,int y,Boolean esPorFila){
+	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
+					Ficha fichaInicial,List<JugadaCompleta>jugadasCompletas, 
+					JugadaCompleta jugadaActual,int x,int y,Boolean esPorFila){
 		//lo que ingresa es sí o sí una jugada válida
 		fichasQueFaltanPorColocar.remove(fichaInicial);
 		fichas[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
@@ -84,20 +81,19 @@ class Tablero
 		jugadaActual.puntos-=getCantPuntos(x, y, fichaInicial);
 	}
 
-	public List<List<Jugada>>getJugadas(Map<Ficha,List<Ficha>[]>grupitos){
+	public List<JugadaCompleta>getJugadas(Map<Ficha,List<List<Ficha>>>grupitos){
 		List<JugadaCompleta>todasLasPosiblesJugadasCompletas=new ArrayList<>();
 		JugadaCompleta tmpJCompleta;
-		Jugada jugadaActual;
 		for(Point lugarQuePuedoJugar:lugaresDondeSePuedeJugar){
-			for(Ficha fichaInicial:grupitos.keySet()){
-				if(getCualesPuedoPoner(lugarQuePuedoJugar.x,lugarQuePuedoJugar.y).contains(fichaInicial)){
+			for(Entry<Ficha,List<List<Ficha>>> entrada:grupitos.entrySet()){
+				if(getCualesPuedoPoner(lugarQuePuedoJugar.x,lugarQuePuedoJugar.y).contains(entrada.getKey())){
 					tmpJCompleta=new JugadaCompleta();
-					generarArbolDeJugadas(grupitos.get(fichaInicial)[0], fichaInicial, todasLasPosiblesJugadasCompletas, tmpJCompleta, lugarQuePuedoJugar.x, lugarQuePuedoJugar.y, null);
-					generarArbolDeJugadas(grupitos.get(fichaInicial)[1], fichaInicial, todasLasPosiblesJugadasCompletas, tmpJCompleta, lugarQuePuedoJugar.x, lugarQuePuedoJugar.y, null);
+					generarArbolDeJugadas(entrada.getValue().get(0), entrada.getKey(), todasLasPosiblesJugadasCompletas, tmpJCompleta, lugarQuePuedoJugar.x, lugarQuePuedoJugar.y, null);
+					generarArbolDeJugadas(entrada.getValue().get(1), entrada.getKey(), todasLasPosiblesJugadasCompletas, tmpJCompleta, lugarQuePuedoJugar.x, lugarQuePuedoJugar.y, null);
 				}
 			}
 		}
-		return null;
+		return todasLasPosiblesJugadasCompletas;
 	}
 	public List<Point>getLugaresDondeSePuedeJugar(){
 		return lugaresDondeSePuedeJugar;
