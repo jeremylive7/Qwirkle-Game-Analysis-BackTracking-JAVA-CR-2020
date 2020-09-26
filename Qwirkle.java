@@ -105,43 +105,36 @@ class Qwirkle
 			lista_fichas_slices.add(combination_list_2);
 			grupos.put(pFichas.get(pI), lista_fichas_slices);
 
-			int contador = 0;
-			ArrayList<Ficha> combination_list_1_1 = new ArrayList<Ficha>();
-			ArrayList<Ficha> combination_list_2_2 = new ArrayList<Ficha>();
-
-
 			if(combination_list_1.size() == 2)
 			{
-				for (int index=1; index >= 0; index--) 
-				{
-						System.out.println("contador:"+contador+" index:"+index);
-						combination_list_1_1.add(contador, combination_list_1.get(index));
-						contador = 1;
-				}
+				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
 
 				lista_fichas_slices.add(combination_list_1_1);
 				grupos.put(pFichas.get(pI), lista_fichas_slices);
 			}
-			
-			contador = 0;
 
 			if(combination_list_2.size() == 2)
-			{			
-				for (int index=1; index >= 0; index--) 
-				{
-						System.out.println("contador:"+contador+" index:"+index);
-						combination_list_2_2.add(contador, combination_list_2.get(index));
-						contador = 1;
-				}
+			{
+				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
 
-				lista_fichas_slices.add(combination_list_2_2);
+				lista_fichas_slices.add(combination_list_1_2);
 				grupos.put(pFichas.get(pI), lista_fichas_slices);
 			}
-
 		}
-		
-
 		return grupos;
+	}
+
+	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
+	{
+		int contador = 0;
+		ArrayList<Ficha> combination = new ArrayList<Ficha>();
+
+		for (int index=1; index >= 0; index--) 
+		{
+				combination.add(contador, pList.get(index));
+				contador = 1;
+		}
+		return combination;
 	}
 
 	public void dealCards()
