@@ -101,17 +101,10 @@ class Qwirkle
 				}
 			}
 			
-			if(combination_list_1.size()>0)
-			{
-				lista_fichas_slices.add(combination_list_1);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
 			
-			if(combination_list_2.size()>0)
-			{			
-				lista_fichas_slices.add(combination_list_2);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
+			lista_fichas_slices.add(combination_list_1);
+			lista_fichas_slices.add(combination_list_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
 			
 		}
 		
