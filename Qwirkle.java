@@ -34,6 +34,63 @@ class Qwirkle
 		this.controlMenu();
 	}
 
+	public boolean isItMostHigher(ArrayList<Ficha> pFicha)
+	{
+		boolean isIt_good = false;
+
+		//Logica..
+
+		return isIt_good;
+	}
+
+	public ArrayList<Ficha> getMostHigherScorePlay(ArrayList<ArrayList<Ficha>> pJugadasTotales)
+	{
+		ArrayList<Ficha> play_higher = new ArrayList<Ficha>();
+		boolean valied = false;
+
+		for(ArrayList<ArrayList<Ficha>> jugadas_mano : pJugadasTotales)
+		{    
+    	for (ArrayList<Ficha> playList : jugadas_mano) 
+			{
+				valied = isItMostHigher(ArrayList<Ficha> ficha);
+			
+				if(valied = true)
+				{
+					play_higher.add(playList);
+					imprimirMano(playList);
+				}
+			}
+		}
+
+		return play_higher; 
+	}
+
+	public ArrayList<ArrayList<Ficha>> getTotalJugadas(Map<Fichas, ArrayList<ArrayList<Ficha>>> pJugadasTotales))
+	{
+		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
+		
+		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pJugadasTotales.entrySet())
+		{    
+    	Ficha key = entry.getKey();  
+    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
+
+    	for (ArrayList<Ficha> playList : value) 
+			{
+				ArrayList<Ficha> jugada = ArrayList<Ficha>();
+				jugada.add(key);
+
+				for (Ficha ficha : playList) 
+				{
+					jugada.add(ficha);
+				}
+
+				jugadas_totales.add(jugada);
+			}
+		}
+
+		return jugadas_totales;
+	}
+
 	public ArrayList<Ficha> removeRepeatsMano(Jugador pJugador)
 	{
 		int largo_mano = pJugador.getCantMano()-1;
@@ -57,12 +114,12 @@ class Qwirkle
 	{
 		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
 		{    
-        	Ficha key = entry.getKey();  
-        	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
-        	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
-        		+ ", tiene las siguientes jugadas: ");
-        	
-        	for (ArrayList<Ficha> playList : value) 
+    	Ficha key = entry.getKey();  
+    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
+    	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
+    		+ ", tiene las siguientes jugadas: ");
+    	
+    	for (ArrayList<Ficha> playList : value) 
 			{
 				for (Ficha ficha : playList) 
 				{
@@ -194,6 +251,7 @@ class Qwirkle
 	{
 		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
 
 		System.out.println("Mano original: ");
 		this.showMano(pJugador);
@@ -226,6 +284,9 @@ class Qwirkle
 				grupitos = this.getPossiblePlaysHand(work_fichas_mano);
 				this.showPossiblePlaysHand(grupitos);
 
+				jugadas_totales = getMostHigherScorePlay(getTotalJugadas(grupitos));
+				imprimirJugadaTotales(jugadas_totales);
+
 				//
 
 			}
@@ -251,6 +312,19 @@ class Qwirkle
 			out+= fichaToSimbol(ficha)+", ";
 		}
 		System.out.println(out+"]");
+	}
+
+	public void imprimirJugadaTotales(ArrayList<ArrayList<Ficha>> pJugadasTotales)
+	{
+		for (ArrayList<Ficha> pList : pJugadasTotales)
+		{
+			String out="\n[ ";
+			for (Ficha ficha : pList) 
+			{
+				out+= fichaToSimbol(pList)+", ";	
+			}
+			System.out.println(out+"]");
+		}
 	}
 
 	//------------------------------------------------------------------
