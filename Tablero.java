@@ -8,10 +8,12 @@ class Tablero
 	private class JugadaCompleta {
 		public List<Jugada>jugadas=new ArrayList<>();
 		public int puntos=0;
+		public boolean isLine = false;
 		public JugadaCompleta copy(){
 			JugadaCompleta n=new JugadaCompleta();
 			n.jugadas=new ArrayList<>(this.jugadas);
 			n.puntos=this.puntos;
+			n.isLine=isLine;
 			return n;
 		}
 	}
@@ -41,8 +43,112 @@ class Tablero
 			new Ficha(Figura.ROMBO,Color.VERDE),
 			new Ficha(Figura.SOL,Color.VERDE)));
 		List<JugadaCompleta>jugadasCompletas=tablero.getJugadas(tablero.getPossiblePlaysHand(mano));
+		tablero.setPointsAllPlays(jugadasCompletas);
 		jugadasCompletas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		System.out.println("XDXD");
+	}
+	//set de puntos en todas las jugadas.
+	public void setPointsAllPlays(List<JugadaCompleta> pFullsPlays)
+	{
+		int listSize = pFullsPlays.size() - 1;
+
+		for(int index = 0; index <= listSize; index++)
+		{
+			JugadaCompleta fullPlay = pFullsPlays.get(index);
+			List<Jugada> plays = fullPlay.jugadas;
+			int totalPoints = 0;
+
+			for (Jugada jugada : plays) 
+			{
+				if (index < listSize) {
+					totalPoints += getCantPuntosXColumn(jugada.x, jugada.y, jugada.ficha);
+				} 
+				else if (index == listSize) {
+					totalPoints += getCantPuntos(jugada.x, jugada.y, jugada.ficha);
+				}	
+			}
+
+			pFullsPlays.get(index).puntos = totalPoints;
+		}
+	}
+	//get cantidad de puntos de columna.
+	public int getCantPuntosXColumn(final int x, final int y, final Ficha ficha) {
+		if (fichas[x][y] != null)
+			return 0;
+		// recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas
+		// sin repetirse, si se repite es 0 tod
+		int puntos = 0;
+		final ArrayList<Ficha> hileraHorizontal = new ArrayList<>(), hileraVertical = new ArrayList<>();
+		int inicioHilera = x;
+		int finHilera = x;
+		while (inicioHilera > 0) {
+			if (fichas[inicioHilera - 1][y] == null)
+				break;
+			else
+				inicioHilera--;
+		}
+		while (finHilera < MATRIX_SIDE - 1) {
+			if (fichas[finHilera + 1][y] == null)
+				break;
+			else
+				finHilera++;
+		}
+		if (finHilera - inicioHilera >= 6)
+			return 0;
+		for (int i = inicioHilera; i <= finHilera; i++) {
+			if (i == x)
+				hileraVertical.add(ficha);
+			else if (ficha.noCombina(fichas[i][y]))
+				return 0;
+			else
+				hileraVertical.add(fichas[i][y]);
+		}
+		inicioHilera = finHilera = y;
+		while (inicioHilera > 0) {
+			if (fichas[x][inicioHilera - 1] == null)
+				break;
+			else
+				inicioHilera--;
+		}
+		while (finHilera < MATRIX_SIDE - 1) {
+			if (fichas[x][finHilera + 1] == null)
+				break;
+			else
+				finHilera++;
+		}
+		if (finHilera - inicioHilera >= 6)
+			return 0;
+		for (int i = inicioHilera; i <= finHilera; i++) {
+			if (i == y)
+				hileraHorizontal.add(ficha);
+			else if (ficha.noCombina(fichas[x][i]))
+				return 0;
+			else
+				hileraHorizontal.add(fichas[x][i]);
+		}
+		// buscar repetidos
+		Map<Figura, Map<Color, Boolean>> mapaParaEncontrarRepetidos = new HashMap<>();
+		for (final Ficha f : hileraHorizontal) {
+			if (mapaParaEncontrarRepetidos.containsKey(f.figura)
+					&& mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura, new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		mapaParaEncontrarRepetidos = new HashMap<>();
+		for (final Ficha f : hileraVertical) {
+			if (mapaParaEncontrarRepetidos.containsKey(f.figura)
+					&& mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura, new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		//JUST CONT THE COLUM
+		puntos += hileraVertical.size() - 1;
+		if (hileraVertical.size() == 6)
+			puntos += 6;
+
+		return puntos;
 	}
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
@@ -147,6 +253,7 @@ class Tablero
 		}
 		fichas[x][y]=null;
 		jugada.jugadas.remove(jugada.jugadas.size()-1);
+		jugada.isLine = esPorFila;
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
 

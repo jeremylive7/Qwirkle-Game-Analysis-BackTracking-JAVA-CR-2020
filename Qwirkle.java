@@ -23,7 +23,7 @@ class Qwirkle {
 		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		jugadorActual = jugador1;
-		this.showBolsaFichas();
+		//this.showBolsaFichas();
 	}
 
 	private boolean procesarJugada(Jugador jugador, Jugada jugada) {
@@ -66,6 +66,7 @@ class Qwirkle {
 		qwirkle.getTablero().llenarTableroConEjemplo();
 		qwirkle.mostrarVentana();
 		qwirkle.frame.mostrarTablero();
+		qwirkle.menu(qwirkle);
 	}
 	public Tablero getTablero() {
 		return tablero;
@@ -75,8 +76,11 @@ class Qwirkle {
 		this.tablero = tablero;
 	}
 
-	public void menu()
+	public void menu(Qwirkle pGame)
 	{
+		Tablero table = pGame.getTablero();
+		ArrayList<Ficha> playToSet = ArrayList<Ficha>();
+
 		while(this.opcion < 4){
 
 			do{
@@ -101,9 +105,8 @@ class Qwirkle {
 				else if(opcion==2)
 				{//Elige jugada a colocar
 					System.out.println("Elegiste seleccionar mi jugada");
-					seleccionoJugada(jugadorActual);//Empieza turno, selecciono mi jugada
-					setJugadaTablero();//Coloco jugada en el tablero
-					getPtsJugada(jugadorActual);//Obtencion de pts por las fichas seteadas
+					playToSet = seleccionoJugada(table, jugadorActual);//Empieza turno, selecciono mi jugada
+					setJugadaTablero(playToSet);//Coloco jugada en el tablero
 					showPtsJugador(jugadorActual);//Imprimo pts
 				}
 				else if(opcion==3)//No tiene fichas
@@ -200,16 +203,11 @@ class Qwirkle {
 
 	public void showPtsJugador(Jugador pJugador)
 	{
-		//System.out.println(pJugador.getScore().getPtsTotales());
+		System.out.println(pJugador.getScore().getPtsTotales());
 	}
-
-	public void getPtsJugada(Jugador j){
-
-	}
-
-	public void setJugadaTablero()
+	public void setJugadaTablero(ArrayList<Ficha> pPlay, Jugador pPlayer)
 	{
-
+		for
 	}
 	public List<Ficha>getFichasDeLaBolsa(int cantFichas){
 		List<Ficha>out=new ArrayList<>();
@@ -220,9 +218,15 @@ class Qwirkle {
 	public Ficha popRandomFicha(){
 		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
-	public void seleccionoJugada(Jugador j)
+	public ArrayList<Ficha> seleccionoJugada(Tablero pTable, Jugador pPlayer)
 	{
+		ArrayList<Ficha> player_hand = pPlayer.getMano();
+		
+		List<JugadaCompleta> jugadasCompletas = pTable.getJugadas(pTable.getPossiblePlaysHand(player_hand));
+		pTable.setPointsAllPlays(jugadasCompletas);
+		jugadasCompletas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
 
+		return jugadasCompletas.get(0);
 	}
 
 	/*

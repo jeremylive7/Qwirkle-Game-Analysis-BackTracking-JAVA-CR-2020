@@ -20,6 +20,11 @@ class Jugador
 		mano.remove(ficha);
 	}
 
+	public int getScore()
+	{
+		return this.score;
+	}
+
 	public ArrayList<Ficha> getMano()
 	{
 		return this.mano;
