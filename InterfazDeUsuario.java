@@ -1,5 +1,3 @@
-import java.io.Serializable;
-
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 

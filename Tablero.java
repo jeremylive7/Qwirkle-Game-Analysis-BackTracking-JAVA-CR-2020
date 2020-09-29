@@ -147,7 +147,6 @@ class Tablero
 		}
 		fichas[x][y]=null;
 		jugada.jugadas.remove(jugada.jugadas.size()-1);
-		jugada.puntos-=getCantPuntos(x, y, fichaInicial);
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
 
@@ -204,10 +203,11 @@ class Tablero
 		}
 		return todasLasFichas;		
 	}
+	
 	public int getCantPuntos(final int x,final int y,final Ficha ficha){
 		if(fichas[x][y]!=null)return 0;
-		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 todo
-		int puntos=1;
+		//recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas sin repetirse, si se repite es 0 tod
+		int puntos=0;
 		final ArrayList<Ficha>hileraHorizontal=new ArrayList<>(),hileraVertical=new ArrayList<>();
 		int inicioHilera=x;
 		int finHilera=x;
@@ -261,8 +261,8 @@ class Tablero
 			mapaParaEncontrarRepetidos.putIfAbsent(f.figura,new HashMap<>());
 			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
 		}
-		if(hileraHorizontal.size()>1)puntos+=hileraHorizontal.size()-1;
-		if(hileraVertical.size()>1)puntos+=hileraVertical.size()-1;
+		puntos+=hileraHorizontal.size()-1;
+		puntos+=hileraVertical.size()-1;
 		if(hileraVertical.size()==6)puntos+=6;
 		if(hileraHorizontal.size()==6)puntos+=6;
 		return puntos;

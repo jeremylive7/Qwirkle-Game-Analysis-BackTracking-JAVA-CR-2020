@@ -24,7 +24,6 @@ class Qwirkle {
 		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		jugadorActual = jugador1;
 		this.showBolsaFichas();
-
 	}
 
 	private boolean procesarJugada(Jugador jugador, Jugada jugada) {
