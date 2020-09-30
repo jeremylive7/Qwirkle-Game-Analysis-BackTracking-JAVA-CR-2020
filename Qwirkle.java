@@ -85,6 +85,8 @@ class Qwirkle
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
 
+		//Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
+
 		int largo_nueva_mano = 0;
 		boolean esRepetido = false;
 
@@ -98,7 +100,7 @@ class Qwirkle
 				//Obtengo el # de la opcion
 				this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar mi jugada"
 					+ "\n"
-					+ "2. Solicitas salir del Juego al final de la ronda de turnos.));
+					+ "2. Solicitas salir del Juego al final de la ronda de turnos."));
 
 				if(opcion==1)
 				{
@@ -382,9 +384,9 @@ class Qwirkle
 	{
 		System.out.println(pJugador.getScore().getPtsTotales());
 	}
-	public void setJugadaTablero(ArrayList<Ficha> pPlay, Jugador pPlayer)
+	public void setJugadaTablero(ArrayList<Ficha> pPlay)
 	{
-		for
+		
 	}
 	public ArrayList<Ficha>getFichasDeLaBolsa(int cantFichas){
 		ArrayList<Ficha>out=new ArrayList<>();
