@@ -43,7 +43,7 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
 		  });
   }
   
-  public void mostrarJugada(Jugada jugada) {
+  public void mostrarJugada(ParFichaPosicion jugada) {
     botones[jugada.x][jugada.y].setIcon(new javax.swing.ImageIcon(
       IMAGE_PATH + jugada.ficha.figura + jugada.ficha.color + ".png"));
   }

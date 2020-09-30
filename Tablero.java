@@ -1,25 +1,12 @@
 import java.util.*;
 import java.util.Map.Entry;
-import java.awt.Point;
 
 
 class Tablero
 {
-	private class JugadaCompleta {
-		public List<Jugada>jugadas=new ArrayList<>();
-		public int puntos=0;
-		public boolean isLine = false;
-		public JugadaCompleta copy(){
-			JugadaCompleta n=new JugadaCompleta();
-			n.jugadas=new ArrayList<>(this.jugadas);
-			n.puntos=this.puntos;
-			n.isLine=isLine;
-			return n;
-		}
-	}
 	static final int MATRIX_SIDE=6;
 	private final Ficha[][] fichas;
-	private Map<Integer,Set<Integer>>placesToPlay;
+	Map<Integer,Set<Integer>>placesToPlay;
 
 	//Constructor
 	public Tablero() 
@@ -42,34 +29,137 @@ class Tablero
 			new Ficha(Figura.ROMBO,Color.ROJO),
 			new Ficha(Figura.ROMBO,Color.VERDE),
 			new Ficha(Figura.SOL,Color.VERDE)));
-		List<JugadaCompleta>jugadasCompletas=tablero.getJugadas(tablero.getPossiblePlaysHand(mano));
+		List<Jugada>jugadasCompletas=tablero.getJugadas(tablero.getPossiblePlaysHand(mano));
 		tablero.setPointsAllPlays(jugadasCompletas);
 		jugadasCompletas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		System.out.println("XDXD");
 	}
 	//set de puntos en todas las jugadas.
-	public void setPointsAllPlays(List<JugadaCompleta> pFullsPlays)
+	public void setPointsAllPlays(List<Jugada> pFullsPlays)
 	{
 		int listSize = pFullsPlays.size() - 1;
 
 		for(int index = 0; index <= listSize; index++)
 		{
-			JugadaCompleta fullPlay = pFullsPlays.get(index);
-			List<Jugada> plays = fullPlay.jugadas;
+			Jugada fullPlay = pFullsPlays.get(index);
+			List<ParFichaPosicion> plays = fullPlay.pares;
 			int totalPoints = 0;
 
-			for (Jugada jugada : plays) 
+			for (ParFichaPosicion jugada : plays) 
 			{
-				if (index < listSize) {
-					totalPoints += getCantPuntosXColumn(jugada.x, jugada.y, jugada.ficha);
-				} 
-				else if (index == listSize) {
-					totalPoints += getCantPuntos(jugada.x, jugada.y, jugada.ficha);
-				}	
+				boolean isFila = jugada.isLine;
+				
+				if(isFila)
+				{
+					if (index < listSize) {
+						totalPoints += getCantPuntosXColumn(jugada.x, jugada.y, jugada.ficha);
+					} else if (index == listSize) {
+						totalPoints += getCantPuntos(jugada.x, jugada.y, jugada.ficha);
+					}
+				}
+				else
+				{
+					if (index < listSize) {
+						totalPoints += getCantPuntosXColumn(jugada.x, jugada.y, jugada.ficha);
+					} else if (index == listSize) {
+						totalPoints += getCantPuntos(jugada.x, jugada.y, jugada.ficha);
+					}
+				}
 			}
 
 			pFullsPlays.get(index).puntos = totalPoints;
 		}
+	}
+	public int getPuntos(Jugada jugada){
+		jugada.puntos=0;
+		for(ParFichaPosicion par:jugada.pares){
+			if(jugada.isLine!=null&&jugada.isLine.booleanValue())
+				jugada.puntos+=getCantPuntosXColumn(par.x, par.y, par.ficha);
+			else 
+				jugada.puntos+=getCantPuntosXLine(par.x, par.y, par.ficha);
+		}
+		if(jugada.isLine==null||jugada.isLine.booleanValue())
+			jugada.puntos+=getCantPuntosXLine(jugada.pares.get(0).x, jugada.pares.get(0).y, jugada.pares.get(0).ficha);
+		else
+			jugada.puntos+=getCantPuntosXColumn(jugada.pares.get(0).x, jugada.pares.get(0).y, jugada.pares.get(0).ficha);
+		return jugada.puntos;
+	}
+	//get cantidad de puntos de fila
+	public int getCantPuntosXLine(final int x, final int y, final Ficha ficha) {
+		if (fichas[x][y] != null)
+			return 0;
+		// recorrer desde x,y para las cuatro direcciones contando la cantidad de fichas
+		// sin repetirse, si se repite es 0 tod
+		int puntos = 0;
+		final ArrayList<Ficha> hileraHorizontal = new ArrayList<>(), hileraVertical = new ArrayList<>();
+		int inicioHilera = x;
+		int finHilera = x;
+		while (inicioHilera > 0) {
+			if (fichas[inicioHilera - 1][y] == null)
+				break;
+			else
+				inicioHilera--;
+		}
+		while (finHilera < MATRIX_SIDE - 1) {
+			if (fichas[finHilera + 1][y] == null)
+				break;
+			else
+				finHilera++;
+		}
+		if (finHilera - inicioHilera >= 6)
+			return 0;
+		for (int i = inicioHilera; i <= finHilera; i++) {
+			if (i == x)
+				hileraVertical.add(ficha);
+			else if (ficha.noCombina(fichas[i][y]))
+				return 0;
+			else
+				hileraVertical.add(fichas[i][y]);
+		}
+		inicioHilera = finHilera = y;
+		while (inicioHilera > 0) {
+			if (fichas[x][inicioHilera - 1] == null)
+				break;
+			else
+				inicioHilera--;
+		}
+		while (finHilera < MATRIX_SIDE - 1) {
+			if (fichas[x][finHilera + 1] == null)
+				break;
+			else
+				finHilera++;
+		}
+		if (finHilera - inicioHilera >= 6)
+			return 0;
+		for (int i = inicioHilera; i <= finHilera; i++) {
+			if (i == y)
+				hileraHorizontal.add(ficha);
+			else if (ficha.noCombina(fichas[x][i]))
+				return 0;
+			else
+				hileraHorizontal.add(fichas[x][i]);
+		}
+		// buscar repetidos
+		Map<Figura, Map<Color, Boolean>> mapaParaEncontrarRepetidos = new HashMap<>();
+		for (final Ficha f : hileraHorizontal) {
+			if (mapaParaEncontrarRepetidos.containsKey(f.figura)
+					&& mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura, new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		mapaParaEncontrarRepetidos = new HashMap<>();
+		for (final Ficha f : hileraVertical) {
+			if (mapaParaEncontrarRepetidos.containsKey(f.figura)
+					&& mapaParaEncontrarRepetidos.get(f.figura).containsKey(f.color))
+				return 0;
+			mapaParaEncontrarRepetidos.putIfAbsent(f.figura, new HashMap<>());
+			mapaParaEncontrarRepetidos.get(f.figura).put(f.color, true);
+		}
+		puntos += hileraHorizontal.size() - 1;
+		if (hileraHorizontal.size() == 6)
+			puntos += 6;
+		return puntos;
 	}
 	//get cantidad de puntos de columna.
 	public int getCantPuntosXColumn(final int x, final int y, final Ficha ficha) {
@@ -187,8 +277,8 @@ class Tablero
 
 		return grupos;
 	}
-	public List<JugadaCompleta>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
-		List<JugadaCompleta>todasLasPosiblesJugadasCompletas=new ArrayList<>();
+	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
+		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
 		for(Entry<Integer,Set<Integer>> entradaLugar:placesToPlay.entrySet()){
 			for(Integer y:entradaLugar.getValue()){
 				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
@@ -201,17 +291,17 @@ class Tablero
 		return todasLasPosiblesJugadasCompletas;
 	}
 	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
-		List<JugadaCompleta>jugadasCompletas,int x, int y){
-			generarArbolDeJugadas(jugadaDeLaMano.getValue().get(0), jugadaDeLaMano.getKey(), jugadasCompletas, new JugadaCompleta(), x, y, null);						
+		List<Jugada>jugadasCompletas,int x, int y){
+			generarArbolDeJugadas(jugadaDeLaMano.getValue().get(0), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);						
 			if(!jugadaDeLaMano.getValue().get(1).isEmpty())
-				generarArbolDeJugadas(jugadaDeLaMano.getValue().get(1), jugadaDeLaMano.getKey(), jugadasCompletas, new JugadaCompleta(), x, y, null);
+				generarArbolDeJugadas(jugadaDeLaMano.getValue().get(1), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
 	}
 	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
-					Ficha fichaInicial,List<JugadaCompleta>jugadasCompletas, 
-					JugadaCompleta jugada,int x,int y,Boolean esPorFila){
+					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
+					Jugada jugada,int x,int y,Boolean esPorFila){
 		//lo que ingresa es sí o sí una jugada válida
 		fichasQueFaltanPorColocar.remove(fichaInicial);
-		jugada.jugadas.add(new Jugada(x, y, fichaInicial));
+		jugada.pares.add(new ParFichaPosicion(x, y, fichaInicial));
 		jugada.puntos+=getCantPuntos(x, y, fichaInicial);
 		fichas[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
 		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
@@ -252,7 +342,7 @@ class Tablero
 			if(!flag) jugadasCompletas.add(jugada.copy());
 		}
 		fichas[x][y]=null;
-		jugada.jugadas.remove(jugada.jugadas.size()-1);
+		jugada.pares.remove(jugada.pares.size()-1);
 		jugada.isLine = esPorFila;
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}

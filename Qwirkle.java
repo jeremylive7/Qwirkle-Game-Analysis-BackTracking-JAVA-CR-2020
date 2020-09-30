@@ -218,11 +218,11 @@ class Qwirkle {
 	public Ficha popRandomFicha(){
 		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
-	public ArrayList<Ficha> seleccionoJugada(Tablero pTable, Jugador pPlayer)
+	public List<Ficha> seleccionoJugada(Tablero pTable, Jugador pPlayer)
 	{
 		ArrayList<Ficha> player_hand = pPlayer.getMano();
 		
-		List<JugadaCompleta> jugadasCompletas = pTable.getJugadas(pTable.getPossiblePlaysHand(player_hand));
+		List<Jugada> jugadasCompletas = pTable.getJugadas(pTable.getPossiblePlaysHand(player_hand));
 		pTable.setPointsAllPlays(jugadasCompletas);
 		jugadasCompletas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
 

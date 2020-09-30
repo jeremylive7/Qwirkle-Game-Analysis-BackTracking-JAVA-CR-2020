@@ -1,11 +1,15 @@
-public class Jugada {
-    int x,y;
-    Ficha ficha;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Jugada(int x, int y, Ficha ficha) {
-        this.x = x;
-        this.y = y;
-        this.ficha = ficha;
-    }
-    
+public class Jugada {
+	public List<ParFichaPosicion>pares=new ArrayList<>();
+	public int puntos=0;
+	public Boolean isLine;
+	public Jugada copy(int puntos){
+		Jugada n=new Jugada();
+		n.pares=new ArrayList<>(this.pares);
+		n.puntos=puntos;
+		n.isLine=isLine;
+		return n;
+	}
 }
