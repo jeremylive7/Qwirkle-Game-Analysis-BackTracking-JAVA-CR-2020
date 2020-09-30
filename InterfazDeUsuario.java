@@ -43,9 +43,10 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
 		  });
   }
   
-  public void mostrarJugada(ParFichaPosicion jugada) {
-    botones[jugada.x][jugada.y].setIcon(new javax.swing.ImageIcon(
-      IMAGE_PATH + jugada.ficha.figura + jugada.ficha.color + ".png"));
+  public void mostrarJugada(Jugada jugada) {
+    for(ParFichaPosicion par:jugada.pares)
+        botones[par.x][par.y].setIcon(new javax.swing.ImageIcon(
+          IMAGE_PATH + par.ficha.figura + par.ficha.color + ".png"));
   }
   
   //todo: Que el usuario pueda jugar las fichas de su mano donde el señor Tablero le diga 

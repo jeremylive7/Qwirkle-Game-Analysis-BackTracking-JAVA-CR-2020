@@ -48,19 +48,19 @@ class Qwirkle
 	}
 
 	private boolean procesarJugada(Jugador jugador, Jugada jugada) {
-		int cantPuntos = tablero.getCantPuntos(jugada.x, jugada.y, jugada.ficha);
+		int cantPuntos = tablero.getPuntos(jugada);
 		if (cantPuntos == 0)
 			return false;
 		frame.mostrarJugada(jugada);
-		tablero.meterFichaEnXY(jugada.ficha, jugada.x, jugada.y);
-		jugador.procesarJugada(jugada.ficha, cantPuntos);
+		tablero.procesarJugada(jugada);
+		jugador.procesarJugada(jugada,cantPuntos);
 		return true;
 	}
 
 	private void turno(Jugador jugador) {
-		BackTraking algoritmo = new BackTraking(jugador, tablero);
+		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano());
 		while (true)
-			if (!procesarJugada(jugador, algoritmo.getJugadaBasico(jugador, tablero)))
+			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
 				// procesar jugada devuelve false si no se puede procesar la jugada
 				// Y devuelve true si la procesa con éxito
 				break;
@@ -92,7 +92,7 @@ class Qwirkle
 	public void menu(Qwirkle pGame)
 	{
 		Tablero table = pGame.getTablero();
-		ArrayList<Ficha> playToSet = ArrayList<Ficha>();
+		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
 
 		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
