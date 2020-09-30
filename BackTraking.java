@@ -29,7 +29,7 @@ public class BackTraking
 		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		return jugadas.get(0);
 	}
-	public Jugada getJugadaMejorado(Jugador jugador,Tablero tablero){
+	public Jugada getJugadaMejorado(){
 		getJugadaBasico();
 		ejecutarMejorado();
 		return jugadas.get(0);

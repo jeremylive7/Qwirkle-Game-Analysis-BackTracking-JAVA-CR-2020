@@ -7,7 +7,6 @@ class Main
 		qwirkle = new Qwirkle();
 		qwirkle.getTablero().llenarTableroConEjemplo();
 		qwirkle.imprimirTablero();
-		qwirkle.menu();
 
 		System.exit(0);
 	}
