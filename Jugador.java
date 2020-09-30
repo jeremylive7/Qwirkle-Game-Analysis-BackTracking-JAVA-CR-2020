@@ -30,6 +30,11 @@ class Jugador
 		return this.mano;
 	}
 
+	public void setFichaMano(Ficha pFicha)
+	{
+		this.mano.add(pFicha);
+	}
+
 	public String getNombre()
 	{
 		return this.nombre;
