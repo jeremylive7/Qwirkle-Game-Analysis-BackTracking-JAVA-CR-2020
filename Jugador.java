@@ -31,6 +31,11 @@ class Jugador
 		return this.mano;
 	}
 
+	public void setFichaMano(Ficha pFicha)
+	{
+		this.mano.add(pFicha);
+	}
+
 	public String getNombre()
 	{
 		return this.nombre;
@@ -39,5 +44,13 @@ class Jugador
 	public void setNombre(String pNombre)
 	{
 		this.nombre = pNombre;
+	}
+
+	public void updateManoPlayer(ArrayList<Ficha> pLista)
+	{
+		for (Ficha pFicha : pLista) 
+		{
+			this.mano.add(pFicha);	
+		}
 	}
 }

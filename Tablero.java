@@ -54,7 +54,7 @@ class Tablero
 			else i++;
 		}
 	}
-	public int getPuntos(Jugada jugada){
+	public int getPuntos(Jugada jugada){//Tengo dudas con esta función.
 		jugada.puntos=0;
 		for(Jugadita jugadita:jugada.jugaditas){
 			if(jugada.isLine!=null&&jugada.isLine.booleanValue())
