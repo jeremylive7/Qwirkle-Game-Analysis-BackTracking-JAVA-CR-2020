@@ -99,6 +99,7 @@ class Qwirkle
 		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
 
 		int largo_nueva_mano = 0;
+		boolean esRepetido = false;
 
 		System.out.println("Mano original: ");
 		this.showMano(pJugador);
@@ -120,6 +121,10 @@ class Qwirkle
 					System.out.println("Elegiste seleccionar mi jugada");
 					
 					work_fichas_mano = this.removeRepeatsMano(pJugador);
+					if(work_fichas_mano.size() != 6)
+					{
+						esRepetido = true;
+					}
 
 					System.out.println("\nNueva mano con repetidas eliminadas: ");
 					this.imprimirMano(work_fichas_mano);
@@ -135,6 +140,10 @@ class Qwirkle
 					showPtsJugador(jugadorActual);//Imprimo pts
 
 					largo_nueva_mano = 6 - playToSet.size();
+					if(esRepetido)
+					{
+						largo_nueva_mano++;
+					}
 					this.updateManoPlayer(jugadorActual, largo_nueva_mano);
 
 				}
