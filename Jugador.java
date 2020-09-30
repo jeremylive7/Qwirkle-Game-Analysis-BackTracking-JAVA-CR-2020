@@ -15,9 +15,10 @@ class Jugador
 		this.nombre = pNombre;
 	}
 
-	public void procesarJugada(Ficha ficha, int cantPuntos){
+	public void procesarJugada(Jugada jugada, int cantPuntos){
 		score+=cantPuntos;
-		mano.remove(ficha);
+		for(Jugadita par:jugada.jugaditas)
+			mano.remove(par.ficha);
 	}
 
 	public int getScore()
