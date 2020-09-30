@@ -60,7 +60,7 @@ class Tablero
 				else
 				{
 					if (index < listSize) {
-						totalPoints += getCantPuntosXColumn(jugada.x, jugada.y, jugada.ficha);
+						totalPoints += getCantPuntosXLine(jugada.x, jugada.y, jugada.ficha);
 					} else if (index == listSize) {
 						totalPoints += getCantPuntos(jugada.x, jugada.y, jugada.ficha);
 					}
@@ -70,7 +70,7 @@ class Tablero
 			pFullsPlays.get(index).puntos = totalPoints;
 		}
 	}
-	public int getPuntos(Jugada jugada){
+	public int getPuntos(Jugada jugada){//Tengo dudas con esta función.
 		jugada.puntos=0;
 		for(ParFichaPosicion par:jugada.pares){
 			if(jugada.isLine!=null&&jugada.isLine.booleanValue())
