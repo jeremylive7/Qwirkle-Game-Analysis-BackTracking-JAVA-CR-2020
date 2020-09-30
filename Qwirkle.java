@@ -7,7 +7,6 @@ class Qwirkle
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private List<Ficha> bolsa_fichas;
-	private ArraList<Ficha> mano1, mano2, mano3;
 	private Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Interger>();
 	private int opcion;
 	private InterfazDeUsuario frame;
@@ -25,26 +24,14 @@ class Qwirkle
 		this.fullFichasToBolsa();
 		//this.showBolsaFichas();
 
-		this.setHands();
-
-		this.jugador1 = new Jugador("Jeremy", mano1);
-		this.jugador2 = new Jugador("Edgerik", mano2);
-		jugador3 = new Jugador("Roberto", mano3);
+		this.jugador1 = new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		jugadorActual = jugador1;
 		
 		this.tablero = new Tablero();
 		this.tablero.llenarTableroConEjemplo();
 		this.imprimirTablero();
-	}
-
-	public void setHands()
-	{
-		this.mano1 = getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO);
-		this.mano2 = getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO);
-		this.mano3 = getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO);
-		this.repet_fichas = this.updateRepetFichas(this.repet_fichas, this.mano1);
-		this.repet_fichas = this.updateRepetFichas(this.repet_fichas, this.mano2);
-		this.repet_fichas = this.updateRepetFichas(this.repet_fichas, this.mano3);
 	}
 
 	private boolean procesarJugada(Jugador jugador, Jugada jugada) {
@@ -101,9 +88,6 @@ class Qwirkle
 		int largo_nueva_mano = 0;
 		boolean esRepetido = false;
 
-		System.out.println("Mano original: ");
-		this.showMano(pJugador);
-
 		while(this.opcion < 4){
 
 			do{
@@ -119,8 +103,11 @@ class Qwirkle
 				if(opcion==1)
 				{
 					System.out.println("Elegiste seleccionar mi jugada");
+
+					System.out.println("Mano original: ");
+					this.showMano(pJugador);
 					
-					work_fichas_mano = this.removeRepeatsMano(pJugador);
+					work_fichas_mano = this.getHandWithOutRepet(pJugador);
 					if(work_fichas_mano.size() != 6)
 					{
 						esRepetido = true;
@@ -139,13 +126,14 @@ class Qwirkle
 					setJugadaTablero(playToSet);//Coloco jugada en el tablero
 					showPtsJugador(jugadorActual);//Imprimo pts
 
+					this.updateManoPlayer(jugadorActual, playToSet);
+
 					largo_nueva_mano = 6 - playToSet.size();
 					if(esRepetido)
 					{
 						largo_nueva_mano++;
 					}
-					this.updateManoPlayer(jugadorActual, largo_nueva_mano);
-
+					jugadorActual.updateManoPlayer(getFichasDeLaBolsa(largo_nueva_mano));
 				}
 				else	//Salir del juego
 					break;
@@ -184,7 +172,7 @@ class Qwirkle
 		}
 	}
 
-	public ArrayList<Ficha> removeRepeatsMano(Jugador pJugador)
+	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
 	{
 		int largo_mano = pJugador.getCantMano()-1;
 		ArrayList<Ficha> mano_fichas = pJugador.getMano();

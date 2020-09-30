@@ -44,4 +44,12 @@ class Jugador
 	{
 		this.nombre = pNombre;
 	}
+
+	public void updateManoPlayer(ArrayList<Ficha> pLista)
+	{
+		for (Ficha pFicha : pLista) 
+		{
+			this.mano.add(pFicha);	
+		}
+	}
 }
