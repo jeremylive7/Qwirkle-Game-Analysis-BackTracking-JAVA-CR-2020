@@ -54,9 +54,17 @@ public class BackTraking
 				while(tablero.getFichas()[abajo][parInicial.y]!=null&&abajo>0)abajo--;
 				if(arriba-abajo==5)return true;
 			}
-			//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la jugada
-			//también falta considerar si el espacio que falta para el qwirkle fácil está como en medio 
-			//y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular pero con el espacio vacío atravezado
+			//1,2,3 fichas en el tablero
+			//caso si la jugada de la mano que seteo
+			
+			//Se complete una jugada de 4,3,2
+			//Map<Ficha,Integer>
+			//(Cna, Crojo, Tazul)
+			//Cazul, Cmorado, {Cna, Crojo}, ...{Camarillo, Cverde} recorro /Map<Ficha,Integer>
+
+			//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la jugada 
+			//también falta considerar si el espacio que falta para el qwirkle fácil está como en medio ?
+			//y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular pero con el espacio vacío atravezado ?
 			//también algo que faltaría pero sería ya demasiado (tal vez), es que si la ficha que falta para ese qwirkle fácil
 			//ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
 		}
@@ -68,7 +76,7 @@ public class BackTraking
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
-		int cant_man = pFichas.size();
+		int cant_man = pFichas.size()-1;
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
 		for(int pI=0; pI<cant_man; pI++)
@@ -97,11 +105,36 @@ public class BackTraking
 			lista_fichas_slices.add(combination_list_1);
 			lista_fichas_slices.add(combination_list_2);
 			grupos.put(pFichas.get(pI), lista_fichas_slices);
-			
-		}
-		
 
+			if(combination_list_1.size() == 2)
+			{
+				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
+
+				lista_fichas_slices.add(combination_list_1_1);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+
+			if(combination_list_2.size() == 2)
+			{
+				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
+
+				lista_fichas_slices.add(combination_list_1_2);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+		}
 		return grupos;
+	}
+	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
+	{
+		int contador = 0;
+		ArrayList<Ficha> combination = new ArrayList<Ficha>();
+
+		for (int index=1; index >= 0; index--) 
+		{
+				combination.add(contador, pList.get(index));
+				contador = 1;
+		}
+		return combination;
 	}
 	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
 		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
