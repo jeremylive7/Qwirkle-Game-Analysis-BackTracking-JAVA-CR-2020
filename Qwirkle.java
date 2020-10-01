@@ -23,7 +23,6 @@ class Qwirkle
 		
 		this.bolsa_fichas = new ArrayList<>();
 		this.fullFichasToBolsa();
-		//this.showBolsaFichas();
 
 		this.jugador1 = new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
@@ -35,19 +34,15 @@ class Qwirkle
 		this.imprimirTablero();
 	}
 
-	public void menu(Qwirkle pGame)
+	public void menu()
 	{
-		Tablero table = pGame.getTablero();
-		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
-
-		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
-
+		Ficha[][] fichas_tablero = this.tablero.getFichas();
 		Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
+
+		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
+		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
 		ArrayList<Ficha> fichas_repet_hand = new ArrayList<Ficha>();
 		ArraList<Ficha> hand_player = jugadorActual.getMano();
-		Ficha[][] fichas_tablero = table.getFichas();
 
 		int largo_nueva_mano = 0;
 		boolean esRepetido = false;
@@ -70,32 +65,25 @@ class Qwirkle
 
 					System.out.println("Mano original: ");
 					this.showMano(pJugador);
-					
+
+					work_fichas_mano = this.getHandWithOutRepet(pJugador);
+					System.out.println("\nNueva mano con repetidas eliminadas: ");
+					this.imprimirMano(work_fichas_mano);
+
 					fichas_repet_hand = this.getRepetFicha(pJugador);
 					if(fichas_repet_hand.size() > 0)
 					{
 						esRepetido = true;
 					}
 
-					work_fichas_mano = this.getHandWithOutRepet(pJugador);
+					this.repet_fichas = this.updateRepetFichas(repetFichas_withHand, fichas_tablero);
+					repetFichas_withHand = this.updateRepetFichasWithHand(repetFichas_withHand, hand_player, fichas_tablero);
 
-					System.out.println("\nNueva mano con repetidas eliminadas: ");
-					this.imprimirMano(work_fichas_mano);
-					
-					grupitos = this.getPossiblePlaysHand(work_fichas_mano);
-					this.showPossiblePlaysHand(grupitos);
+					BackTraking algoritmo = new BackTraking(tablero, work_fichas_mano, repetFichas_withHand);
 
-					jugadas_totales = getMostHigherScorePlay(getTotalJugadas(grupitos));
-					imprimirJugadaTotales(jugadas_totales);
-
-					this.repet_fichas = updateRepetFichas(repetFichas_withHand, fichas_tablero);
-					repetFichas_withHand = updateRepetFichasWithHand(repetFichas_withHand, hand_player, fichas_tablero);
-
-					//Ya aqui estan los datos para realizar las podas del mejorado.
-
-					playToSet = seleccionoJugada(table, jugadorActual);//Empieza turno, selecciono mi jugada
-					this.tablero.procesarJugada(playToSet);//Coloco jugada en el tablero
-					showPtsJugador(jugadorActual);//Imprimo pts
+					playToSet = algoritmo.getJugadaBasico();//Empieza turno, selecciono mi jugada
+					this.procesarJugada(jugadorActual, playToSet);//Coloco jugada en el tablero
+					this.showPtsJugador(jugadorActual);//Imprimo pts
 				
 					largo_nueva_mano = 6 - playToSet.size();
 					if(esRepetido)
@@ -116,6 +104,45 @@ class Qwirkle
 			}while(true);
 		}
 	}
+
+	private boolean procesarJugada(Jugador jugador, Jugada jugada) 
+	{
+		int cantPuntos = this.tablero.getPuntos(jugada);
+		
+		if (cantPuntos == 0)
+			return false;
+
+		this.frame.mostrarJugada(jugada);
+		this.tablero.procesarJugada(jugada);
+		jugador.procesarJugada(jugada, cantPuntos);
+
+		return true;
+	}
+
+/*	private void turno(Jugador jugador) 
+	{
+		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano());
+		while (true)
+			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
+				// procesar jugada devuelve false si no se puede procesar la jugada
+				// Y devuelve true si la procesa con éxito
+				break;
+		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
+	}
+
+	public void jugadorHumanoHizoSuJugada() 
+	{
+
+		// juega algoritmo básico
+		turno(jugador2);
+		// juega algoritmo mejorado
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+		} // Para que haya un tiempo entre las jugadas de cada uno
+		turno(jugador3);
+		
+	}*/
 
 	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero)
 	{
@@ -289,17 +316,6 @@ class Qwirkle
 	{
 		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
-	
-	public Jugada seleccionoJugada(Tablero pTable, Jugador pPlayer)
-	{
-		ArrayList<Ficha> player_hand = pPlayer.getMano();
-		
-		List<Jugada> jugadasCompletas = pTable.getJugadas(pTable.getPossiblePlaysHand(player_hand));
-		pTable.setPointsAllPlays(jugadasCompletas);
-		jugadasCompletas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
-
-		return jugadasCompletas.get(0);
-	}
 
 	private String getSimboloColor(Color c)
 	{
@@ -364,6 +380,7 @@ class Qwirkle
 
 	public void showPtsJugador(Jugador pJugador)
 	{
+		System.out.println("Puntos del jugador " + pJugador.getNombre() + " : ");
 		System.out.println(pJugador.getScore().getPtsTotales());
 	}
 
@@ -433,42 +450,6 @@ class Qwirkle
 				}
 			}
 		}
-	}
-
-	private boolean procesarJugada(Jugador jugador, Jugada jugada) 
-	{
-		int cantPuntos = tablero.getPuntos(jugada);
-		if (cantPuntos == 0)
-			return false;
-		frame.mostrarJugada(jugada);
-		tablero.procesarJugada(jugada);
-		jugador.procesarJugada(jugada,cantPuntos);
-		return true;
-	}
-
-	private void turno(Jugador jugador) 
-	{
-		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano());
-		while (true)
-			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
-				// procesar jugada devuelve false si no se puede procesar la jugada
-				// Y devuelve true si la procesa con éxito
-				break;
-		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
-	}
-
-	public void jugadorHumanoHizoSuJugada() 
-	{
-
-		// juega algoritmo básico
-		turno(jugador2);
-		// juega algoritmo mejorado
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-		} // Para que haya un tiempo entre las jugadas de cada uno
-		turno(jugador3);
-		
 	}
 	
 	public void mostrarVentana()

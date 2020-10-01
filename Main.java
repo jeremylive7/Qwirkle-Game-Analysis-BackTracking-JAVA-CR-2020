@@ -9,7 +9,7 @@ class Main
 		qwirkle.mostrarVentana();
 		qwirkle.frame.mostrarTablero();
 
-		qwirkle.menu(qwirkle);
+		qwirkle.menu();
 
 		System.exit(0);
 	}

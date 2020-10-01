@@ -14,54 +14,75 @@ public class BackTraking
 	 */
 	private static final int SLFSUEQ=12;
 	private Tablero tablero;
-	private Set<Ficha>mano;
-	private List<Jugada>jugadas;
+	private ArrayList<Ficha> mano;
+	private List<Jugada> jugadas;
 	public final Random r=new Random();
+
+	private Map<Ficha, Integer> repet_fichas;
+
 	//Constructor
-	BackTraking(Tablero tablero,ArrayList<Ficha>mano) 
+	BackTraking(Tablero pTablero, ArrayList<Ficha> pMano, Map<Ficha, Integer> pRepet) 
 	{		
-		this.tablero=tablero;
-		this.mano=new HashSet<>(mano);
+		this.tablero = pTablero;
+		this.mano = pMano;
+		this.repet_fichas = pRepet;
 	}
 	
-	public Jugada getJugadaBasico(){
-		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<Ficha>(mano)));
-		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
-		return jugadas.get(0);
-	}
-	public Jugada getJugadaMejorado(){
-		getJugadaBasico();
-		ejecutarMejorado();
-		return jugadas.get(0);
-	}
-	private boolean cumpleAlgunCriterioDePoda(Jugada jugada){
-		Boolean esPorFila=jugada.isLine;
-		ParFichaPosicion parInicial=jugada.pares.get(0);
-		//para el criterio de no ponerle un qwirkle fácil al adversario
-		if(jugada.puntos<SLFSUEQ){
-			if(esPorFila==null||esPorFila){
-				int derecha=parInicial.y;
-				while(tablero.getFichas()[parInicial.x][derecha]!=null&&derecha<Tablero.MATRIX_SIDE - 1)
-					derecha++;// Busca por fila a la derecha algún lugar nulo
-				int izquierda=parInicial.y;
-				while(tablero.getFichas()[parInicial.x][izquierda]!=null&&izquierda>0)izquierda--;
-				if(derecha-izquierda==5)return true;
-			}
-			if (esPorFila==null||!esPorFila){
-				int arriba=parInicial.x;
-				while(tablero.getFichas()[arriba][parInicial.y]!=null&&arriba<Tablero.MATRIX_SIDE-1)arriba++;
-				int abajo=parInicial.x;
-				while(tablero.getFichas()[abajo][parInicial.y]!=null&&abajo>0)abajo--;
-				if(arriba-abajo==5)return true;
-			}
-			//1,2,3 fichas en el tablero
-			//caso si la jugada de la mano que seteo
-			
-			//Se complete una jugada de 4,3,2
-			//Map<Ficha,Integer>
-			//(Cna, Crojo, Tazul)
-			//Cazul, Cmorado, {Cna, Crojo}, ...{Camarillo, Cverde} recorro /Map<Ficha,Integer>
+	public Jugada getJugadaBasico()
+	{
+		this.jugadas = this.getJugadas(this.getPossiblePlaysHand(this.mano));
+		this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 
+		return this.jugadas.get(0);
+	}
+
+	public Jugada getJugadaMejorado()
+	{
+		this.getJugadaBasico();
+		this.ejecutarMejorado();
+	
+		return this.jugadas.get(0);
+	}
+	
+	private boolean cumpleAlgunCriterioDePoda(Jugada pJugada)
+	{
+		Boolean esPorFila=pJugada.isLine;
+		Jugadita parInicial=this.pJugada.pares.get(0);
+		ArrayList<Ficha> repet_fichas_tres = getFullRepetFichas(this.repet_fichas);
+		//para el criterio de no ponerle un qwirkle fácil al adversario
+		if(pJugada.puntos<SLFSUEQ)
+		{
+			if(esPorFila==null||esPorFila)
+			{
+				int derecha = parInicial.y;
+				while(this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
+					derecha++;// Busca por fila a la derecha algún lugar nulo
+				int izquierda = parInicial.y;
+				while(this.tablero.getFichas()[parInicial.x][izquierda] != null&&izquierda>0)izquierda--;
+				if(derecha - izquierda == 5)return true;
+			}
+			if (esPorFila == null || !esPorFila)
+			{
+				int arriba = parInicial.x;
+				while(tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)arriba++;
+				int abajo = parInicial.x;
+				while(tablero.getFichas()[abajo][parInicial.y] != null && abajo>0)abajo--;
+				if(arriba - abajo == 5)return true;
+			}
+			//Si tengo 1, 2 o 3 fichas en el tablero en caso de que si la jugada de la mano que seteo completa una jugada de 4, 3 o 2
+			//mano: (Cna, Crojo, Tazul)
+			//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
+			if(repet_fichas_tres.size() != 0)
+			{
+				for (Ficha pFicha : repet_fichas_tres) 
+				{
+					//Escoger la jugada pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
+					//poner serian las que debo buscar para hacer una jugada inteligente.	
+				}
+			}
+
+
+			//Casos:
 			//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la jugada 
 			//también falta considerar si el espacio que falta para el qwirkle fácil está como en medio ?
 			//y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular pero con el espacio vacío atravezado ?
@@ -70,8 +91,126 @@ public class BackTraking
 		}
 		return false;
 	}
-	private void ejecutarMejorado(){
-		jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(jugada));
+
+	public ArrayList<Ficha> getFullRepetFichas(Map<Ficha, Integer> pRepet)
+	{
+		ArrayList<Ficha> pLista = new ArrayList<Ficha>();
+		
+		for(Entry<Ficha,Integer> lista : pRepet.placesToPlay.entrySet()) 
+		{
+			int total_repet = lista.getValue();
+			if(total_repet == 3)
+			{
+				pLista.add(lista.getKey());
+			}
+		}
+		return pLista;
+	}
+
+	private void ejecutarMejorado()
+	{
+		this.jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(this.jugada));
+	}
+
+
+	public List<Jugada> getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>> grupitos)
+	{
+		List<Jugada> todasLasPosiblesJugadasCompletas = new ArrayList<>();
+
+		for(Entry<Integer,Set<Integer>> entradaLugar : tablero.placesToPlay.entrySet()) 
+		{
+			for(Integer y : entradaLugar.getValue())
+			{
+				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito : grupitos.entrySet())
+				{
+					if(this.tablero.getCualesPuedoPoner(entradaLugar.getKey(),y).contains(entradaGrupito.getKey()))
+					{
+						this.generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, entradaLugar.getKey(), y);						
+					}
+				}
+			}
+		}
+		return todasLasPosiblesJugadasCompletas;
+	}
+
+	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
+		List<Jugada>jugadasCompletas,int x, int y)
+	{
+			this.generarArbolDeJugadas(jugadaDeLaMano.getValue().get(0), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
+
+			if(!jugadaDeLaMano.getValue().get(1).isEmpty())
+				this.generarArbolDeJugadas(jugadaDeLaMano.getValue().get(1), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
+	}
+
+	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
+					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
+					Jugada jugada,int x,int y,Boolean esPorFila)
+	{
+		//lo que ingresa es sí o sí una jugada válida
+		fichasQueFaltanPorColocar.remove(fichaInicial);
+		jugada.pares.add(new ParFichaPosicion(x, y, fichaInicial));
+		jugada.isLine = esPorFila;
+		this.tablero.getFichas()[x][y] = fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
+		
+		if(fichasQueFaltanPorColocar.isEmpty())
+		{ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
+			jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+		}
+		else{
+			boolean flag=false;
+			for (int indiceFichasPorColocar = 0; indiceFichasPorColocar < fichasQueFaltanPorColocar.size(); indiceFichasPorColocar++)
+			{//Para cada ficha
+				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
+				
+				if(esPorFila == null || esPorFila)
+				{
+					int nextY = y;
+					
+					while(this.tablero.getFichas()[x][nextY] != null && nextY < Tablero.MATRIX_SIDE-1) nextY++;//Busca por fila a la derecha algún lugar nulo
+					
+					if(this.tablero.getCualesPuedoPoner(x,nextY).contains(fichaPorColocar))
+					{
+						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
+						flag=true;
+					}	
+					nextY = y;
+
+					while(this.tablero.getFichas()[x][nextY] != null && nextY > 0) nextY--;//
+					
+					if(this.tablero.getCualesPuedoPoner(x,nextY).contains(fichaPorColocar))
+					{
+						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
+						flag = true;
+					}	
+				}
+				if (esPorFila == null || !esPorFila)
+				{
+					int nextX = x;
+
+					while(this.tablero.getFichas()[nextX][y] != null && nextX < Tablero.MATRIX_SIDE-1) nextX++;
+					
+					if(this.tablero.getCualesPuedoPoner(nextX, y).contains(fichaPorColocar))
+					{
+						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
+						flag = true;
+					}
+
+					nextX = x;
+
+					while(this.tablero.getFichas()[nextX][y] != null && nextX > 0) nextX--;
+					
+					if(this.tablero.getCualesPuedoPoner(nextX, y).contains(fichaPorColocar))
+					{
+						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
+						flag = true;
+					}
+				}
+			}//Si no encontró lugar para poner 
+			if(!flag) jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+		}
+		this.tablero.getFichas()[x][y]=null;
+		jugada.pares.remove(jugada.pares.size()-1);
+		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
@@ -124,6 +263,7 @@ public class BackTraking
 		}
 		return grupos;
 	}
+
 	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
 	{
 		int contador = 0;
@@ -136,72 +276,5 @@ public class BackTraking
 		}
 		return combination;
 	}
-	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
-		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
-		for(Entry<Integer,Set<Integer>> entradaLugar:tablero.placesToPlay.entrySet()){
-			for(Integer y:entradaLugar.getValue()){
-				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
-					if(tablero.getCualesPuedoPoner(entradaLugar.getKey(),y).contains(entradaGrupito.getKey())){
-						generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, entradaLugar.getKey(), y);						
-					}
-				}
-			}
-		}
-		return todasLasPosiblesJugadasCompletas;
-	}
-	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
-		List<Jugada>jugadasCompletas,int x, int y){
-			generarArbolDeJugadas(jugadaDeLaMano.getValue().get(0), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);						
-			if(!jugadaDeLaMano.getValue().get(1).isEmpty())
-				generarArbolDeJugadas(jugadaDeLaMano.getValue().get(1), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
-	}
-	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
-					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
-					Jugada jugada,int x,int y,Boolean esPorFila){
-		//lo que ingresa es sí o sí una jugada válida
-		fichasQueFaltanPorColocar.remove(fichaInicial);
-		jugada.pares.add(new ParFichaPosicion(x, y, fichaInicial));
-		jugada.isLine = esPorFila;
-		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
-		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
-			jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
-		}
-		else{
-			boolean flag=false;
-			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
-				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
-				if(esPorFila==null||esPorFila){
-					int nextY=y;
-					while(tablero.getFichas()[x][nextY]!=null&&nextY<Tablero.MATRIX_SIDE-1)nextY++;//Busca por fila a la derecha algún lugar nulo
-					if(tablero.getCualesPuedoPoner(x,nextY).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
-						flag=true;
-					}	
-					nextY=y;
-					while(tablero.getFichas()[x][nextY]!=null&&nextY>0)nextY--;//
-					if(tablero.getCualesPuedoPoner(x,nextY).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
-						flag=true;
-					}	
-				}if (esPorFila==null||!esPorFila){
-					int nextX=x;
-					while(tablero.getFichas()[nextX][y]!=null&&nextX<Tablero.MATRIX_SIDE-1)nextX++;
-					if(tablero.getCualesPuedoPoner(nextX, y).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
-						flag=true;
-					}
-					nextX=x;
-					while(tablero.getFichas()[nextX][y]!=null&&nextX>0)nextX--;
-					if(tablero.getCualesPuedoPoner(nextX, y).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
-						flag=true;
-					}
-				}
-			}//Si no encontró lugar para poner 
-			if(!flag) jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
-		}
-		tablero.getFichas()[x][y]=null;
-		jugada.pares.remove(jugada.pares.size()-1);
-		fichasQueFaltanPorColocar.add(fichaInicial);
-	}
+
 }
