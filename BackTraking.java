@@ -332,7 +332,7 @@ public class BackTraking
 			if(!flag) jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 		}
 		this.tablero.getFichas()[x][y]=null;
-		jugada.pares.remove(jugada.pares.size()-1);
+		jugada.jugaditas.remove(jugada.jugaditas.size()-1);
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
 
