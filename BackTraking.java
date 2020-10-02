@@ -66,10 +66,10 @@ public class BackTraking
 		Jugadita parInicial = this.pJugada.jugaditas.get(0);
 		ArrayList<Jugadita> play_to_play = this.pJugada.jugaditas;
 		ArrayList<Ficha> repet_fichas_tres = this.getFullRepetFichas(this.repet_fichas);
-		ArrayList<Ficha> jugada_semicompleta_line = ArrayList<Ficha>();
-		ArrayList<Ficha> jugada_semicompleta_colum = ArrayList<Ficha>();
-		ArrayList<Ficha> fichas_miss_put_line = ArrayList<Ficha>();
-		ArrayList<Ficha> fichas_miss_put_colum = ArrayList<Ficha>();
+		ArrayList<Ficha> jugada_semicompleta_line = new ArrayList<Ficha>();
+		ArrayList<Ficha> jugada_semicompleta_colum = new ArrayList<Ficha>();
+		ArrayList<Ficha> fichas_miss_put_line = new ArrayList<Ficha>();
+		ArrayList<Ficha> fichas_miss_put_colum = new ArrayList<Ficha>();
 		Boolean esPorFila = pJugada.isLine;
 
 		//para el criterio de no ponerle un qwirkle fácil al adversario
