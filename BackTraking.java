@@ -46,7 +46,7 @@ public class BackTraking
 		//Tiene el jugador alguna ficha repetida? Que se vaya a colocar esa jugada. De las cuales le de mas puntos.
 		if(repet_fichas_hand.size() != 0)
 		{
-			this.setJugadaWithRepetFicha();
+			this.setJugadaWithRepetFicha(repet_fichas_hand);
 		}
 		else
 		{
@@ -71,102 +71,93 @@ public class BackTraking
 		ArrayList<Ficha> fichas_miss_put_line = new ArrayList<Ficha>();
 		ArrayList<Ficha> fichas_miss_put_colum = new ArrayList<Ficha>();
 		Boolean esPorFila = pJugada.isLine;
+		int derecha = parInicial.y;
+		int izquierda = parInicial.y;
+		int arriba = parInicial.x;
+		int abajo = parInicial.x;
 
 		//para el criterio de no ponerle un qwirkle fácil al adversario
+		//mano: (Cna, Crojo, Tazul)
+		//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
+		//fichas que han salido tres veces de la bolsa: (Camarillo)
+
+		//{(Cazul, Cmorado, Cna, Crojo)}  (Camarillo, Cverde)
+		//repet_fichas_tress = (Camarillo);
 		if(pJugada.puntos < SLFSUEQ)
 		{
 			if(esPorFila == null || esPorFila)
 			{
-				int derecha = parInicial.y;
 				while(this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
 					derecha++;// Busca por fila a la derecha algún lugar nulo
 
-				int izquierda = parInicial.y;
 				while(this.tablero.getFichas()[parInicial.x][izquierda] != null && izquierda>0)
 					izquierda--;
 
 				if(derecha - izquierda == 5) return true;
+
+				this.jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
+				this.fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
+
+				if(isItEnterMissPutLine(izquierda, derecha, fichas_miss_put_line))
+				{
+					//Caso si la jugada semiCompleta es de 3 o 4 fichas
+					if(fichas_miss_put_line.size() >= 2 && fichas_miss_put_line.size() <= 3)
+					{
+						for (Ficha pFicha : repet_fichas_tres) 
+						{
+							//Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
+							//poner serian las que debo buscar para hacer una jugada inteligente.	
+							if(!isFichaHere(pFicha, fichas_miss_put_line))
+							{
+								return true;
+							}
+						}					
+					}
+				}
+
+				if(repet_fichas_tres.size() != 0 && derecha - izquierda <= 4)
+				{
+					return true;
+				}
 			}
 
 			if (esPorFila == null || !esPorFila)
 			{
-				int abajo = parInicial.x;
 				while(this.tablero.getFichas()[abajo][parInicial.y] != null && abajo < Tablero.MATRIX_SIDE - 1)
 					abajo++;
 
-				int arriba = parInicial.x;
 				while(this.tablero.getFichas()[arriba][parInicial.y] != null && arriba > 0)
 					arriba--;
 
 				if(abajo - arriba == 5) return true;
+
+				this.jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
+				this.fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
+
+				if(isItEnterMissPutColum(arriba, abajo, fichas_miss_put_colum))
+				{
+					if(fichas_miss_put_colum.size() >= 2 && fichas_miss_put_colum.size() <= 3)
+					{
+						for (Ficha pFicha : repet_fichas_tres) 
+						{
+							if(!isFichaHere(pFicha, fichas_miss_put_colum))
+							{
+								return true;
+							}
+						}					
+					}
+				}
+
+				if(repet_fichas_tres.size() != 0 && derecha - izquierda <= 4)
+				{
+					return true;
+				}
 			}
 
 			//Si tengo 1, 2 o 3 fichas para hacer play en caso de que si la jugada de la mano que seteo completa una jugada de 4, 3 o 2
 			//mano: (Cna, Crojo, Tazul)
 			//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
 			//fichas que han salido tres veces de la bolsa: (Camarillo)
-			if(repet_fichas_tres.size() != 0)
-			{
-				if(esPorFila == null || esPorFila)
-				{
-					this.jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
-					this.fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
-					if(isItEnterMissPutLine(izquierda, derecha, fichas_miss_put_line))
-					{
-						//Caso si la jugada semiCompleta es de 3 o 4 fichas
-						if(fichas_miss_put_line.size() >= 2 && fichas_miss_put_line.size() <= 3)
-						{
-							for (Ficha pFicha : repet_fichas_tres) 
-							{
-								//Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
-								//poner serian las que debo buscar para hacer una jugada inteligente.	
-								if(!isFichaHere(pFicha, fichas_miss_put_line))
-								{
-									return true;
-								}
-							}					
-						}
-					}
-				}
-				if (esPorFila == null || !esPorFila)
-				{
-					this.jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
-					this.fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
-
-					if(isItEnterMissPutColum(izquierda, derecha, fichas_miss_put_colum))
-					{
-						if(fichas_miss_put_colum.size() >= 2 && fichas_miss_put_colum.size() <= 3)
-						{
-							for (Ficha pFicha : repet_fichas_tres) 
-							{
-								if(!isFichaHere(pFicha, fichas_miss_put_colum))
-								{
-									return true;
-								}
-							}					
-						}
-					}
-				}
-
-
-/*				
-				//Caso si la jugada semiCompleta es de 3 o 4 fichas
-				if(fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() == 2
-					|| fichas_miss_put_line.size() >= 2 && fichas_miss_put_colum.size() == 2
-					|| fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() >= 2)
-				{
-					for (Ficha pFicha : repet_fichas_tres) 
-					{
-						//Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
-						//poner serian las que debo buscar para hacer una jugada inteligente.	
-						if(!isFichaHere(pFicha, fichas_miss_put_line) || !isFichaHere(pFicha, fichas_miss_put_colum))
-						{
-							return true;
-						}
-					}					
-				}
-*/
-			}
 
 
 			//Casos:
