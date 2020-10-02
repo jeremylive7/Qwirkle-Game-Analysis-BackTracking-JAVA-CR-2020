@@ -40,7 +40,6 @@ class Qwirkle
 		Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
 
 		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
-		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
 		ArrayList<Ficha> fichas_repet_hand = new ArrayList<Ficha>();
 		ArraList<Ficha> hand_player = jugadorActual.getMano();
 
@@ -79,7 +78,7 @@ class Qwirkle
 					this.repet_fichas = this.updateRepetFichas(repetFichas_withHand, fichas_tablero);
 					repetFichas_withHand = this.updateRepetFichasWithHand(repetFichas_withHand, hand_player, fichas_tablero);
 
-					BackTraking algoritmo = new BackTraking(tablero, work_fichas_mano, repetFichas_withHand);
+					BackTraking algoritmo = new BackTraking(tablero, hand_player, repetFichas_withHand);
 
 					playToSet = algoritmo.getJugadaBasico();//Empieza turno, selecciono mi jugada
 					this.procesarJugada(jugadorActual, playToSet);//Coloco jugada en el tablero
@@ -220,9 +219,9 @@ class Qwirkle
 		
 	}
 
-	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
+	public ArrayList<Ficha> getHandWithOutRepet(ArrayList<Ficha> pMano)
 	{
-		ArrayList<Ficha> mano_fichas = pJugador.getMano();
+		ArrayList<Ficha> mano_fichas = pMano;
 		int largo_mano = mano_fichas.size()-1;
 
 		for (int index=0; index<largo_mano; index++) 

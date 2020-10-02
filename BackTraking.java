@@ -24,8 +24,8 @@ public class BackTraking
 	BackTraking(Tablero pTablero, ArrayList<Ficha> pMano, Map<Ficha, Integer> pRepet) 
 	{		
 		this.tablero = pTablero;
-		this.mano = pMano;
 		this.repet_fichas = pRepet;
+		this.mano = this.getHandWithOutRepet(pMano);
 	}
 	
 	public Jugada getJugadaBasico()
@@ -38,47 +38,101 @@ public class BackTraking
 
 	public Jugada getJugadaMejorado()
 	{
-		this.getJugadaBasico();
-		this.ejecutarMejorado();
+		ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(pMano);
+	
+		this.jugadas = this.getJugadas(this.getPossiblePlaysHand(this.mano));
+		this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
+	
+		//Tiene el jugador alguna ficha repetida? Que se vaya a colocar esa jugada. De las cuales le de mas puntos.
+		if(repet_fichas_hand.size() != 0)
+		{
+			this.setJugadaWithRepetFicha();
+		}
+		else
+		{
+			this.ejecutarMejorado();
+		}
 	
 		return this.jugadas.get(0);
 	}
 	
+	private void ejecutarMejorado()
+	{
+		this.jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(jugada));
+	}
+
 	private boolean cumpleAlgunCriterioDePoda(Jugada pJugada)
 	{
-		Boolean esPorFila=pJugada.isLine;
-		Jugadita parInicial=this.pJugada.pares.get(0);
-		ArrayList<Ficha> repet_fichas_tres = getFullRepetFichas(this.repet_fichas);
+		Jugadita parInicial = this.pJugada.jugaditas.get(0);
+		ArrayList<Jugadita> play_to_play = this.pJugada.jugaditas;
+		ArrayList<Ficha> repet_fichas_tres = this.getFullRepetFichas(this.repet_fichas);
+		ArrayList<Ficha> jugada_semicompleta_line = ArrayList<Ficha>();
+		ArrayList<Ficha> jugada_semicompleta_colum = ArrayList<Ficha>();
+		ArrayList<Ficha> fichas_miss_put_line = ArrayList<Ficha>();
+		ArrayList<Ficha> fichas_miss_put_colum = ArrayList<Ficha>();
+		Boolean esPorFila = pJugada.isLine;
+
 		//para el criterio de no ponerle un qwirkle fácil al adversario
-		if(pJugada.puntos<SLFSUEQ)
+		if(pJugada.puntos < SLFSUEQ)
 		{
-			if(esPorFila==null||esPorFila)
+			if(esPorFila == null || esPorFila)
 			{
 				int derecha = parInicial.y;
 				while(this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
 					derecha++;// Busca por fila a la derecha algún lugar nulo
+
 				int izquierda = parInicial.y;
-				while(this.tablero.getFichas()[parInicial.x][izquierda] != null&&izquierda>0)izquierda--;
-				if(derecha - izquierda == 5)return true;
+				while(this.tablero.getFichas()[parInicial.x][izquierda] != null && izquierda>0)
+					izquierda--;
+
+				if(derecha - izquierda == 5) return true;
 			}
+
 			if (esPorFila == null || !esPorFila)
 			{
-				int arriba = parInicial.x;
-				while(tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)arriba++;
 				int abajo = parInicial.x;
-				while(tablero.getFichas()[abajo][parInicial.y] != null && abajo>0)abajo--;
-				if(arriba - abajo == 5)return true;
+				while(this.tablero.getFichas()[abajo][parInicial.y] != null && abajo < Tablero.MATRIX_SIDE - 1)
+					abajo++;
+
+				int arriba = parInicial.x;
+				while(this.tablero.getFichas()[arriba][parInicial.y] != null && arriba > 0)
+					arriba--;
+
+				if(abajo - arriba == 5) return true;
 			}
-			//Si tengo 1, 2 o 3 fichas en el tablero en caso de que si la jugada de la mano que seteo completa una jugada de 4, 3 o 2
+
+			//Si tengo 1, 2 o 3 fichas para hacer play en caso de que si la jugada de la mano que seteo completa una jugada de 4, 3 o 2
 			//mano: (Cna, Crojo, Tazul)
 			//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
+			//fichas que han salido tres veces de la bolsa: (Camarillo)
 			if(repet_fichas_tres.size() != 0)
 			{
-				for (Ficha pFicha : repet_fichas_tres) 
+				this.jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
+				this.jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
+				this.fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
+				this.fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
+
+				//Caso si la jugada semiCompleta es de 4 fichas
+/*				if(fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() == 2
+					|| fichas_miss_put_line.size() >= 2 && fichas_miss_put_colum.size() == 2
+					|| fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() >= 2)
+				{*/
+				if(fichas_miss_put_line.size() >= 2 && fichas_miss_put_colum.size() >= 2)
 				{
-					//Escoger la jugada pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
-					//poner serian las que debo buscar para hacer una jugada inteligente.	
+					for (Ficha pFicha : repet_fichas_tres) 
+					{
+						//Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
+						//poner serian las que debo buscar para hacer una jugada inteligente.	
+						if(!isFichaHere(pFicha, fichas_miss_put_line) || !isFichaHere(pFicha, fichas_miss_put_colum))
+						{
+							return true;
+						}
+					}					
 				}
+
+				//Caso si la jugada semiCompleta es de 3 fichas
+
+
 			}
 
 
@@ -90,6 +144,81 @@ public class BackTraking
 			//ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
 		}
 		return false;
+	}
+
+	public boolean isFichaHere(Ficha pFicha, ArrayList<Ficha> pMiss_putFichas)
+	{
+		boolean flag = false;
+
+		return flag;
+	}
+
+	public ArrayList<Ficha> getFichasMissPut(ArrayList<Ficha> pPlay_semiCompleta)
+	{
+		ArrayList<Ficha> pList = new ArrayList<Ficha>();
+
+
+		return pList;
+	}
+
+	public ArrayList<Ficha> getPlaySemiCompletaLine(int pleft, int pRight, ArrayList<Jugadita> pJugada)
+	{
+		ArrayList<Ficha> pList = new ArrayList<Ficha>();
+
+
+		return pList;
+	}
+
+	public ArrayList<Ficha> getPlaySemiCompletaColum(int pDown, int pUp, ArrayList<Jugadita> pJugada)
+	{
+		ArrayList<Ficha> pList = new ArrayList<Ficha>();
+
+
+		return pList;
+	}
+
+	public void setJugadaWithRepetFicha()
+	{
+
+	}
+
+	public ArrayList<Ficha> getRepetFicha(ArrayList<Fichas> pMano)
+	{
+		ArrayList<Ficha> repetFichas = new ArrayList<Fichas>();
+		ArrayList<Ficha> hand_player = pMano;
+		int largo_mano = hand_player.size()-1;
+		
+		for (int index=0; index<largo_mano; index++) 
+		{
+			for (int indey=index+1; indey<=largo_mano; indey++) 
+			{	
+				if(hand_player.get(index).getFigura()==hand_player.get(indey).getFigura()
+					&&hand_player.get(index).getColor()==hand_player.get(indey).getColor())
+				{
+					repetFichas.add(hand_player.get(indey));
+				}
+			}
+		}
+		return repetFichas;
+	}
+
+	public ArrayList<Ficha> getHandWithOutRepet(ArrayList<Ficha> pMano)
+	{
+		ArrayList<Ficha> mano_fichas = pMano;
+		int largo_mano = mano_fichas.size()-1;
+
+		for (int index=0; index<largo_mano; index++) 
+		{
+			for (int indey=index+1; indey<=largo_mano; indey++) 
+			{	
+				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
+					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
+				{
+					mano_fichas.remove(indey);
+				}
+			}
+		}
+		return mano_fichas;
 	}
 
 	public ArrayList<Ficha> getFullRepetFichas(Map<Ficha, Integer> pRepet)
@@ -106,12 +235,6 @@ public class BackTraking
 		}
 		return pLista;
 	}
-
-	private void ejecutarMejorado()
-	{
-		this.jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(this.jugada));
-	}
-
 
 	public List<Jugada> getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>> grupitos)
 	{

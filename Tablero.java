@@ -47,10 +47,10 @@ class Tablero
 				fichas[xs[i]][ys[i]]==null)//y no hay una ficha ya ahí
 				eliminarLasQueNoCoinciden(getCualesSePuedePoner(xs[i],ys[i]),f);
 	}
-	private void eliminarLasQueNoCoinciden(List<Ficha>fichas,Ficha f){
-		for(int i=0;i<fichas.size();){
-			if(f.noCombina(fichas.get(i)))
-				fichas.remove(i);
+	private void eliminarLasQueNoCoinciden(List<Ficha> pFichas,Ficha f){
+		for(int i=0;i<pFichas.size();){
+			if(f.noCombina(pFichas.get(i)))
+				pFichas.remove(i);
 			else i++;
 		}
 	}

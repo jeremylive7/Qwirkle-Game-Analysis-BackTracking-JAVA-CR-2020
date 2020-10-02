@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Jugada {
-	public List<Jugadita>jugaditas=new ArrayList<>();
+	public List<Jugadita> jugaditas=new ArrayList<>();
 	public int puntos=0;
 	public Boolean isLine;
 	public Jugada copy(int puntos){
