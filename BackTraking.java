@@ -107,17 +107,53 @@ public class BackTraking
 			//fichas que han salido tres veces de la bolsa: (Camarillo)
 			if(repet_fichas_tres.size() != 0)
 			{
-				this.jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
-				this.jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
-				this.fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
-				this.fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
+				if(esPorFila == null || esPorFila)
+				{
+					this.jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
+					this.fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
+					if(isItEnterMissPutLine(izquierda, derecha, fichas_miss_put_line))
+					{
+						//Caso si la jugada semiCompleta es de 3 o 4 fichas
+						if(fichas_miss_put_line.size() >= 2 && fichas_miss_put_line.size() <= 3)
+						{
+							for (Ficha pFicha : repet_fichas_tres) 
+							{
+								//Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
+								//poner serian las que debo buscar para hacer una jugada inteligente.	
+								if(!isFichaHere(pFicha, fichas_miss_put_line))
+								{
+									return true;
+								}
+							}					
+						}
+					}
+				}
+				if (esPorFila == null || !esPorFila)
+				{
+					this.jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
+					this.fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
 
-				//Caso si la jugada semiCompleta es de 4 fichas
-/*				if(fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() == 2
+					if(isItEnterMissPutColum(izquierda, derecha, fichas_miss_put_colum))
+					{
+						if(fichas_miss_put_colum.size() >= 2 && fichas_miss_put_colum.size() <= 3)
+						{
+							for (Ficha pFicha : repet_fichas_tres) 
+							{
+								if(!isFichaHere(pFicha, fichas_miss_put_colum))
+								{
+									return true;
+								}
+							}					
+						}
+					}
+				}
+
+
+/*				
+				//Caso si la jugada semiCompleta es de 3 o 4 fichas
+				if(fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() == 2
 					|| fichas_miss_put_line.size() >= 2 && fichas_miss_put_colum.size() == 2
 					|| fichas_miss_put_line.size() == 2 && fichas_miss_put_colum.size() >= 2)
-				{*/
-				if(fichas_miss_put_line.size() >= 2 && fichas_miss_put_colum.size() >= 2)
 				{
 					for (Ficha pFicha : repet_fichas_tres) 
 					{
@@ -129,10 +165,7 @@ public class BackTraking
 						}
 					}					
 				}
-
-				//Caso si la jugada semiCompleta es de 3 fichas
-
-
+*/
 			}
 
 
@@ -144,6 +177,20 @@ public class BackTraking
 			//ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
 		}
 		return false;
+	}
+
+	public boolean isItEnterMissPutColum(int pleft, int pRight, ArrayList<Jugadita> pMiss_fichas)
+	{
+		boolean flag = false;
+
+		return flag;
+	}
+
+	public boolean isItEnterMissPutLine(int pleft, int pRight, ArrayList<Jugadita> pMiss_fichas)
+	{
+		boolean flag = false;
+
+		return flag;
 	}
 
 	public boolean isFichaHere(Ficha pFicha, ArrayList<Ficha> pMiss_putFichas)
