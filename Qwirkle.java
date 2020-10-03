@@ -111,7 +111,7 @@ class Qwirkle
 
 		this.frame.mostrarJugada(jugada);
 		this.tablero.procesarJugada(jugada);
-		jugador.procesarJugada(jugada, cantPuntos);
+		this.jugador.procesarJugada(jugada, cantPuntos);
 
 		return true;
 	}
