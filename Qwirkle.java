@@ -8,14 +8,14 @@ class Qwirkle
 	private Tablero tablero;
 	private List<Ficha> bolsa_fichas;
 	private int opcion;
-	private InterfazDeUsuario frame;
+	public InterfazDeUsuario frame;
 	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
 			Figura.ROMBO };
 	public static final Color[] COLORES = { Color.AMARILLO, Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO,
 			Color.VERDE };
 	private static final int CANT_CARTAS_EN_LA_MANO = 6;
 
-	private Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Interger>();
+	private Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Integer>();
 	
 	public Qwirkle() 
 	{
@@ -26,8 +26,8 @@ class Qwirkle
 
 		this.jugador1 = new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		jugadorActual = jugador1;
+		this.jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugadorActual = this.jugador1;
 		
 		this.tablero = new Tablero();
 		this.tablero.llenarTableroConEjemplo();
@@ -39,9 +39,9 @@ class Qwirkle
 		Ficha[][] fichas_tablero = this.tablero.getFichas();
 		Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
 
-		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
+		Jugada playToSet = new Jugada();
 		ArrayList<Ficha> fichas_repet_hand = new ArrayList<Ficha>();
-		ArraList<Ficha> hand_player = jugadorActual.getMano();
+		ArrayList<Ficha> hand_player = jugadorActual.getMano();
 
 		int largo_nueva_mano = 0;
 		boolean esRepetido = false;
@@ -63,13 +63,9 @@ class Qwirkle
 					System.out.println("Elegiste seleccionar mi jugada");
 
 					System.out.println("Mano original: ");
-					this.showMano(pJugador);
+					this.showMano(jugadorActual);
 
-					work_fichas_mano = this.getHandWithOutRepet(pJugador);
-					System.out.println("\nNueva mano con repetidas eliminadas: ");
-					this.imprimirMano(work_fichas_mano);
-
-					fichas_repet_hand = this.getRepetFicha(pJugador);
+					fichas_repet_hand = this.getRepetFicha(jugadorActual);
 					if(fichas_repet_hand.size() > 0)
 					{
 						esRepetido = true;
@@ -79,12 +75,14 @@ class Qwirkle
 					repetFichas_withHand = this.updateRepetFichasWithHand(repetFichas_withHand, hand_player, fichas_tablero);
 
 					BackTraking algoritmo = new BackTraking(tablero, hand_player, repetFichas_withHand);
+					//Inicio de tiempo
+					playToSet = algoritmo.getJugadaMejorado();//Empieza turno, selecciono mi jugada
+					//Fin de tiempo.
 
-					playToSet = algoritmo.getJugadaBasico();//Empieza turno, selecciono mi jugada
 					this.procesarJugada(jugadorActual, playToSet);//Coloco jugada en el tablero
 					this.showPtsJugador(jugadorActual);//Imprimo pts
 				
-					largo_nueva_mano = 6 - playToSet.size();
+					largo_nueva_mano = 6 - playToSet.jugaditas.size();
 					if(esRepetido)
 					{
 						largo_nueva_mano+=fichas_repet_hand.size();
@@ -146,7 +144,7 @@ class Qwirkle
 	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero)
 	{
 		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
-		int  pFichas_tablero = pFichasTablero[0].lenght;
+		int  pFichas_tablero = pFichasTablero[0].length;
 
 		for (int indeX = 0; indeX < pFichas_tablero; indeX++)
 		{
@@ -171,13 +169,13 @@ class Qwirkle
 	{
 		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
 
-		for (Ficha pFicha : pFicha) 
+		for (Ficha ficha : pFicha) 
 		{
 			for(Map.Entry<Ficha, Integer> repetFichas:pRepetFichas.entrySet())
 			{
 				Ficha ficha_repet = repetFichas.getKey();  
 	    		Integer value = repetFichas.getValue();
-	    		if(pFicha == ficha_repet)
+	    		if(ficha == ficha_repet)
 	    		{
 	    			value++;
 	    			pRepet_fichas.put(ficha_repet, value);
@@ -190,7 +188,7 @@ class Qwirkle
 
 	public ArrayList<Ficha> getRepetFicha(Jugador pPlay)
 	{
-		ArrayList<Ficha> repetFichas = new ArrayList<Fichas>();
+		ArrayList<Ficha> repetFichas = new ArrayList<Ficha>();
 		ArrayList<Ficha> hand_player = pPlay.getMano();
 		int largo_mano = hand_player.size()-1;
 		
@@ -210,7 +208,7 @@ class Qwirkle
 
 	public void updateManoPlayer(Jugador pPlayer, int pLargoSet)
 	{
-		ArrrayList<Ficha> fichas = getFichasDeLaBolsa(pLargoSet);
+		ArrayList<Ficha> fichas = getFichasDeLaBolsa(pLargoSet);
 
 		for (Ficha pFicha : fichas) 
 		{			
@@ -380,7 +378,7 @@ class Qwirkle
 	public void showPtsJugador(Jugador pJugador)
 	{
 		System.out.println("Puntos del jugador " + pJugador.getNombre() + " : ");
-		System.out.println(pJugador.getScore().getPtsTotales());
+		System.out.println(pJugador.getScore());
 	}
 
 	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
@@ -431,7 +429,7 @@ class Qwirkle
 			String out="\n[ ";
 			for (Ficha ficha : pList) 
 			{
-				out+= fichaToSimbol(pList)+", ";	
+				out+= fichaToSimbol(ficha)+", ";	
 			}
 			System.out.println(out+"]");
 		}

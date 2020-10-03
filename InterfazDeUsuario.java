@@ -13,7 +13,8 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
     }
 
     public void actionPerformed(final java.awt.event.ActionEvent evt) {
-      int cantPuntos=tablero.getCantPuntos(i, j, new Ficha(Figura.ROMBO, Color.ROJO));
+      //int cantPuntos=tablero.getCantPuntos(i, j, new Ficha(Figura.ROMBO, Color.ROJO));
+      int cantPuntos = 0;
       if (cantPuntos > 0){
         botones[i][j].setIcon(new javax.swing.ImageIcon(
             IMAGE_PATH + Figura.ROMBO + Color.ROJO + ".png"));
@@ -44,7 +45,7 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
   }
   
   public void mostrarJugada(Jugada jugada) {
-    for(ParFichaPosicion par:jugada.pares)
+    for(Jugadita par:jugada.jugaditas)
         botones[par.x][par.y].setIcon(new javax.swing.ImageIcon(
           IMAGE_PATH + par.ficha.figura + par.ficha.color + ".png"));
   }

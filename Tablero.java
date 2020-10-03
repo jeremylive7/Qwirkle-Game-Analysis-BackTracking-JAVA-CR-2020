@@ -6,7 +6,7 @@ class Tablero
 {
 	static final int MATRIX_SIDE=6;
 	private final Ficha[][] fichas;
-	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
+	Map<Integer,Map<Integer,ArrayList<Ficha>>>placesToPlay;
 	protected static List<Ficha>todasLasFichas;
 
 	//Constructor
@@ -35,7 +35,7 @@ class Tablero
 		return true;
 	}
 	
-	public List<Ficha>getCualesSePuedePoner(int x,int y){
+	public ArrayList<Ficha>getCualesSePuedePoner(int x,int y){
 		return placesToPlay.computeIfAbsent(x, k->new HashMap<>()).computeIfAbsent(y,k->new ArrayList<>(todasLasFichas));
 	}
 	private void updatePlacesToPlay(Ficha f,int x,int y){

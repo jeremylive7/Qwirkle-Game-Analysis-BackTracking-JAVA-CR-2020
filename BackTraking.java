@@ -15,7 +15,8 @@ public class BackTraking
 	private static final int SLFSUEQ=12;
 	private Tablero tablero;
 	private ArrayList<Ficha> mano;
-	private List<Jugada> jugadas;
+	private ArrayList<Jugada> jugadas;
+	private Jugada jugada;
 	public final Random r=new Random();
 
 	private Map<Ficha, Integer> repet_fichas;
@@ -38,20 +39,20 @@ public class BackTraking
 
 	public Jugada getJugadaMejorado()
 	{
-		ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(pMano);
+		ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(this.mano);
 	
 		//Tiene el jugador alguna ficha repetida? Que se vaya a colocar esa jugada. De las cuales le de mas puntos.
 		if(repet_fichas_hand.size() != 0)
 		{
-			this.jugadas = getPossiblePlaysHand(mano);
-			this.setJugadaWithRepetFicha(repet_fichas_hand, jugadas);
+			this.jugadas = this.getJugadas(this.getPossiblePlaysHand(this.mano));
+			this.jugada = this.setJugadaWithRepetFicha(repet_fichas_hand, this.jugadas);
+			return jugada;
 		}
 		else
 		{
-			this.ejecutarMejorado();								//total
+			this.ejecutarMejorado();						
 
-			this.jugadas = this.getJugadas(this.jugadas);		//total
-
+			this.jugadas = this.getJugadas(this.convertJugadaToMap(this.jugadas));		
 			this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		}
 	
@@ -60,19 +61,33 @@ public class BackTraking
 	
 	private void ejecutarMejorado()
 	{ 
-		this.jugadas = getPossiblePlaysHand(mano);
+		this.jugadas = this.getAllPossibilities(this.getPossiblePlaysHand(mano));
 		this.jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(jugada));
+	}
+
+	private Map<Ficha,ArrayList<ArrayList<Ficha>>> convertJugadaToMap(ArrayList<Jugada> pJugadas)
+	{
+		Map<Ficha,ArrayList<ArrayList<Ficha>>> pTotal_jugadas = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+
+		return pTotal_jugadas;
+	}
+
+	private ArrayList<Jugada> getAllPossibilities(Map<Ficha,ArrayList<ArrayList<Ficha>>> pAllPlays)
+	{
+		ArrayList<Jugada> pJugadas = new ArrayList<Jugada>();
+
+		return pJugadas;
 	}
 
 	private boolean cumpleAlgunCriterioDePoda(Jugada pJugada)
 	{
-		Jugadita parInicial = this.pJugada.jugaditas.get(0);
-		ArrayList<Jugadita> play_to_play = this.pJugada.jugaditas;
+		Jugadita parInicial = pJugada.jugaditas.get(0);
+		ArrayList<Jugadita> play_to_play = pJugada.jugaditas;
 		ArrayList<Ficha> repet_fichas_tres = this.getFullRepetFichas(this.repet_fichas);
-		ArrayList<Ficha> jugada_semicompleta_line = new ArrayList<Ficha>();
-		ArrayList<Ficha> jugada_semicompleta_colum = new ArrayList<Ficha>();
-		ArrayList<Ficha> fichas_miss_put_line = new ArrayList<Ficha>();
-		ArrayList<Ficha> fichas_miss_put_colum = new ArrayList<Ficha>();
+		ArrayList<Jugadita> jugada_semicompleta_line = new ArrayList<Jugadita>();
+		ArrayList<Jugadita> jugada_semicompleta_colum = new ArrayList<Jugadita>();
+		ArrayList<Jugadita> fichas_miss_put_line = new ArrayList<Jugadita>();
+		ArrayList<Jugadita> fichas_miss_put_colum = new ArrayList<Jugadita>();
 		Boolean esPorFila = pJugada.isLine;
 		int derecha = parInicial.y;
 		int izquierda = parInicial.y;
@@ -90,8 +105,8 @@ public class BackTraking
 
 				if(derecha - izquierda == 5) return true;
 
-				this.jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
-				this.fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
+				jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
+				fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
 
 				if(isItEnterMissPutLine(izquierda, derecha, fichas_miss_put_line))
 				{
@@ -126,8 +141,8 @@ public class BackTraking
 
 				if(abajo - arriba == 5) return true;
 
-				this.jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
-				this.fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
+				jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
+				fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
 
 				if(isItEnterMissPutColum(arriba, abajo, fichas_miss_put_colum))
 				{
@@ -148,24 +163,9 @@ public class BackTraking
 					return true;
 				}
 			}
-
-			//Si tengo 1, 2 o 3 fichas para hacer play en caso de que si la jugada de la mano que seteo completa una jugada de 4, 3 o 2
-			//mano: (Cna, Crojo, Tazul)
-			//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
-			//fichas que han salido tres veces de la bolsa: (Camarillo)
-
-		//{(Cazul, Cmorado, Cna, Crojo)}  (Camarillo, Cverde)
-		//repet_fichas_tress = (Camarillo);
-
-			//Casos:
-			//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la jugada 
-			//también falta considerar si el espacio que falta para el qwirkle fácil está como en medio ?
-			//y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular pero con el espacio vacío atravezado ?
-			//también algo que faltaría pero sería ya demasiado (tal vez), es que si la ficha que falta para ese qwirkle fácil
-			//ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
-		}
 		return false;
 	}
+	
 
 	public boolean isItEnterMissPutColum(int pleft, int pRight, ArrayList<Jugadita> pMiss_fichas)
 	{
@@ -181,45 +181,46 @@ public class BackTraking
 		return flag;
 	}
 
-	public boolean isFichaHere(Ficha pFicha, ArrayList<Ficha> pMiss_putFichas)
+	public boolean isFichaHere(Ficha pFicha, ArrayList<Jugadita> pMiss_putFichas)
 	{
 		boolean flag = false;
 
 		return flag;
 	}
 
-	public ArrayList<Ficha> getFichasMissPut(ArrayList<Ficha> pPlay_semiCompleta)
+	public ArrayList<Jugadita> getFichasMissPut(ArrayList<Jugadita> pPlay_semiCompleta)
 	{
-		ArrayList<Ficha> pList = new ArrayList<Ficha>();
+		ArrayList<Jugadita> pList = new ArrayList<Jugadita>();
 
 
 		return pList;
 	}
 
-	public ArrayList<Ficha> getPlaySemiCompletaLine(int pleft, int pRight, ArrayList<Jugadita> pJugada)
+	public ArrayList<Jugadita> getPlaySemiCompletaLine(int pleft, int pRight, ArrayList<Jugadita> pJugada)
 	{
-		ArrayList<Ficha> pList = new ArrayList<Ficha>();
+		ArrayList<Jugadita> pList = new ArrayList<Jugadita>();
 
 
 		return pList;
 	}
 
-	public ArrayList<Ficha> getPlaySemiCompletaColum(int pDown, int pUp, ArrayList<Jugadita> pJugada)
+	public ArrayList<Jugadita> getPlaySemiCompletaColum(int pDown, int pUp, ArrayList<Jugadita> pJugada)
 	{
-		ArrayList<Ficha> pList = new ArrayList<Ficha>();
+		ArrayList<Jugadita> pList = new ArrayList<Jugadita>();
 
 
 		return pList;
 	}
 
-	public void setJugadaWithRepetFicha()
+	public Jugada setJugadaWithRepetFicha(ArrayList<Ficha> pList, ArrayList<Jugada> pPlay)
 	{
-
+		Jugada pJugada = new Jugada();
+		return pJugada;
 	}
 
-	public ArrayList<Ficha> getRepetFicha(ArrayList<Fichas> pMano)
+	public ArrayList<Ficha> getRepetFicha(ArrayList<Ficha> pMano)
 	{
-		ArrayList<Ficha> repetFichas = new ArrayList<Fichas>();
+		ArrayList<Ficha> repetFichas = new ArrayList<Ficha>();
 		ArrayList<Ficha> hand_player = pMano;
 		int largo_mano = hand_player.size()-1;
 		
@@ -260,7 +261,7 @@ public class BackTraking
 	{
 		ArrayList<Ficha> pLista = new ArrayList<Ficha>();
 		
-		for(Entry<Ficha,Integer> lista : pRepet.placesToPlay.entrySet()) 
+		for(Entry<Ficha,Integer> lista : pRepet.entrySet()) 
 		{
 			int total_repet = lista.getValue();
 			if(total_repet == 3)
@@ -271,17 +272,17 @@ public class BackTraking
 		return pLista;
 	}
 
-	public List<Jugada> getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>> grupitos)
+	public ArrayList<Jugada> getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>> grupitos)
 	{
-		List<Jugada> todasLasPosiblesJugadasCompletas = new ArrayList<>();
+		ArrayList<Jugada> todasLasPosiblesJugadasCompletas = new ArrayList<>();
 
-		for(Entry<Integer,Set<Integer>> entradaLugar : tablero.placesToPlay.entrySet()) 
+		for(Entry<Integer,Map<Integer,List<Ficha>>> entradaLugar : this.tablero.placesToPlay.entrySet()) 
 		{
-			for(Integer y : entradaLugar.getValue())
+			for(Integer y : entradaLugar.getKey())
 			{
 				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito : grupitos.entrySet())
 				{
-					if(this.tablero.getCualesPuedoPoner(entradaLugar.getKey(),y).contains(entradaGrupito.getKey()))
+					if(this.tablero.getCualesSePuedePoner(entradaLugar.getKey(),y).contains(entradaGrupito.getKey()))
 					{
 						this.generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, entradaLugar.getKey(), y);						
 					}
@@ -306,7 +307,7 @@ public class BackTraking
 	{
 		//lo que ingresa es sí o sí una jugada válida
 		fichasQueFaltanPorColocar.remove(fichaInicial);
-		jugada.pares.add(new ParFichaPosicion(x, y, fichaInicial));
+		jugada.jugaditas.add(new Jugadita(x, y, fichaInicial));
 		jugada.isLine = esPorFila;
 		this.tablero.getFichas()[x][y] = fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
 		
@@ -326,7 +327,7 @@ public class BackTraking
 					
 					while(this.tablero.getFichas()[x][nextY] != null && nextY < Tablero.MATRIX_SIDE-1) nextY++;//Busca por fila a la derecha algún lugar nulo
 					
-					if(this.tablero.getCualesPuedoPoner(x,nextY).contains(fichaPorColocar))
+					if(this.tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar))
 					{
 						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
 						flag=true;
@@ -335,7 +336,7 @@ public class BackTraking
 
 					while(this.tablero.getFichas()[x][nextY] != null && nextY > 0) nextY--;//
 					
-					if(this.tablero.getCualesPuedoPoner(x,nextY).contains(fichaPorColocar))
+					if(this.tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar))
 					{
 						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
 						flag = true;
@@ -347,7 +348,7 @@ public class BackTraking
 
 					while(this.tablero.getFichas()[nextX][y] != null && nextX < Tablero.MATRIX_SIDE-1) nextX++;
 					
-					if(this.tablero.getCualesPuedoPoner(nextX, y).contains(fichaPorColocar))
+					if(this.tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar))
 					{
 						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
 						flag = true;
@@ -357,7 +358,7 @@ public class BackTraking
 
 					while(this.tablero.getFichas()[nextX][y] != null && nextX > 0) nextX--;
 					
-					if(this.tablero.getCualesPuedoPoner(nextX, y).contains(fichaPorColocar))
+					if(this.tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar))
 					{
 						this.generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
 						flag = true;
@@ -436,3 +437,19 @@ public class BackTraking
 	}
 
 }
+
+
+//Si tengo 1, 2 o 3 fichas para hacer play en caso de que si la jugada de la mano que seteo completa una jugada de 4, 3 o 2
+//mano: (Cna, Crojo, Tazul)
+//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
+//fichas que han salido tres veces de la bolsa: (Camarillo)
+
+//{(Cazul, Cmorado, Cna, Crojo)}  (Camarillo, Cverde)
+//repet_fichas_tress = (Camarillo);
+
+//Casos:
+//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la jugada 
+//también falta considerar si el espacio que falta para el qwirkle fácil está como en medio ?
+//y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular pero con el espacio vacío atravezado ?
+//también algo que faltaría pero sería ya demasiado (tal vez), es que si la ficha que falta para ese qwirkle fácil
+//ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
