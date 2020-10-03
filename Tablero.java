@@ -31,7 +31,7 @@ class Tablero
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
 		updatePlacesToPlay(ficha, x, y);
-		fichas[x][y]=ficha;
+		this.fichas[x][y]=ficha;
 		return true;
 	}
 	
@@ -121,7 +121,7 @@ class Tablero
 	public void startGame()
 	{
 		final int mitadDeLaMatriz=MATRIX_SIDE/2;
-		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
+		this.meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
 	}
 
 }

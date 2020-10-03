@@ -30,22 +30,24 @@ class Qwirkle
 		this.jugadorActual = this.jugador1;
 		
 		this.tablero = new Tablero();
-		this.tablero.llenarTableroConEjemplo();
+		//this.tablero.llenarTableroConEjemplo();
+		this.tablero.startGame();
 		this.imprimirTablero();
 	}
 
 	public void menu()
 	{
+		Map<Ficha, Integer> repetFichas_withHand = new HashMap<Ficha, Integer>();
 		do{
-			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador: " + jugadorActual.getNombre()
+			System.out.println("Es el turno del jugador: " + jugadorActual.getNombre()
 				+ "\nSu mano es: ");
 			this.showMano(jugadorActual);
 
+			this.repet_fichas = this.startAllCeros();
 			this.repet_fichas = this.updateRepetFichas(this.repet_fichas, this.tablero.getFichas());
-			
-			Map<Ficha, Integer> repetFichas_withHand = this.updateRepetFichasWithHand(this.repet_fichas, jugadorActual.getMano(), this.tablero.getFichas());
-			
-			//imprimir repets..
+			repetFichas_withHand = this.updateRepetFichasWithHand(this.repet_fichas, jugadorActual.getMano());
+			System.out.println("\nRepetidas contando la mano.");
+			this.showAllRepetsFichas(repetFichas_withHand);
 
 			//turno(this.jugadorActual, repetFichas_withHand);
 			
@@ -57,23 +59,43 @@ class Qwirkle
 		}while(this.bolsa_fichas.size() != 0);
 	}
 
-	public void showrepets(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
+	public Map<Ficha, Integer> startAllCeros()
 	{
-		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
-		{    
-    	Ficha key = entry.getKey();  
-    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
-    	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
-    		+ ", tiene las siguientes jugadas: ");
-    	
-    	for (ArrayList<Ficha> playList : value) 
+		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
+		ArrayList<Ficha> pTotal_fichas = this.getAllCheaps();
+		Integer initial_number = 0;
+
+		for (Ficha pFicha : pTotal_fichas) 
+		{
+			pList_repet.put(pFicha, initial_number);
+		}
+
+		return pList_repet;
+	}
+
+	public ArrayList<Ficha> getAllCheaps()
+	{
+		ArrayList<Ficha> total_fichas = new ArrayList<Ficha>();
+
+		for (Figura figura:FIGURAS) 
+		{
+			for(Color color:COLORES)
 			{
-				for (Ficha ficha : playList) 
-				{
-					System.out.println(fichaToSimbol(ficha));		
-				}
-				System.out.println("-");
+				total_fichas.add(new Ficha(figura,color));
 			}
+		}
+
+		return total_fichas;
+	}
+
+	public void showAllRepetsFichas(Map<Ficha, Integer> pList_repets)
+	{
+		for(Map.Entry<Ficha, Integer> repets : pList_repets.entrySet())
+		{    
+    	Ficha ficha = repets.getKey();  
+    	Integer value = repets.getValue(); 
+    	System.out.println("\nLa ficha: " + fichaToSimbol(ficha) 
+    		+ ", a salido: " + value);
 		}
 	}
 
@@ -115,22 +137,29 @@ class Qwirkle
 		{
 			for (int indeY = 0; indeY < pFichas_tablero; indeY++)
 			{
-				for(Map.Entry<Ficha, Integer> repetFichas:pRepetFichas.entrySet())
+				for(Map.Entry<Ficha, Integer> repetFichas : pRepet_fichas.entrySet())
 				{
 					Ficha ficha_repet = repetFichas.getKey();  
-		    		Integer value = repetFichas.getValue();
-		    		if(pFichasTablero[indeX][indeY] == ficha_repet)
-		    		{
-		    			value++;
-		    			pRepet_fichas.put(ficha_repet, value);
-		    		}
+	    		Integer value = repetFichas.getValue();
+	    		System.out.println("Hola-"+ficha_repet.getFigura());
+	    		if(pFichasTablero[indeX][indeY] == null)
+	    		{
+	    			break;
+	    		}
+	    		else if(pFichasTablero[indeX][indeY] == ficha_repet)
+	    		{
+		    		System.out.println("La ficha en el tablero es: " + pFichasTablero[indeX][indeY].getFigura()
+	    			+ "\nLa ficha dentro del map_espet es: " + ficha_repet.getFigura());
+	    			value++;
+	    			pRepet_fichas.put(ficha_repet, value);
+	    		}
 				} 	
 			}
 		}
 		return pRepetFichas;
 	}
 
-	public Map<Ficha, Integer> updateRepetFichasWithHand(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFicha, Ficha[][] pFichasTablero)
+	public Map<Ficha, Integer> updateRepetFichasWithHand(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFicha)
 	{
 		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
 
@@ -139,15 +168,14 @@ class Qwirkle
 			for(Map.Entry<Ficha, Integer> repetFichas:pRepetFichas.entrySet())
 			{
 				Ficha ficha_repet = repetFichas.getKey();  
-	    		Integer value = repetFichas.getValue();
-	    		if(ficha == ficha_repet)
-	    		{
-	    			value++;
-	    			pRepet_fichas.put(ficha_repet, value);
-	    		}
+    		Integer value = repetFichas.getValue();
+    		if(ficha == ficha_repet)
+    		{
+    			value += value + 1;
+    			pRepet_fichas.put(ficha_repet, value);
+    		}
 			} 	
 		}
-		pRepetFichas = updateRepetFichas(pRepetFichas, pFichasTablero);
 		return pRepet_fichas;
 	}
 
@@ -344,7 +372,7 @@ class Qwirkle
 			{
 				for(Color color:COLORES)
 				{
-					bolsa_fichas.add(new Ficha(figura,color));
+					this.bolsa_fichas.add(new Ficha(figura,color));
 				}
 			}
 		}
