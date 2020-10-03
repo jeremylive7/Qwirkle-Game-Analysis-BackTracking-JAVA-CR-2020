@@ -39,7 +39,7 @@ public class BackTraking
 
 	public Jugada getJugadaMejorado()
 	{
-		ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(this.mano);
+		//ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(this.mano);
 
 		this.ejecutarMejorado();						
 
@@ -105,10 +105,10 @@ public class BackTraking
 		int abajo = parInicial.x;
 
 		//Poda #1
-		if()
-		{
+		// if()
+		// {
 
-		}
+		// }
 		/*if(pJugada.puntos < SLFSUEQ)
 		{
 			if(esPorFila == null || esPorFila)
@@ -271,9 +271,9 @@ public class BackTraking
 	{
 		ArrayList<Jugada> todasLasPosiblesJugadasCompletas = new ArrayList<>();
 
-		for(Entry<Integer,Map<Integer,List<Ficha>>> entradaLugar : this.tablero.placesToPlay.entrySet()) 
+		for(Entry<Integer,Map<Integer,ArrayList<Ficha>>> entradaLugar : this.tablero.placesToPlay.entrySet()) 
 		{
-			for(Integer y : entradaLugar.getKey())
+			for(Integer y : entradaLugar.getValue().keySet())
 			{
 				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito : grupitos.entrySet())
 				{
@@ -287,7 +287,7 @@ public class BackTraking
 		return todasLasPosiblesJugadasCompletas;
 	}
 
-	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
+	public void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
 		List<Jugada>jugadasCompletas,int x, int y)
 	{
 			this.generarArbolDeJugadas(jugadaDeLaMano.getValue().get(0), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
@@ -296,7 +296,7 @@ public class BackTraking
 				this.generarArbolDeJugadas(jugadaDeLaMano.getValue().get(1), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
 	}
 
-	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
+	public void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
 					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
 					Jugada jugada,int x,int y,Boolean esPorFila)
 	{

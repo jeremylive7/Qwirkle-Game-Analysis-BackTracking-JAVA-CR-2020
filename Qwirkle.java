@@ -6,7 +6,7 @@ class Qwirkle
 	private Jugador jugador1, jugador2, jugador3;
 	private Jugador jugadorActual;
 	public Tablero tablero;
-	private List<Ficha> bolsa_fichas;
+	private ArrayList<Ficha> bolsa_fichas;
 	private int opcion;
 	public InterfazDeUsuario frame;
 	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
@@ -45,55 +45,64 @@ class Qwirkle
 			
 			Map<Ficha, Integer> repetFichas_withHand = this.updateRepetFichasWithHand(this.repet_fichas, jugadorActual.getMano(), this.tablero.getFichas());
 			
-			turno(this.jugadorActual, repetFichas_withHand);
+			//imprimir repets..
+
+			//turno(this.jugadorActual, repetFichas_withHand);
 			
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {}
 			
 			this.jugadorActual = (this.jugadorActual == this.jugador1 ? this.jugador2 : this.jugador1);
-		}while(this.bolsa_fichas != 0);
+		}while(this.bolsa_fichas.size() != 0);
 	}
 
-	private boolean procesarJugada(Jugador jugador, Jugada jugada) 
+	public void showrepets(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
+	{
+		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
+		{    
+    	Ficha key = entry.getKey();  
+    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
+    	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
+    		+ ", tiene las siguientes jugadas: ");
+    	
+    	for (ArrayList<Ficha> playList : value) 
+			{
+				for (Ficha ficha : playList) 
+				{
+					System.out.println(fichaToSimbol(ficha));		
+				}
+				System.out.println("-");
+			}
+		}
+	}
+
+	public void procesarJugada(Jugador jugador, Jugada jugada) 
 	{
 		int cantPuntos = this.tablero.getPuntos(jugada);
-		
-		if (cantPuntos == 0)
-			return false;
-
+	
 		this.frame.mostrarJugada(jugada);
 		this.tablero.procesarJugada(jugada);
-		this.jugador.procesarJugada(jugada, cantPuntos);
-
-		return true;
+		jugador.procesarJugada(jugada, cantPuntos);
 	}
 
-	private void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand) 
+	public void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand) 
 	{
-		BackTraking algoritmo = new BackTraking(tablero, jugador.getMano(), Map<Ficha, Integer> pRepetFichas_withHand);
+		BackTraking algoritmo = new BackTraking(this.tablero, jugador.getMano(), pRepetFichas_withHand);
  
 		if(jugador.getNombre() == "Mosco")
 		{
-			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
-				// procesar jugada devuelve false si no se puede procesar la jugada
-				// Y devuelve true si la procesa con éxito
-				break;
+			procesarJugada(jugador, algoritmo.getJugadaBasico());
 		}
 		else if(jugador.getNombre() == "Darky")
 		{
-			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
-				// procesar jugada devuelve false si no se puede procesar la jugada
-				// Y devuelve true si la procesa con éxito
-				break;
+			procesarJugada(jugador, algoritmo.getJugadaBasico());
 		}
 		else if(jugador.getNombre() == "JJ")
 		{
-			if (!procesarJugada(jugador, algoritmo.getJugadaMejorado()))
-				// procesar jugada devuelve false si no se puede procesar la jugada
-				// Y devuelve true si la procesa con éxito
-				break;
+			procesarJugada(jugador, algoritmo.getJugadaMejorado());
 		}
+
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
 	}
 
@@ -192,70 +201,6 @@ class Qwirkle
 		return mano_fichas;
 	}
 
-	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
-	{
-		int cant_man = pFichas.size()-1;
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-
-		for(int pI=0; pI<cant_man; pI++)
-		{
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
-			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
-			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
-
-			for(int pJ=0; pJ<cant_man; pJ++)
-			{			
-				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
-				{
-					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
-					{
-						combination_list_1.add(pFichas.get(pJ));	
-					}
-					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
-					{
-						combination_list_2.add(pFichas.get(pJ));
-					}
-				}
-			}
-				
-			lista_fichas_slices.add(combination_list_1);
-			lista_fichas_slices.add(combination_list_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-
-			if(combination_list_1.size() == 2)
-			{
-				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
-
-				lista_fichas_slices.add(combination_list_1_1);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
-
-			if(combination_list_2.size() == 2)
-			{
-				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
-
-				lista_fichas_slices.add(combination_list_1_2);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
-		}
-		return grupos;
-	}
-
-	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
-	{
-		int contador = 0;
-		ArrayList<Ficha> combination = new ArrayList<Ficha>();
-
-		for (int index=1; index >= 0; index--) 
-		{
-				combination.add(contador, pList.get(index));
-				contador = 1;
-		}
-		return combination;
-	}
-
 	public ArrayList<Ficha>getFichasDeLaBolsa(int cantFichas)
 	{
 		ArrayList<Ficha>out=new ArrayList<>();
@@ -270,7 +215,7 @@ class Qwirkle
 		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
 
-	private String getSimboloColor(Color c)
+	public String getSimboloColor(Color c)
 	{
 		if(c==Color.AMARILLO)
 			return "Am";
@@ -288,7 +233,7 @@ class Qwirkle
 		
 	}
 
-	private String getSimboloFigura(Figura f)
+	public String getSimboloFigura(Figura f)
 	{
 		switch(f){
 			case CIRCULO:
@@ -307,7 +252,7 @@ class Qwirkle
 		return "";
 	}
 
-	private String fichaToSimbol(Ficha ficha)
+	public String fichaToSimbol(Ficha ficha)
 	{
 		if(ficha==null)return "---";
 		return getSimboloFigura(ficha.getFigura())+getSimboloColor(ficha.getColor());
