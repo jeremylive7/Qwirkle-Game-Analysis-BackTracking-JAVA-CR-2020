@@ -43,7 +43,8 @@ public class BackTraking
 		//Tiene el jugador alguna ficha repetida? Que se vaya a colocar esa jugada. De las cuales le de mas puntos.
 		if(repet_fichas_hand.size() != 0)
 		{
-			this.setJugadaWithRepetFicha(repet_fichas_hand);
+			this.jugadas = getPossiblePlaysHand(mano);
+			this.setJugadaWithRepetFicha(repet_fichas_hand, jugadas);
 		}
 		else
 		{
