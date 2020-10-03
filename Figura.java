@@ -1,0 +1,4 @@
+public enum Figura
+{
+	TREBOL,SOL,ROMBO,CUADRADO,CIRCULO,X
+}

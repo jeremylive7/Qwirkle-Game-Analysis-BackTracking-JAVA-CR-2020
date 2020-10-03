@@ -3,25 +3,26 @@ import java.util.List;
 
 class Jugador
 {
-	private Turno turno;
-	private Score score;
+	private int score;
 	private ArrayList<Ficha> mano;
 	private String nombre;
+	private double tiempo;
 
-	public Jugador(String pNombre) 
+	//Constructor
+	public Jugador(String pNombre,List<Ficha>manoInicial) 
 	{		
-		this.turno = new Turno(pNombre);
-		this.score = new Score(pNombre);
-		this.mano = new ArrayList<Ficha>();
+		this.score = 0;
+		this.mano = new ArrayList<>(manoInicial);
 		this.nombre = pNombre;
 	}
 
-	public Turno getTurno()
-	{
-		return this.turno;
+	public void procesarJugada(Jugada jugada, int cantPuntos){
+		score+=cantPuntos;
+		for(Jugadita par:jugada.jugaditas)
+			mano.remove(par.ficha);
 	}
 
-	public Score getScore()
+	public int getScore()
 	{
 		return this.score;
 	}
@@ -31,38 +32,34 @@ class Jugador
 		return this.mano;
 	}
 
+	public void setFichaMano(Ficha pFicha)
+	{
+		this.mano.add(pFicha);
+	}
+
 	public String getNombre()
 	{
 		return this.nombre;
 	}
 
-	public int getCantMano()
-	{
-		return this.mano.size();
-	}
-
-	public void setTurno(Turno pTurno)
-	{
-		this.turno = pTurno;
-	}
-
-	public void setScore(Score pScore)
-	{
-		this.score = pScore;
-	}
-
-	public void setMano(ArrayList<Ficha> pMano)
-	{
-		this.mano = pMano;
-	}
-
-	public void setFicha(Ficha pFicha)
-	{
-		this.mano.add(pFicha);
-	}
-
 	public void setNombre(String pNombre)
 	{
 		this.nombre = pNombre;
+	}
+
+	public void updateManoPlayer(ArrayList<Ficha> pLista)
+	{
+		for (Ficha pFicha : pLista) 
+		{
+			this.mano.add(pFicha);	
+		}
+	}
+
+	public double getTiempo() {
+		return tiempo;
+	}
+
+	public void setTiempo(double tiempo) {
+		this.tiempo = tiempo;
 	}
 }
