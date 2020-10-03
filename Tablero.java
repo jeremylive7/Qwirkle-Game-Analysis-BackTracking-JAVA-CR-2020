@@ -118,4 +118,10 @@ class Tablero
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.VERDE), mitadDeLaMatriz, mitadDeLaMatriz-1);
 	}
+	public void startGame()
+	{
+		final int mitadDeLaMatriz=MATRIX_SIDE/2;
+		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
+	}
+
 }

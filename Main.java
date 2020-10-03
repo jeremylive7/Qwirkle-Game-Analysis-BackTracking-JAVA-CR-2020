@@ -9,6 +9,8 @@ class Main
 		qwirkle.mostrarVentana();
 		qwirkle.frame.mostrarTablero();
 
+		qwirkle.tablero.startGame();
+
 		qwirkle.menu();
 
 		System.exit(0);

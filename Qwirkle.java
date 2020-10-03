@@ -5,7 +5,7 @@ class Qwirkle
 {
 	private Jugador jugador1, jugador2, jugador3;
 	private Jugador jugadorActual;
-	private Tablero tablero;
+	public Tablero tablero;
 	private List<Ficha> bolsa_fichas;
 	private int opcion;
 	public InterfazDeUsuario frame;
@@ -24,9 +24,9 @@ class Qwirkle
 		this.bolsa_fichas = new ArrayList<>();
 		this.fullFichasToBolsa();
 
-		this.jugador1 = new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
-		this.jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador1 = new Jugador("Mosco", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador2 = new Jugador("Darky", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador3 = new Jugador("JJ", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		this.jugadorActual = this.jugador1;
 		
 		this.tablero = new Tablero();
@@ -36,70 +36,23 @@ class Qwirkle
 
 	public void menu()
 	{
-		Ficha[][] fichas_tablero = this.tablero.getFichas();
-		Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
+		do{
+			JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador: " + jugadorActual.getNombre()
+				+ "\nSu mano es: ");
+			this.showMano(jugadorActual);
 
-		Jugada playToSet = new Jugada();
-		ArrayList<Ficha> fichas_repet_hand = new ArrayList<Ficha>();
-		ArrayList<Ficha> hand_player = jugadorActual.getMano();
-
-		int largo_nueva_mano = 0;
-		boolean esRepetido = false;
-
-		while(this.opcion < 4){
-
-			do{
-				JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
-				//Muestro mano del jugador
-				this.showMano(jugadorActual);
-				
-				//Obtengo el # de la opcion
-				this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar mi jugada"
-					+ "\n"
-					+ "2. Solicitas salir del Juego al final de la ronda de turnos."));
-
-				if(opcion==1)
-				{
-					System.out.println("Elegiste seleccionar mi jugada");
-
-					System.out.println("Mano original: ");
-					this.showMano(jugadorActual);
-
-					fichas_repet_hand = this.getRepetFicha(jugadorActual);
-					if(fichas_repet_hand.size() > 0)
-					{
-						esRepetido = true;
-					}
-
-					this.repet_fichas = this.updateRepetFichas(repetFichas_withHand, fichas_tablero);
-					repetFichas_withHand = this.updateRepetFichasWithHand(repetFichas_withHand, hand_player, fichas_tablero);
-
-					BackTraking algoritmo = new BackTraking(tablero, hand_player, repetFichas_withHand);
-					//Inicio de tiempo
-					playToSet = algoritmo.getJugadaMejorado();//Empieza turno, selecciono mi jugada
-					//Fin de tiempo.
-
-					this.procesarJugada(jugadorActual, playToSet);//Coloco jugada en el tablero
-					this.showPtsJugador(jugadorActual);//Imprimo pts
-				
-					largo_nueva_mano = 6 - playToSet.jugaditas.size();
-					if(esRepetido)
-					{
-						largo_nueva_mano+=fichas_repet_hand.size();
-					}
-
-					if(this.bolsa_fichas.size() >= largo_nueva_mano)
-					{
-						this.updateManoPlayer(jugadorActual, largo_nueva_mano);
-					}
-				}
-				else	//Salir del juego
-					break;
-						
-				jugadorActual=(jugadorActual==jugador1?jugador2:jugador1);
-
-			}while(true);
-		}
+			this.repet_fichas = this.updateRepetFichas(this.repet_fichas, this.tablero.getFichas());
+			
+			Map<Ficha, Integer> repetFichas_withHand = this.updateRepetFichasWithHand(this.repet_fichas, jugadorActual.getMano(), this.tablero.getFichas());
+			
+			turno(this.jugadorActual, repetFichas_withHand);
+			
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {}
+			
+			this.jugadorActual = (this.jugadorActual == this.jugador1 ? this.jugador2 : this.jugador1);
+		}while(this.bolsa_fichas != 0);
 	}
 
 	private boolean procesarJugada(Jugador jugador, Jugada jugada) 
@@ -116,30 +69,33 @@ class Qwirkle
 		return true;
 	}
 
-/*	private void turno(Jugador jugador) 
+	private void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand) 
 	{
-		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano());
-		while (true)
+		BackTraking algoritmo = new BackTraking(tablero, jugador.getMano(), Map<Ficha, Integer> pRepetFichas_withHand);
+ 
+		if(jugador.getNombre() == "Mosco")
+		{
 			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
 				// procesar jugada devuelve false si no se puede procesar la jugada
 				// Y devuelve true si la procesa con éxito
 				break;
+		}
+		else if(jugador.getNombre() == "Darky")
+		{
+			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
+				// procesar jugada devuelve false si no se puede procesar la jugada
+				// Y devuelve true si la procesa con éxito
+				break;
+		}
+		else if(jugador.getNombre() == "JJ")
+		{
+			if (!procesarJugada(jugador, algoritmo.getJugadaMejorado()))
+				// procesar jugada devuelve false si no se puede procesar la jugada
+				// Y devuelve true si la procesa con éxito
+				break;
+		}
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
 	}
-
-	public void jugadorHumanoHizoSuJugada() 
-	{
-
-		// juega algoritmo básico
-		turno(jugador2);
-		// juega algoritmo mejorado
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-		} // Para que haya un tiempo entre las jugadas de cada uno
-		turno(jugador3);
-		
-	}*/
 
 	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero)
 	{

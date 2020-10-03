@@ -40,21 +40,11 @@ public class BackTraking
 	public Jugada getJugadaMejorado()
 	{
 		ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(this.mano);
-	
-		//Tiene el jugador alguna ficha repetida? Que se vaya a colocar esa jugada. De las cuales le de mas puntos.
-		if(repet_fichas_hand.size() != 0)
-		{
-			this.jugadas = this.getJugadas(this.getPossiblePlaysHand(this.mano));
-			this.jugada = this.setJugadaWithRepetFicha(repet_fichas_hand, this.jugadas);
-			return jugada;
-		}
-		else
-		{
-			this.ejecutarMejorado();						
 
-			this.jugadas = this.getJugadas(this.convertJugadaToMap(this.jugadas));		
-			this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
-		}
+		this.ejecutarMejorado();						
+
+		this.jugadas = this.getJugadas(this.convertJugadaToMap(this.jugadas));		
+		this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 	
 		return this.jugadas.get(0);
 	}
@@ -79,6 +69,26 @@ public class BackTraking
 		return pJugadas;
 	}
 
+	public ArrayList<Ficha> getRepetFicha(Jugador pPlay)
+	{
+		ArrayList<Ficha> repetFichas = new ArrayList<Ficha>();
+		ArrayList<Ficha> hand_player = pPlay.getMano();
+		int largo_mano = hand_player.size()-1;
+		
+		for (int index=0; index<largo_mano; index++) 
+		{
+			for (int indey=index+1; indey<=largo_mano; indey++) 
+			{	
+				if(hand_player.get(index).getFigura()==hand_player.get(indey).getFigura()
+					&&hand_player.get(index).getColor()==hand_player.get(indey).getColor())
+				{
+					repetFichas.add(hand_player.get(indey));
+				}
+			}
+		}
+		return repetFichas;
+	}
+
 	private boolean cumpleAlgunCriterioDePoda(Jugada pJugada)
 	{
 		Jugadita parInicial = pJugada.jugaditas.get(0);
@@ -94,7 +104,12 @@ public class BackTraking
 		int arriba = parInicial.x;
 		int abajo = parInicial.x;
 
-		if(pJugada.puntos < SLFSUEQ)
+		//Poda #1
+		if()
+		{
+
+		}
+		/*if(pJugada.puntos < SLFSUEQ)
 		{
 			if(esPorFila == null || esPorFila)
 				while(this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
@@ -162,7 +177,7 @@ public class BackTraking
 				{
 					return true;
 				}
-			}
+			}*/
 		return false;
 	}
 	
@@ -216,26 +231,6 @@ public class BackTraking
 	{
 		Jugada pJugada = new Jugada();
 		return pJugada;
-	}
-
-	public ArrayList<Ficha> getRepetFicha(ArrayList<Ficha> pMano)
-	{
-		ArrayList<Ficha> repetFichas = new ArrayList<Ficha>();
-		ArrayList<Ficha> hand_player = pMano;
-		int largo_mano = hand_player.size()-1;
-		
-		for (int index=0; index<largo_mano; index++) 
-		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(hand_player.get(index).getFigura()==hand_player.get(indey).getFigura()
-					&&hand_player.get(index).getColor()==hand_player.get(indey).getColor())
-				{
-					repetFichas.add(hand_player.get(indey));
-				}
-			}
-		}
-		return repetFichas;
 	}
 
 	public ArrayList<Ficha> getHandWithOutRepet(ArrayList<Ficha> pMano)
