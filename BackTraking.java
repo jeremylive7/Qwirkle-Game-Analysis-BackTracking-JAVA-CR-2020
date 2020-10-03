@@ -40,9 +40,6 @@ public class BackTraking
 	{
 		ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(pMano);
 	
-		this.jugadas = this.getJugadas(this.getPossiblePlaysHand(this.mano));
-		this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
-	
 		//Tiene el jugador alguna ficha repetida? Que se vaya a colocar esa jugada. De las cuales le de mas puntos.
 		if(repet_fichas_hand.size() != 0)
 		{
@@ -50,14 +47,19 @@ public class BackTraking
 		}
 		else
 		{
-			this.ejecutarMejorado();
+			this.ejecutarMejorado();								//total
+
+			this.jugadas = this.getJugadas(this.jugadas);		//total
+
+			this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		}
 	
 		return this.jugadas.get(0);
 	}
 	
 	private void ejecutarMejorado()
-	{
+	{ 
+		this.jugadas = getPossiblePlaysHand(mano);
 		this.jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(jugada));
 	}
 
@@ -76,17 +78,9 @@ public class BackTraking
 		int arriba = parInicial.x;
 		int abajo = parInicial.x;
 
-		//para el criterio de no ponerle un qwirkle fácil al adversario
-		//mano: (Cna, Crojo, Tazul)
-		//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
-		//fichas que han salido tres veces de la bolsa: (Camarillo)
-
-		//{(Cazul, Cmorado, Cna, Crojo)}  (Camarillo, Cverde)
-		//repet_fichas_tress = (Camarillo);
 		if(pJugada.puntos < SLFSUEQ)
 		{
 			if(esPorFila == null || esPorFila)
-			{
 				while(this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
 					derecha++;// Busca por fila a la derecha algún lugar nulo
 
@@ -159,6 +153,8 @@ public class BackTraking
 			//tablero: (Cazul, Cmorado)  fichas a poner: (Cna, Crojo)  fichas que faltarian de poner: (Camarillo, Cverde)
 			//fichas que han salido tres veces de la bolsa: (Camarillo)
 
+		//{(Cazul, Cmorado, Cna, Crojo)}  (Camarillo, Cverde)
+		//repet_fichas_tress = (Camarillo);
 
 			//Casos:
 			//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la jugada 
