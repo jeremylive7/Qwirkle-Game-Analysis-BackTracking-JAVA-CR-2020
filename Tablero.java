@@ -7,7 +7,7 @@ class Tablero
 	static final int MATRIX_SIDE=6;
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,ArrayList<Ficha>>>placesToPlay;
-	protected static List<Ficha>todasLasFichas;
+	protected static ArrayList<Ficha>todasLasFichas;
 
 	//Constructor
 	public Tablero() 
@@ -47,7 +47,7 @@ class Tablero
 				fichas[xs[i]][ys[i]]==null)//y no hay una ficha ya ahí
 				eliminarLasQueNoCoinciden(getCualesSePuedePoner(xs[i],ys[i]),f);
 	}
-	private void eliminarLasQueNoCoinciden(List<Ficha> pFichas,Ficha f){
+	private void eliminarLasQueNoCoinciden(ArrayList<Ficha> pFichas,Ficha f){
 		for(int i=0;i<pFichas.size();){
 			if(f.noCombina(pFichas.get(i)))
 				pFichas.remove(i);

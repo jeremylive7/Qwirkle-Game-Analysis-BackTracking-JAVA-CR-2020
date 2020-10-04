@@ -121,6 +121,18 @@ class Qwirkle
 		return combination;
 	}
 
+	public ArrayList<Ficha> getCombinationList4()
+	{
+		int contador = 0;
+		ArrayList<Ficha> combination = new ArrayList<Ficha>();
+
+		for (int index = 1; index >= 0; index--) {
+			combination.add(contador, pList.get(index));
+			contador = 1;
+		}
+		return combination;
+	}
+
 	public Map<Ficha, Integer> startAllCeros()
 	{
 		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
@@ -177,6 +189,23 @@ class Qwirkle
 			}
 			
 		}
+	}
+
+	public boolean isItCheapInside(ArrayList<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				System.out.println(" La ficha: " + fichaToSimbol(ficha) + ", a salido: " + value + ".");
+				for (Ficha pFicha : pJugada) {
+					if(ficha.getFigura() == pFicha.getFigura()
+					&& ficha.getColor() == pFicha.getColor()){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public void procesarJugada(Jugador jugador, Jugada jugada) 

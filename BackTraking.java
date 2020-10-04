@@ -102,10 +102,10 @@ public class BackTraking
 		int abajo = parInicial.x;
 
 		//Poda #1
-		// if()
-		// {
-
-		// }
+		if(isItCheapInside(pJugada.jugaditas, repet_fichas))
+		{
+			pJugada.puntos += 500;
+		}
 		/*if(pJugada.puntos < SLFSUEQ)
 		{
 			if(esPorFila == null || esPorFila)
