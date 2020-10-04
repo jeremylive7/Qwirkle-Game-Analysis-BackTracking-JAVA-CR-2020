@@ -31,11 +31,10 @@ public class BackTraking
 	
 	public Jugada getJugadaBasico()
 	{
-/* 		this.jugadas = this.getJugadas(all_plays);
+ 		this.jugadas = this.getJugadas(all_plays);
 		this.jugadas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
 
 		return this.jugadas.get(0); 
- */		return null;
 	}
 
 	public Jugada getJugadaMejorado()

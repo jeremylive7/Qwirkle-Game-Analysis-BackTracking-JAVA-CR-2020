@@ -56,7 +56,7 @@ class Qwirkle
 			all_plays = this.getPossiblePlaysHand(mano_sin_repetidas);
 			this.showPossiblePlaysHand(all_plays);
 			
-			//turno(this.jugadorActual, repetFichas_withHand, all_plays);
+			turno(this.jugadorActual, repetFichas_withHand, all_plays);
 			
 			this.imprimirTablero();
 
@@ -246,12 +246,12 @@ class Qwirkle
 			for(Map.Entry<Ficha, Integer> repetFichas:pRepetFichas.entrySet())
 			{
 				Ficha ficha_repet = repetFichas.getKey();  
-    		Integer value = repetFichas.getValue();
-    		if(ficha == ficha_repet)
-    		{
-    			value += value + 1;
-    			pRepet_fichas.put(ficha_repet, value);
-    		}
+				Integer value = repetFichas.getValue();
+				if(ficha == ficha_repet)
+				{
+					value += value + 1;
+					pRepet_fichas.put(ficha_repet, value);
+				}
 			} 	
 		}
 		return pRepet_fichas;
