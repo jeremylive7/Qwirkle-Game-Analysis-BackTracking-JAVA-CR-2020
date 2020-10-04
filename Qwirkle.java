@@ -37,33 +37,27 @@ class Qwirkle
 		mostrarVentana();
 		if(jugador1==null){
 			SwingUtilities.invokeLater(()->{
-				JOptionPane.showConfirmDialog(frame, 
+				JOptionPane.showMessageDialog(frame, 
 								  "Presione enter para continuar", 
 								  "Bienvenido al simulador de dos algoritmos de backtracking jugando qwirkle", 
 								  JOptionPane.OK_OPTION);
-				while (!jugadorHumanoHizoSuJugada()){
-					try{
-						Thread.sleep(5000);
-					}catch(Exception e){}
-				}
+				recursivaBonita();
 			});
 		}	
 	}
 
-	private boolean juegoPuedeSeguir(){
-		//algun jugador tiene 0 cartas y en la bolsa hay 0 cartas.
-		return 
-		!(
-			(
-				(
-					jugador1!=null &&
-					jugador1.getMano().isEmpty()
-				) ||
-				jugador2.getMano().isEmpty() ||
-				jugador3.getMano().isEmpty() 
-			) &&
-			!bolsa_fichas.isEmpty()
-		);
+	private void recursivaBonita(){
+		if (!jugadorHumanoHizoSuJugada()){
+			try{
+				Thread.sleep(5000);
+				Thread t=new Thread(){
+					public void run(){
+						recursivaBonita();
+					}
+				};
+				t.start();
+			}catch(Exception e){}
+		}
 	}
 
 	public static void main(String[] args){
@@ -73,16 +67,15 @@ class Qwirkle
 	
 	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo) {
 		int cantPuntos = tablero.getPuntos(jugada);
-		frame.procesarJugada(jugada, jugador, cantPuntos, tiempo);
+		jugador.procesarJugada(jugada,cantPuntos,tiempo);
 		tablero.procesarJugada(jugada);
-		jugador.procesarJugada(jugada,cantPuntos);
 		//dao.procesarJugada(jugador,jugada,cantPuntos,tiempo);
-		//bolsaFichas.procesarJugada(jugador);
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){
 			seTerminoElJuego();
 			return true;
 		}
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
+		frame.procesarJugada(jugada, jugador, cantPuntos, tiempo);
 		return false;
 	}
 
@@ -93,7 +86,7 @@ class Qwirkle
 		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(),jugador.getNombre().equals(jugador3.getNombre()));
 		long tiempo = System.currentTimeMillis();
 		Jugada jugada=algoritmo.getRespuesta();
-		tiempo-=System.currentTimeMillis();
+		tiempo=System.currentTimeMillis()-tiempo;
 		return procesarJugada(jugador, jugada,tiempo);
 	}
 
@@ -462,6 +455,22 @@ class Qwirkle
 	public void printTablero(){
 		System.out.println(getTablero().toString());
 	}
+	private boolean juegoPuedeSeguir(){
+		//algun jugador tiene 0 cartas y en la bolsa hay 0 cartas.
+		return 
+		!(
+			(
+				(
+					jugador1!=null &&
+					jugador1.getMano().isEmpty()
+				) ||
+				jugador2.getMano().isEmpty() ||
+				jugador3.getMano().isEmpty() 
+			) &&
+			!bolsa_fichas.isEmpty()
+		);
+	}
+
 }
 
 

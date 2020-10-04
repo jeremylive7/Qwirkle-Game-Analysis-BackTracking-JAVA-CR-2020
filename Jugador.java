@@ -16,8 +16,9 @@ class Jugador
 		this.nombre = pNombre;
 	}
 
-	public void procesarJugada(Jugada jugada, int cantPuntos){
+	public void procesarJugada(Jugada jugada, int cantPuntos,double t){
 		score+=cantPuntos;
+		tiempo+=t;
 		for(Jugadita par:jugada.jugaditas)
 			mano.remove(par.ficha);
 	}

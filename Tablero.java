@@ -3,7 +3,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.awt.Point;
 
@@ -37,29 +36,79 @@ class Tablero
 	boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
-		updatePlacesToPlay(ficha, x, y);
 		fichas[x][y]=ficha;
+		updatePlacesToPlay(x, y);
 		return true;
 	}
 	
 	public List<Ficha>getCualesSePuedePoner(int x,int y){
 		return placesToPlay.computeIfAbsent(x, k->new HashMap<>()).computeIfAbsent(y,k->new ArrayList<>(todasLasFichas));
 	}
-	private void updatePlacesToPlay(Ficha f,int x,int y){
-		int[]xs={x+1,x-1,x,x};
-		int[]ys={y,y,y+1,y-1};
-		for(int i=0;i<4;i++)
-			if(xs[i]>0&&xs[i]<MATRIX_SIDE&&//"x" no se sale del borde
-				ys[i]>0&&ys[i]<MATRIX_SIDE&&//"y" no se sale del borde
-				fichas[xs[i]][ys[i]]==null)//y no hay una ficha ya ahí
-				eliminarLasQueNoCoinciden(getCualesSePuedePoner(xs[i],ys[i]),f);
+	private void updatePlacesToPlay(int x,int y){
+		
+		//para todos los de abajo, hacer intersección con arriba
+		//para todos los de la izquierda, hacer intersección con derecha
+		//para todos los de arriba, hacer intersección con abajo
+		//para todos los de la derecha, hacer intersección con el de la izquierda
+		//eliminarLosQueNoCoinciden(getCualesPuedoPoner(izquierda),todosLosDeDerecha);
+		int[]dx={-1,1,0,0};
+		int[]dy={0,0,-1,1};
+		for(int i=0;i<4;i++){// para cada vector dirección (xs[i],ys[i])
+			for(int a=x;a>=0&&a<Tablero.MATRIX_SIDE;a+=dx[i]){//mientras "x" no se sale del borde
+				for(int b=y;b>=0&&b<Tablero.MATRIX_SIDE;b+=dy[i]){//mientras "y" no se sale del borde
+					if(a+dx[i]>0&&a+dx[i]<MATRIX_SIDE&&//si el siguiente x no se sale del borde
+					   b+dy[i]>0&&b+dy[i]<MATRIX_SIDE&&// y el siguiente y no se sale del borde
+					   fichas[a+dx[i]][b+dy[i]]==null){//y no hay una ficha ya en el siguiente lugar de la matriz de fichas
+						//aquí entonces ya está en un borde
+						if(i%2==0){
+							//Aquí puede estar en el borde inferior ya sea de x o de y
+							//entonces busco el borde superior y lo guardo
+							int tx=x;
+							int ty=y;
+							while(fichas[tx+dx[i+1]][ty+dy[i+1]]!=null){
+								tx+=dx[i+1];
+								ty+=dy[i+1];
+							}
+							//itero desde el borde inferior hasta el borde superior
+							if(i==0){
+								for(int g=a;g<=tx;g+=dx[i+1]){
+									for(int k=0;k<getCualesSePuedePoner(a+dx[i],b).size();){
+										if(fichas[g][b].noCombina(getCualesSePuedePoner(a+dx[i],b).get(k)))
+											getCualesSePuedePoner(a+dx[i],b).remove(k);
+										else k++;
+									}
+									for(int k=0;k<getCualesSePuedePoner(tx+dx[i+1], b).size();){
+										if(fichas[g][b].noCombina(getCualesSePuedePoner(tx+dx[i+1],b).get(k)))
+											getCualesSePuedePoner(tx+dx[i+1],b).remove(k);
+										else k++;
+									}
+								}
+							} else {
+								for(int w=b;w<=ty;w+=dy[i+1]){
+									for(int k=0;k<getCualesSePuedePoner(a,b+dy[i]).size();){
+										if(fichas[a][w].noCombina(getCualesSePuedePoner(a,b+dy[i]).get(k)))
+											getCualesSePuedePoner(a,b+dy[i+1]).remove(k);
+										else k++;
+									}
+									for(int k=0;k<getCualesSePuedePoner(a, ty+dy[i+1]).size();){
+										if(fichas[a][w].noCombina(getCualesSePuedePoner(tx+dx[i+1],ty+dy[i+1]).get(k)))
+											getCualesSePuedePoner(a,ty+dy[i+1]).remove(k);
+										else k++;
+									}
+								}
+							}
+							
+						}
+						
+						a=-1;
+						b=-1;
+					}
+				}
+			}
+		}
 	}
 	private void eliminarLasQueNoCoinciden(List<Ficha>fichas,Ficha f){
-		for(int i=0;i<fichas.size();){
-			if(f.noCombina(fichas.get(i)))
-				fichas.remove(i);
-			else i++;
-		}
+		
 	}
 	public int getPuntos(Jugada jugada){//Tengo dudas con esta función.
 		jugada.puntos=0;
