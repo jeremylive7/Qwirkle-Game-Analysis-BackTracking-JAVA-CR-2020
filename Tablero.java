@@ -33,16 +33,16 @@ class Tablero
 			meterFichaEnXY(par.ficha, par.x, par.y);
 		}
 	}
-
+/*
 	public Map<Integer,Map<Integer,List<Ficha>>> setPlacesToPlay(Ficha ficha, int x, int y)
 	{
-		Map<Integer,List<Ficha> places = new HashMap<Integer,List<Ficha>();
+		Map<Integer,List<Ficha>> places = new HashMap<Integer,List<Ficha>>();
 		List<Ficha> lista_jugada = new ArrayList<Ficha>();
 		lista_jugada.add(ficha);
-		places.put(y, lista_jugada)
+		places.put(y, lista_jugada);
 		this.placesToPlay.put(x, places);
 	}
-
+*/
 	public boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
@@ -98,11 +98,11 @@ class Tablero
 								for(int w=b;w<=ty;w+=dy[i+1]){
 									for(int k=0;k<getCualesSePuedePoner(a,b+dy[i]).size();){
 										if(fichas[a][w].noCombina(getCualesSePuedePoner(a,b+dy[i]).get(k)))
-											getCualesSePuedePoner(a,b+dy[i+1]).remove(k);
+											getCualesSePuedePoner(a,b+dy[i]).remove(k);
 										else k++;
 									}
 									for(int k=0;k<getCualesSePuedePoner(a, ty+dy[i+1]).size();){
-										if(fichas[a][w].noCombina(getCualesSePuedePoner(tx+dx[i+1],ty+dy[i+1]).get(k)))
+										if(fichas[a][w].noCombina(getCualesSePuedePoner(tx+dy[i+1],ty+dy[i+1]).get(k)))
 											getCualesSePuedePoner(a,ty+dy[i+1]).remove(k);
 										else k++;
 									}
@@ -111,8 +111,8 @@ class Tablero
 							
 						}
 						
-						a=-1;
-						b=-1;
+						a=-10;
+						b=-10;
 					}
 				}
 			}
