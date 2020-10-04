@@ -14,44 +14,42 @@ public class BackTraking
 	 */
 	private static final int SLFSUEQ=12;
 	private Tablero tablero;
-	private ArrayList<Ficha> mano;
 	private ArrayList<Jugada> jugadas;
 	private Jugada jugada;
 	public final Random r=new Random();
 
 	private Map<Ficha, Integer> repet_fichas;
+	private Map<Ficha, ArrayList<ArrayList<Ficha>>> all_plays;
 
 	//Constructor
-	BackTraking(Tablero pTablero, ArrayList<Ficha> pMano, Map<Ficha, Integer> pRepet) 
+	BackTraking(Tablero pTablero, Map<Ficha, Integer> pRepet, Map<Ficha, ArrayList<ArrayList<Ficha>>> pAll_plays) 
 	{		
 		this.tablero = pTablero;
 		this.repet_fichas = pRepet;
-		this.mano = this.getHandWithOutRepet(pMano);
+		this.all_plays = pAll_plays;
 	}
 	
 	public Jugada getJugadaBasico()
 	{
-		this.jugadas = this.getJugadas(this.getPossiblePlaysHand(this.mano));
-		this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
+/* 		this.jugadas = this.getJugadas(all_plays);
+		this.jugadas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
 
-		return this.jugadas.get(0);
+		return this.jugadas.get(0); 
+ */		return null;
 	}
 
 	public Jugada getJugadaMejorado()
 	{
-		//ArrayList<Ficha> repet_fichas_hand = this.getRepetFicha(this.mano);
+		this.jugadas = this.getJugadas(all_plays);
+		this.jugadas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
 
 		this.ejecutarMejorado();						
-
-		this.jugadas = this.getJugadas(this.convertJugadaToMap(this.jugadas));		
-		this.jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 	
 		return this.jugadas.get(0);
 	}
 	
 	private void ejecutarMejorado()
 	{ 
-		this.jugadas = this.getAllPossibilities(this.getPossiblePlaysHand(mano));
 		this.jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(jugada));
 	}
 
@@ -181,7 +179,6 @@ public class BackTraking
 		return false;
 	}
 	
-
 	public boolean isItEnterMissPutColum(int pleft, int pRight, ArrayList<Jugadita> pMiss_fichas)
 	{
 		boolean flag = false;
@@ -233,24 +230,7 @@ public class BackTraking
 		return pJugada;
 	}
 
-	public ArrayList<Ficha> getHandWithOutRepet(ArrayList<Ficha> pMano)
-	{
-		ArrayList<Ficha> mano_fichas = pMano;
-		int largo_mano = mano_fichas.size()-1;
 
-		for (int index=0; index<largo_mano; index++) 
-		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
-					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
-				{
-					mano_fichas.remove(indey);
-				}
-			}
-		}
-		return mano_fichas;
-	}
 
 	public ArrayList<Ficha> getFullRepetFichas(Map<Ficha, Integer> pRepet)
 	{
@@ -365,70 +345,6 @@ public class BackTraking
 		this.tablero.getFichas()[x][y]=null;
 		jugada.jugaditas.remove(jugada.jugaditas.size()-1);
 		fichasQueFaltanPorColocar.add(fichaInicial);
-	}
-
-	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
-	{
-		int cant_man = pFichas.size()-1;
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-
-		for(int pI=0; pI<cant_man; pI++)
-		{
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
-			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
-			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
-
-			for(int pJ=0; pJ<cant_man; pJ++)
-			{			
-				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
-				{
-					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
-					{
-						combination_list_1.add(pFichas.get(pJ));	
-					}
-					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
-					{
-						combination_list_2.add(pFichas.get(pJ));
-					}
-				}
-			}
-				
-			lista_fichas_slices.add(combination_list_1);
-			lista_fichas_slices.add(combination_list_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-
-			if(combination_list_1.size() == 2)
-			{
-				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
-
-				lista_fichas_slices.add(combination_list_1_1);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
-
-			if(combination_list_2.size() == 2)
-			{
-				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
-
-				lista_fichas_slices.add(combination_list_1_2);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
-		}
-		return grupos;
-	}
-
-	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
-	{
-		int contador = 0;
-		ArrayList<Ficha> combination = new ArrayList<Ficha>();
-
-		for (int index=1; index >= 0; index--) 
-		{
-				combination.add(contador, pList.get(index));
-				contador = 1;
-		}
-		return combination;
 	}
 
 }

@@ -14,8 +14,6 @@ class Qwirkle
 	public static final Color[] COLORES = { Color.AMARILLO, Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO,
 			Color.VERDE };
 	private static final int CANT_CARTAS_EN_LA_MANO = 6;
-
-	private Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Integer>();
 	
 	public Qwirkle() 
 	{
@@ -30,33 +28,97 @@ class Qwirkle
 		this.jugadorActual = this.jugador1;
 		
 		this.tablero = new Tablero();
-		//this.tablero.llenarTableroConEjemplo();
+
 		this.tablero.startGame();
 		this.imprimirTablero();
 	}
 
 	public void menu()
 	{
+		Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Integer>();
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> all_plays = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 		Map<Ficha, Integer> repetFichas_withHand = new HashMap<Ficha, Integer>();
+		ArrayList<Ficha> mano_sin_repetidas = new ArrayList<Ficha>(); 
 		do{
-			System.out.println("Es el turno del jugador: " + jugadorActual.getNombre()
-				+ "\nSu mano es: ");
+			System.out.println("\nEs el turno del jugador: " + jugadorActual.getNombre()
+				+ ". Su mano es: ");
 			this.showMano(jugadorActual);
 
-			this.repet_fichas = this.startAllCeros();
-			this.repet_fichas = this.updateRepetFichas(this.repet_fichas, this.tablero.getFichas());
-			repetFichas_withHand = this.updateRepetFichasWithHand(this.repet_fichas, jugadorActual.getMano());
-			System.out.println("\nRepetidas contando la mano.");
+			repet_fichas = this.startAllCeros();
+			repet_fichas = this.updateRepetFichas(repet_fichas, this.tablero.getFichas());
+			repetFichas_withHand = this.updateRepetFichasWithHand(repet_fichas, jugadorActual.getMano());
+			System.out.println("\nFichas repetidas contando la mano:");
 			this.showAllRepetsFichas(repetFichas_withHand);
 
-			//turno(this.jugadorActual, repetFichas_withHand);
+			mano_sin_repetidas = this.getHandWithOutRepet(jugadorActual.getMano());
+			this.imprimirMano(mano_sin_repetidas);
+
+			all_plays = this.getPossiblePlaysHand(mano_sin_repetidas);
+			this.showPossiblePlaysHand(all_plays);
 			
+			//turno(this.jugadorActual, repetFichas_withHand, all_plays);
+			
+			this.imprimirTablero();
+
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {}
 			
 			this.jugadorActual = (this.jugadorActual == this.jugador1 ? this.jugador2 : this.jugador1);
 		}while(this.bolsa_fichas.size() != 0);
+	}
+
+	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas) {
+		int cant_man = pFichas.size() - 1;
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+
+		for (int pI = 0; pI < cant_man; pI++) {
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
+			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
+			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
+
+			for (int pJ = 0; pJ < cant_man; pJ++) {
+				if (!pFichas.get(pI).noCombina(pFichas.get(pJ))) {
+					if (pFichas.get(pI).getFigura() != pFichas.get(pJ).getFigura()
+							&& pFichas.get(pI).getColor() == pFichas.get(pJ).getColor()) {
+						combination_list_1.add(pFichas.get(pJ));
+					} else if (pFichas.get(pI).getFigura() == pFichas.get(pJ).getFigura()
+							&& pFichas.get(pI).getColor() != pFichas.get(pJ).getColor()) {
+						combination_list_2.add(pFichas.get(pJ));
+					}
+				}
+			}
+
+			lista_fichas_slices.add(combination_list_1);
+			lista_fichas_slices.add(combination_list_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
+
+			if (combination_list_1.size() == 2) {
+				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
+
+				lista_fichas_slices.add(combination_list_1_1);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+
+			if (combination_list_2.size() == 2) {
+				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
+
+				lista_fichas_slices.add(combination_list_1_2);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+		}
+		return grupos;
+	}
+
+	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList) {
+		int contador = 0;
+		ArrayList<Ficha> combination = new ArrayList<Ficha>();
+
+		for (int index = 1; index >= 0; index--) {
+			combination.add(contador, pList.get(index));
+			contador = 1;
+		}
+		return combination;
 	}
 
 	public Map<Ficha, Integer> startAllCeros()
@@ -71,6 +133,21 @@ class Qwirkle
 		}
 
 		return pList_repet;
+	}
+
+	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo) {
+		for (Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry : pGrupo.entrySet()) {
+			Ficha key = entry.getKey();
+			ArrayList<ArrayList<Ficha>> value = entry.getValue();
+			System.out.println("\nLa ficha: " + fichaToSimbol(key) + ", tiene las siguientes jugadas: ");
+
+			for (ArrayList<Ficha> playList : value) {
+				for (Ficha ficha : playList) {
+					System.out.println(fichaToSimbol(ficha));
+				}
+				System.out.println("-");
+			}
+		}
 	}
 
 	public ArrayList<Ficha> getAllCheaps()
@@ -92,10 +169,13 @@ class Qwirkle
 	{
 		for(Map.Entry<Ficha, Integer> repets : pList_repets.entrySet())
 		{    
-    	Ficha ficha = repets.getKey();  
-    	Integer value = repets.getValue(); 
-    	System.out.println("\nLa ficha: " + fichaToSimbol(ficha) 
-    		+ ", a salido: " + value);
+			Ficha ficha = repets.getKey();  
+			Integer value = repets.getValue(); 
+			if(value > 0)
+			{
+				System.out.println(" La ficha: " + fichaToSimbol(ficha) + ", a salido: " + value + ".");
+			}
+			
 		}
 	}
 
@@ -108,9 +188,9 @@ class Qwirkle
 		jugador.procesarJugada(jugada, cantPuntos);
 	}
 
-	public void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand) 
+	public void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand, Map<Ficha, ArrayList<ArrayList<Ficha>>> pAll_plays) 
 	{
-		BackTraking algoritmo = new BackTraking(this.tablero, jugador.getMano(), pRepetFichas_withHand);
+		BackTraking algoritmo = new BackTraking(this.tablero, pRepetFichas_withHand, pAll_plays);
  
 		if(jugador.getNombre() == "Mosco")
 		{
@@ -139,20 +219,18 @@ class Qwirkle
 			{
 				for(Map.Entry<Ficha, Integer> repetFichas : pRepet_fichas.entrySet())
 				{
-					Ficha ficha_repet = repetFichas.getKey();  
-	    		Integer value = repetFichas.getValue();
-	    		System.out.println("Hola-"+ficha_repet.getFigura());
-	    		if(pFichasTablero[indeX][indeY] == null)
-	    		{
-	    			break;
-	    		}
-	    		else if(pFichasTablero[indeX][indeY] == ficha_repet)
-	    		{
-		    		System.out.println("La ficha en el tablero es: " + pFichasTablero[indeX][indeY].getFigura()
-	    			+ "\nLa ficha dentro del map_espet es: " + ficha_repet.getFigura());
-	    			value++;
-	    			pRepet_fichas.put(ficha_repet, value);
-	    		}
+					Ficha ficha_repet = repetFichas.getKey();
+					if(pFichasTablero[indeX][indeY] == null)
+					{
+						break;
+					}
+					else if(pFichasTablero[indeX][indeY].getFigura()== ficha_repet.getFigura()
+					&& pFichasTablero[indeX][indeY].getColor() == ficha_repet.getColor())
+					{
+						Integer value = repetFichas.getValue();
+						value++;
+						pRepet_fichas.put(ficha_repet, value);
+					}
 				} 	
 			}
 		}
@@ -209,7 +287,7 @@ class Qwirkle
 		}
 		
 	}
-
+	
 	public ArrayList<Ficha> getHandWithOutRepet(ArrayList<Ficha> pMano)
 	{
 		ArrayList<Ficha> mano_fichas = pMano;
@@ -267,15 +345,15 @@ class Qwirkle
 			case CIRCULO:
 				return "O";
 			case CUADRADO:
-				return "■";
+				return "C";
 			case ROMBO:
-				return "÷";
+				return "R";
 			case SOL:
-				return "§";
+				return "S";
 			case TREBOL:
-				return "¤";
+				return "T";
 			case X:
-				return "×";
+				return "X";
 		}
 		return "";
 	}
@@ -296,7 +374,7 @@ class Qwirkle
 
 	public void showMano(Jugador pJugador)
 	{
-		String out="\n[ ";
+		String out="[ ";
 		for (Ficha ficha:pJugador.getMano())
 		{
 			out+= fichaToSimbol(ficha)+", ";
@@ -308,26 +386,6 @@ class Qwirkle
 	{
 		System.out.println("Puntos del jugador " + pJugador.getNombre() + " : ");
 		System.out.println(pJugador.getScore());
-	}
-
-	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
-	{
-		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
-		{    
-    	Ficha key = entry.getKey();  
-    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
-    	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
-    		+ ", tiene las siguientes jugadas: ");
-    	
-    	for (ArrayList<Ficha> playList : value) 
-			{
-				for (Ficha ficha : playList) 
-				{
-					System.out.println(fichaToSimbol(ficha));		
-				}
-				System.out.println("-");
-			}
-		}
 	}
 
 	public void imprimirTablero()
@@ -343,7 +401,7 @@ class Qwirkle
 
 	public void imprimirMano(ArrayList<Ficha> pMano)
 	{
-		String out="\n[ ";
+		String out="[ ";
 		for (Ficha ficha : pMano)
 		{
 			out+= fichaToSimbol(ficha)+", ";
