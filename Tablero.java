@@ -19,7 +19,7 @@ class Tablero
 	public Tablero() 
 	{		
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
-		placesToPlay= new HashMap<>();
+		this.placesToPlay= new HashMap<>();
 		placesWithAnTokkenOnTheSide=new HashSet<>();
 		if(todasLasFichas==null){
 			todasLasFichas=new ArrayList<>();
@@ -34,14 +34,26 @@ class Tablero
 			meterFichaEnXY(par.ficha, par.x, par.y);
 		}
 	}
-	boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
+
+	public Map<Integer,Map<Integer,List<Ficha>>> setPlacesToPlay(Ficha ficha, int x, int y)
+	{
+		Map<Integer,List<Ficha> places = new HashMap<Integer,List<Ficha>();
+		List<Ficha> lista_jugada = new ArrayList<Ficha>();
+		lista_jugada.add(ficha);
+		places.put(y, lista_jugada)
+		this.placesToPlay.put(x, places);
+	}
+
+	public boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
-		updatePlacesToPlay(ficha, x, y);
+		this.setPlacesToPlay(ficha, x, y);
+		this.updatePlacesToPlay(ficha, x, y);
 		fichas[x][y]=ficha;
 		return true;
 	}
 	
+
 	public List<Ficha>getCualesSePuedePoner(int x,int y){
 		return placesToPlay.computeIfAbsent(x, k->new HashMap<>()).computeIfAbsent(y,k->new ArrayList<>(todasLasFichas));
 	}
