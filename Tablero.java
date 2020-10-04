@@ -1,12 +1,18 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-
+import java.util.Set;
+import java.awt.Point;
 
 class Tablero
 {
 	static final int MATRIX_SIDE=21;
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
+	Set<Point>placesWithAnTokkenOnTheSide;
 	protected static List<Ficha>todasLasFichas;
 
 	//Constructor
@@ -14,6 +20,7 @@ class Tablero
 	{		
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
 		placesToPlay= new HashMap<>();
+		placesWithAnTokkenOnTheSide=new HashSet<>();
 		if(todasLasFichas==null){
 			todasLasFichas=new ArrayList<>();
 			for (Figura figura:Qwirkle.FIGURAS)
@@ -81,7 +88,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		return inicioHilera-finHilera;
+		return finHilera-inicioHilera+1;
 	}
 	private int contarFila(Jugadita jugadita){
 		int inicioHilera,finHilera;
@@ -96,7 +103,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		return inicioHilera-finHilera;
+		return finHilera-inicioHilera+1;
 	}
 	
 	public Ficha[][]getFichas(){
@@ -117,5 +124,27 @@ class Tablero
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.AZUL), mitadDeLaMatriz-1, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.VERDE), mitadDeLaMatriz, mitadDeLaMatriz-1);
+	}
+	public List<Point> demeLasPosicionesEnQuePueddoEmpezarJugada() {
+		List<Point>out=new ArrayList<>();
+		for(Integer i:placesToPlay.keySet()){
+			for(Integer j:placesToPlay.get(i).keySet()){
+				Point p=new Point(i,j);
+				if(sePuedeJugarEsteLugar(p))
+					out.add(p);
+			}
+		}
+		return out;
+	}
+
+	private boolean sePuedeJugarEsteLugar(Point p) {
+		return 
+		fichas[p.x][p.y]==null&&
+		(
+			fichas[p.x-1][p.y]!=null||
+			fichas[p.x+1][p.y]!=null||
+			fichas[p.x][p.y-1]!=null||
+			fichas[p.x][p.y+1]!=null
+		);
 	}
 }

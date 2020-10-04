@@ -22,7 +22,7 @@ class Qwirkle
 		this.bolsa_fichas = new ArrayList<>();
 		this.fullFichasToBolsa();
 
-		this.jugador1 = new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
+		this.jugador1 = null;//new Jugador("Jeremy", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		this.jugador2 = new Jugador("Edgerik", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		
@@ -30,43 +30,86 @@ class Qwirkle
 		this.tablero.llenarTableroConEjemplo();
 		this.frame = new InterfazDeUsuario(tablero,jugador1,jugador2,jugador3);
 		this.imprimirTablero();
+		
+	}
+
+	public void iniciarJuego(){
+		mostrarVentana();
+		if(jugador1==null){
+			SwingUtilities.invokeLater(()->{
+				JOptionPane.showConfirmDialog(frame, 
+								  "Presione enter para continuar", 
+								  "Bienvenido al simulador de dos algoritmos de backtracking jugando qwirkle", 
+								  JOptionPane.OK_OPTION);
+				while (!jugadorHumanoHizoSuJugada()){
+					try{
+						Thread.sleep(5000);
+					}catch(Exception e){}
+				}
+			});
+		}	
+	}
+
+	private boolean juegoPuedeSeguir(){
+		//algun jugador tiene 0 cartas y en la bolsa hay 0 cartas.
+		return 
+		!(
+			(
+				(
+					jugador1!=null &&
+					jugador1.getMano().isEmpty()
+				) ||
+				jugador2.getMano().isEmpty() ||
+				jugador3.getMano().isEmpty() 
+			) &&
+			!bolsa_fichas.isEmpty()
+		);
 	}
 
 	public static void main(String[] args){
 		Qwirkle q=new Qwirkle();
-		q.mostrarVentana();
+		q.iniciarJuego();
 	}
 	
-	private boolean procesarJugada(Jugador jugador, Jugada jugada) {
+	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo) {
 		int cantPuntos = tablero.getPuntos(jugada);
-		if (cantPuntos == 0)
-			return false;
-		frame.mostrarJugada(jugada);
+		frame.procesarJugada(jugada, jugador, cantPuntos, tiempo);
 		tablero.procesarJugada(jugada);
 		jugador.procesarJugada(jugada,cantPuntos);
-		return true;
-	}
-
-	private void turno(Jugador jugador) {
-		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano());
-		while (true)
-			if (!procesarJugada(jugador, algoritmo.getJugadaBasico()))
-				// procesar jugada devuelve false si no se puede procesar la jugada
-				// Y devuelve true si la procesa con éxito
-				break;
+		//dao.procesarJugada(jugador,jugada,cantPuntos,tiempo);
+		//bolsaFichas.procesarJugada(jugador);
+		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){
+			seTerminoElJuego();
+			return true;
+		}
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
+		return false;
 	}
 
-	public void jugadorHumanoHizoSuJugada() {
+	private void seTerminoElJuego() {
+	}
+
+	private boolean turno(Jugador jugador) {
+		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(),jugador.getNombre().equals(jugador3.getNombre()));
+		long tiempo = System.currentTimeMillis();
+		Jugada jugada=algoritmo.getRespuesta();
+		tiempo-=System.currentTimeMillis();
+		return procesarJugada(jugador, jugada,tiempo);
+	}
+
+	public boolean jugadorHumanoHizoSuJugada() {
 
 		// juega algoritmo básico
-		turno(jugador2);
+		if(turno(jugador2))
+			return true;
 		// juega algoritmo mejorado
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 		} // Para que haya un tiempo entre las jugadas de cada uno
-		turno(jugador3);
+		if(turno(jugador3))
+			return true;
+		return false;
 		
 	}
 	public void mostrarVentana(){

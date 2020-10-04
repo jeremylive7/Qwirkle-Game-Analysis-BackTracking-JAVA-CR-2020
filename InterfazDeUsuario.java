@@ -341,7 +341,7 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
   }
 
   public void actualizarDatosJugador(Jugador j,int puntos, double tiempo){
-    if(j.getNombre().equals(humano.getNombre()))
+    if(humano!=null&&j.getNombre().equals(humano.getNombre()))
       actualizarInfo(jp1,humano,puntos,tiempo);
     else if (j.getNombre().equals(basico.getNombre()))
       actualizarInfo(jp2,basico,puntos,tiempo);
@@ -366,8 +366,8 @@ public class InterfazDeUsuario extends javax.swing.JFrame {
   }
 
   public void activarBotonesParaQueElHumanoJuegue() {
-    for(Integer i:tablero.placesToPlay.keySet()){
-      for(Integer j:tablero.placesToPlay.get(i).keySet()){
+    for(int i=0;(i)<botonesTablero.length;(i)++){
+      for(int j=0;(j)<botonesTablero.length;(j)++){
         for(int k=0;k<humano.getMano().size();k++){
           if(tablero.placesToPlay.get(i).get(j).contains(humano.getMano().get(k))){
             botonesTablero[i][j].setEnabled(true);

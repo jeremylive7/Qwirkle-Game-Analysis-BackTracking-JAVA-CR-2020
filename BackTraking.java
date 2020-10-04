@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.awt.Point;
 
 public class BackTraking
 {
@@ -16,6 +17,7 @@ public class BackTraking
 	private Tablero tablero;
 	private Set<Ficha>mano;
 	private List<Jugada>jugadas;
+	private boolean esMejorado;
 	public final Random r=new Random();
 	//Constructor
 	BackTraking(Tablero tablero,ArrayList<Ficha>mano) 
@@ -24,12 +26,30 @@ public class BackTraking
 		this.mano=new HashSet<>(mano);
 	}
 	
-	public Jugada getJugadaBasico(){
-		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<Ficha>(mano)));
+	BackTraking(Tablero tablero,ArrayList<Ficha>mano,boolean esMejorado) 
+	{		
+		this.tablero=tablero;
+		this.mano=new HashSet<>(mano);
+		this.esMejorado=esMejorado;
+		initJugadasWithBackTracking();
+		
+	}
+	private void initJugadasWithBackTracking(){
+		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<>(mano)));
+	}
+	public Jugada getRespuesta(){
+		if(esMejorado)
+			return getJugadaMejorado();
+		else
+			return getJugadaBasico();
+	}
+	private Jugada getJugadaBasico(){
+		if(jugadas.isEmpty())
+			System.out.println("Satanásxd");
 		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		return jugadas.get(0);
 	}
-	public Jugada getJugadaMejorado(){
+	private Jugada getJugadaMejorado(){
 		getJugadaBasico();
 		ejecutarMejorado();
 		return jugadas.get(0);
@@ -107,22 +127,21 @@ public class BackTraking
 	}
 	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
 		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
-		for(Entry<Integer,Map<Integer,List<Ficha>>> entradaLugar:tablero.placesToPlay.entrySet()){
-			for(Entry<Integer,List<Ficha>> y:entradaLugar.getValue().entrySet()){
+		for(Point xy : tablero.demeLasPosicionesEnQuePueddoEmpezarJugada()) {
 				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
-					if(y.getValue().contains(entradaGrupito.getKey())){
-						generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, entradaLugar.getKey(), y.getKey());						
+					if(tablero.placesToPlay.get(xy.x).get(xy.y).contains(entradaGrupito.getKey())){
+						generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, xy.x, xy.y);						
 					}
 				}
-			}
+			
 		}
 		return todasLasPosiblesJugadasCompletas;
 	}
-	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
-		List<Jugada>jugadasCompletas,int x, int y){
-			generarArbolDeJugadas(jugadaDeLaMano.getValue().get(0), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);						
+
+	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,List<Jugada>jugadasCompletas,int x, int y){
+			generarArbolDeJugadas(new ArrayList<>(jugadaDeLaMano.getValue().get(0)), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);						
 			if(!jugadaDeLaMano.getValue().get(1).isEmpty())
-				generarArbolDeJugadas(jugadaDeLaMano.getValue().get(1), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
+				generarArbolDeJugadas(new ArrayList<>(jugadaDeLaMano.getValue().get(1)), jugadaDeLaMano.getKey(), jugadasCompletas, new Jugada(), x, y, null);
 	}
 	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
 					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
