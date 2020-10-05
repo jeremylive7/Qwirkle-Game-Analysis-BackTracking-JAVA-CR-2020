@@ -66,24 +66,21 @@ public class BackTraking
 		return pJugadas;
 	}
 
-	public ArrayList<Ficha> getRepetFicha(Jugador pPlay)
-	{
-		ArrayList<Ficha> repetFichas = new ArrayList<Ficha>();
-		ArrayList<Ficha> hand_player = pPlay.getMano();
-		int largo_mano = hand_player.size()-1;
-		
-		for (int index=0; index<largo_mano; index++) 
-		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(hand_player.get(index).getFigura()==hand_player.get(indey).getFigura()
-					&&hand_player.get(index).getColor()==hand_player.get(indey).getColor())
-				{
-					repetFichas.add(hand_player.get(indey));
+	public boolean isItCheapInside(ArrayList<Jugadita> pJugada, Map<Ficha, Integer> pList_repets) {
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				for (Jugadita pJugadita : pJugada) {
+					Ficha pFicha = pJugadita.ficha;
+					if(ficha.getFigura() == pFicha.getFigura()
+					&& ficha.getColor() == pFicha.getColor()){
+						return true;
+					}
 				}
 			}
 		}
-		return repetFichas;
+		return false;
 	}
 
 	private boolean cumpleAlgunCriterioDePoda(Jugada pJugada)
