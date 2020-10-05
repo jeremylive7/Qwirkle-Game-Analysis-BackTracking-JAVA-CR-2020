@@ -22,6 +22,13 @@ class Jugador
 		for(Jugadita par:jugada.jugaditas)
 			mano.remove(par.ficha);
 	}
+	public String toString(){
+		String out="Nombre: "+nombre+"\nScore: "+score+"\nTiempo total: "+tiempo+"\nMano: [";
+		for(Ficha f:mano){
+			out+=f+", ";
+		}
+		return out.substring(0,out.length()-2) + "]";
+	}
 
 	public int getScore()
 	{

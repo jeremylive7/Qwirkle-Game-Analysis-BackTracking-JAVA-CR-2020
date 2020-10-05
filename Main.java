@@ -6,7 +6,7 @@ class Main
 		Qwirkle qwirkle;
 		qwirkle = new Qwirkle();
 
-		qwirkle.mostrarVentana();
+		qwirkle.iniciarJuego();
 
 		//qwirkle.menu(qwirkle);
 

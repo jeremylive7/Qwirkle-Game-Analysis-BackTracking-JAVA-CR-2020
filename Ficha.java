@@ -49,6 +49,11 @@ public class Ficha
 	}
 
 	@Override
+	public int hashCode(){
+		return 0;
+	}
+
+	@Override
 	public boolean equals(Object f){
 		Ficha ficha;
 		try{

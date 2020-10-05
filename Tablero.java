@@ -62,62 +62,46 @@ class Tablero
 		//para todos los de arriba, hacer intersección con abajo
 		//para todos los de la derecha, hacer intersección con el de la izquierda
 		//eliminarLosQueNoCoinciden(getCualesPuedoPoner(izquierda),todosLosDeDerecha);
-		int[]dx={-1,1,0,0};
-		int[]dy={0,0,-1,1};
-		for(int i=0;i<4;i++){// para cada vector dirección (xs[i],ys[i])
-			for(int a=x;a>=0&&a<Tablero.MATRIX_SIDE;a+=dx[i]){//mientras "x" no se sale del borde
-				for(int b=y;b>=0&&b<Tablero.MATRIX_SIDE;b+=dy[i]){//mientras "y" no se sale del borde
-					if(a+dx[i]>0&&a+dx[i]<MATRIX_SIDE&&//si el siguiente x no se sale del borde
-					   b+dy[i]>0&&b+dy[i]<MATRIX_SIDE&&// y el siguiente y no se sale del borde
-					   fichas[a+dx[i]][b+dy[i]]==null){//y no hay una ficha ya en el siguiente lugar de la matriz de fichas
-						//aquí entonces ya está en un borde
-						if(i%2==0){
-							//Aquí puede estar en el borde inferior ya sea de x o de y
-							//entonces busco el borde superior y lo guardo
-							int tx=x;
-							int ty=y;
-							while(fichas[tx+dx[i+1]][ty+dy[i+1]]!=null){
-								tx+=dx[i+1];
-								ty+=dy[i+1];
+		for(int a=x;a>=0&&a<Tablero.MATRIX_SIDE;a--)//mientras "x" no se sale del borde
+			if(fichas[a-1][y]==null){
+				for(int b=x;b>=0&&b<Tablero.MATRIX_SIDE;b++)
+					if(fichas[b+1][y]==null){
+						for(int g=a;g<=b;g++){
+							for(int k=0;k<getCualesSePuedePoner(a-1,y).size();){
+								if(fichas[g][y].noCombina(getCualesSePuedePoner(a-1,y).get(k)))
+									getCualesSePuedePoner(a-1,y).remove(k);
+								else k++;
 							}
-							//itero desde el borde inferior hasta el borde superior
-							if(i==0){
-								for(int g=a;g<=tx;g+=dx[i+1]){
-									for(int k=0;k<getCualesSePuedePoner(a+dx[i],b).size();){
-										if(fichas[g][b].noCombina(getCualesSePuedePoner(a+dx[i],b).get(k)))
-											getCualesSePuedePoner(a+dx[i],b).remove(k);
-										else k++;
-									}
-									for(int k=0;k<getCualesSePuedePoner(tx+dx[i+1], b).size();){
-										if(fichas[g][b].noCombina(getCualesSePuedePoner(tx+dx[i+1],b).get(k)))
-											getCualesSePuedePoner(tx+dx[i+1],b).remove(k);
-										else k++;
-									}
-								}
-							} else {
-								for(int w=b;w<=ty;w+=dy[i+1]){
-									for(int k=0;!getCualesSePuedePoner(a, b+dy[i]).isEmpty() && k<getCualesSePuedePoner(a,b+dy[i]).size();){
-										if(fichas[a][w].noCombina(getCualesSePuedePoner(a,b+dy[i]).get(k)))
-											getCualesSePuedePoner(a,b+dy[i]).remove(k);
-										else k++;
-									}
-									for(int k=0;!getCualesSePuedePoner(a, ty+dy[i+1]).isEmpty() && k<getCualesSePuedePoner(a, ty+dy[i+1]).size();){
-										if(fichas[a][w].noCombina(getCualesSePuedePoner(a,ty+dy[i+1]).get(k)))
-											getCualesSePuedePoner(a,ty+dy[i+1]).remove(k);
-										else k++;
-									}
-								}
+							for(int k=0;k<getCualesSePuedePoner(b+1,y).size();){
+								if(fichas[g][y].noCombina(getCualesSePuedePoner(b+1,y).get(k)))
+									getCualesSePuedePoner(b+1,y).remove(k);
+								else k++;
 							}
-							
-						}						
-						a=-10;
-						b=-10;
+						}
+						break;
 					}
-					else if(i<=2)
-						b=-10;
-				}
+				break;
 			}
-		}
+		for(int a=y;a>=0&&a<Tablero.MATRIX_SIDE;a--)
+			if(fichas[x][a-1]==null){
+				for(int b=y;b>=0&&b<Tablero.MATRIX_SIDE;b++)
+					if(fichas[x][b+1]==null){
+						for(int w=a;w<=b;w++){
+							for(int k=0;k<getCualesSePuedePoner(x,a-1).size();){
+								if(fichas[x][w].noCombina(getCualesSePuedePoner(x,a-1).get(k)))
+									getCualesSePuedePoner(x,a-1).remove(k);
+								else k++;
+							}
+							for(int k=0;k<getCualesSePuedePoner(x,b+1).size();){
+								if(fichas[x][w].noCombina(getCualesSePuedePoner(x,b+1).get(k)))
+									getCualesSePuedePoner(x,b+1).remove(k);
+								else k++;
+							}
+						}
+						break;
+					}
+				break;
+			}
 	}
 	public int getPuntos(Jugada jugada){//Tengo dudas con esta función.
 		jugada.puntos=0;
@@ -181,7 +165,7 @@ class Tablero
 		final int mitadDeLaMatriz=MATRIX_SIDE/2;
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.AZUL), mitadDeLaMatriz-1, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
-		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.VERDE), mitadDeLaMatriz, mitadDeLaMatriz-1);
+		meterFichaEnXY(new Ficha(Figura.TREBOL,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz-1);
 	}
 	public List<Point> demeLasPosicionesEnQuePueddoEmpezarJugada() {
 		List<Point>out=new ArrayList<>();

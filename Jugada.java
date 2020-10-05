@@ -12,4 +12,12 @@ public class Jugada {
 		n.isLine=isLine;
 		return n;
 	}
+	public String toString(){
+		String out="[";
+		for(Jugadita j:jugaditas){
+			out+=j.ficha+",";
+		}
+		out=out.substring(0,out.length()-1)+"]";
+		return out;
+	}
 }

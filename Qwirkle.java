@@ -9,7 +9,6 @@ class Qwirkle
 	private List<Ficha> bolsa_fichas;
 	private Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Integer>();
 	private int opcion;
-	private InterfazDeUsuario frame;
 	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
 			Figura.ROMBO };
 	public static final Color[] COLORES = { Color.AMARILLO, Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO,
@@ -28,36 +27,20 @@ class Qwirkle
 		
 		this.tablero = new Tablero();
 		this.tablero.llenarTableroConEjemplo();
-		this.frame = new InterfazDeUsuario(tablero,jugador1,jugador2,jugador3);
-		this.imprimirTablero();
 		
 	}
 
 	public void iniciarJuego(){
-		mostrarVentana();
-		if(jugador1==null){
-			SwingUtilities.invokeLater(()->{
-				JOptionPane.showMessageDialog(frame, 
-								  "Presione enter para continuar", 
-								  "Bienvenido al simulador de dos algoritmos de backtracking jugando qwirkle", 
-								  JOptionPane.OK_OPTION);
-				recursivaBonita();
-			});
-		}	
-	}
-
-	private void recursivaBonita(){
-		if (!jugadorHumanoHizoSuJugada()){
+		imprimirTablero();
+		while(jugador1==null){
+			System.out.println("Estado del jugador básico: \n"+jugador2);
+			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
+			if(jugadorHumanoHizoSuJugada())
+				break;
 			try{
-				Thread.sleep(5000);
-				Thread t=new Thread(){
-					public void run(){
-						recursivaBonita();
-					}
-				};
-				t.start();
+				Thread.sleep(1500);
 			}catch(Exception e){}
-		}
+		}	
 	}
 
 	public static void main(String[] args){
@@ -75,7 +58,9 @@ class Qwirkle
 			return true;
 		}
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
-		frame.procesarJugada(jugada, jugador, cantPuntos, tiempo);
+		System.out.println("Jugada escogida por el algoritmo: "+jugada);
+		System.out.println("Con un tiempo de: "+tiempo+" milisegundos.");
+		System.out.println("Y el jugador ganó un total de "+cantPuntos+" puntos.");
 		return false;
 	}
 
@@ -96,18 +81,17 @@ class Qwirkle
 		if(turno(jugador2))
 			return true;
 		// juega algoritmo mejorado
+		System.out.println("Esperando 3 segundos...");
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 		} // Para que haya un tiempo entre las jugadas de cada uno
+		imprimirTablero();
 		if(turno(jugador3))
 			return true;
+		imprimirTablero();
 		return false;
 		
-	}
-	public void mostrarVentana(){
-		frame.setVisible(true);
-		frame.mostrarTablero();
 	}
 	public Tablero getTablero() {
 		return tablero;
