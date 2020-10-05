@@ -19,7 +19,6 @@ class Tablero
 	{		
 		fichas = new Ficha[MATRIX_SIDE][MATRIX_SIDE];	
 		this.placesToPlay= new HashMap<>();
-		placesWithAnTokkenOnTheSide=new HashSet<>();
 		if(todasLasFichas==null){
 			todasLasFichas=new ArrayList<>();
 			for (Figura figura:Qwirkle.FIGURAS)
@@ -48,6 +47,7 @@ class Tablero
 			return false;
 		fichas[x][y]=ficha;
 		updatePlacesToPlay(x, y);
+		getCualesSePuedePoner(x, y).clear();
 		return true;
 	}
 	
@@ -96,30 +96,28 @@ class Tablero
 								}
 							} else {
 								for(int w=b;w<=ty;w+=dy[i+1]){
-									for(int k=0;k<getCualesSePuedePoner(a,b+dy[i]).size();){
+									for(int k=0;!getCualesSePuedePoner(a, b+dy[i]).isEmpty() && k<getCualesSePuedePoner(a,b+dy[i]).size();){
 										if(fichas[a][w].noCombina(getCualesSePuedePoner(a,b+dy[i]).get(k)))
 											getCualesSePuedePoner(a,b+dy[i]).remove(k);
 										else k++;
 									}
-									for(int k=0;k<getCualesSePuedePoner(a, ty+dy[i+1]).size();){
-										if(fichas[a][w].noCombina(getCualesSePuedePoner(tx+dy[i+1],ty+dy[i+1]).get(k)))
+									for(int k=0;!getCualesSePuedePoner(a, ty+dy[i+1]).isEmpty() && k<getCualesSePuedePoner(a, ty+dy[i+1]).size();){
+										if(fichas[a][w].noCombina(getCualesSePuedePoner(a,ty+dy[i+1]).get(k)))
 											getCualesSePuedePoner(a,ty+dy[i+1]).remove(k);
 										else k++;
 									}
 								}
 							}
 							
-						}
-						
+						}						
 						a=-10;
 						b=-10;
 					}
+					else if(i<=2)
+						b=-10;
 				}
 			}
 		}
-	}
-	private void eliminarLasQueNoCoinciden(List<Ficha>fichas,Ficha f){
-		
 	}
 	public int getPuntos(Jugada jugada){//Tengo dudas con esta función.
 		jugada.puntos=0;
