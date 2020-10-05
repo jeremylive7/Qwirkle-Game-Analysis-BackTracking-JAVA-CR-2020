@@ -40,7 +40,7 @@ public class FileOperations
 	{
 		FileWriter flwriter = null;
 		try {
-			flwriter = new FileWriter("C:\\Users\\Jerem\\Desktop\\Proyecto JAVA\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\FilesTXT\\players-point-time-X-turno.txt");
+			flwriter = new FileWriter("C:\\Users\\Jerem\\Desktop\\Proyecto JAVA\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\FilesTXT\\players-point-time-finish-game.txt");
 
 			BufferedWriter bfwriter = new BufferedWriter(flwriter);
 

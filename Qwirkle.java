@@ -66,6 +66,8 @@ class Qwirkle
 			
 			this.jugadorActual = (this.jugadorActual == this.jugador1 ? this.jugador2 : this.jugador1);
 		}while(this.bolsa_fichas.size() != 0);
+
+		FileOperations.createdFileFinishGame(this.jugadorActual.getNombre(), this.jugadorActual.getScore() + "", "0");
 	}
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas) {
@@ -194,13 +196,12 @@ class Qwirkle
 	public void procesarJugada(Jugador jugador, Jugada jugada) 
 	{
 		int cantPuntos = this.tablero.getPuntos(jugada);
-		String points_cant = cantPuntos + "";
 
 		this.frame.mostrarJugada(jugada);
 		this.tablero.procesarJugada(jugada);
 		jugador.procesarJugada(jugada, cantPuntos);
 
-		FileOperations.createdFileXRound(jugador.getNombre(), points_cant, "0");
+		FileOperations.createdFileXRound(jugador.getNombre(), cantPuntos + "", "0");
 	}
 
 	public void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand, Map<Ficha, ArrayList<ArrayList<Ficha>>> pAll_plays) 
