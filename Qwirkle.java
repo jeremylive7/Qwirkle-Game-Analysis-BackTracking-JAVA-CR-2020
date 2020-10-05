@@ -108,6 +108,19 @@ class Qwirkle
 				lista_fichas_slices.add(combination_list_1_2);
 				grupos.put(pFichas.get(pI), lista_fichas_slices);
 			}
+
+			ArrayList<Ficha> playOf4 = new ArrayList<Ficha>();
+			playOf4.add(pFichas.get(pI));
+			//playOf4.add(combination_list_1);
+
+			//getAllCombToEachComb(playOf4);
+/*			lista_fichas_slices.add(combination_list_1_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
+*/
+/*			ArrayList<Ficha> play_of4 = new ArrayList<Ficha>();
+			play_of4.add(pFichas.get(pI));
+			play_of4.add(combination_list_2);*/
+
 		}
 		return grupos;
 	}
@@ -123,16 +136,128 @@ class Qwirkle
 		return combination;
 	}
 
-	public ArrayList<Ficha> getCombinationList4(ArrayList<Ficha> pList)
+	public void showAllComb(ArrayList<ArrayList<Integer>> pLista)
 	{
-		int contador = 0;
-		ArrayList<Ficha> combination = new ArrayList<Ficha>();
-
-		for (int index = 1; index >= 0; index--) {
-			combination.add(contador, pList.get(index));
-			contador = 1;
+		for (ArrayList<Integer> pListita : pLista) 
+		{
+			System.out.println("[");
+			for (Integer pNum : pListita) 
+			{
+				System.out.println(pNum+",");
+			}	
+			System.out.println("]");
 		}
-		return combination;
+	}
+
+	public ArrayList<ArrayList<Integer>> getAllCombToEachComb(ArrayList<Integer> pList)
+	{
+		ArrayList<ArrayList<Integer>> pAll_combinations = new ArrayList<ArrayList<Integer>>();
+
+		ArrayList<ArrayList<Integer>> pAll_list = new ArrayList<ArrayList<Integer>>();
+		pAll_list = getAllCombinations(pList);
+		for (ArrayList<Integer> pLista:pAll_list ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		ArrayList<ArrayList<Integer>> pAll_list_0 = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> pList_all = new ArrayList<Integer>();
+		pList_all.add(pList.get(3));
+		pList_all.add(pList.get(0));
+		pList_all.add(pList.get(1));
+		pList_all.add(pList.get(2));
+		pAll_list_0 = getAllCombinations(pList_all);
+		for (ArrayList<Integer> pLista:pAll_list_0 ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		ArrayList<ArrayList<Integer>> pAll_list_1 = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> pList_all_1 = new ArrayList<Integer>();
+		pList_all_1.add(pList.get(2));
+		pList_all_1.add(pList.get(3));
+		pList_all_1.add(pList.get(0));
+		pList_all_1.add(pList.get(1));
+		pAll_list_1 = getAllCombinations(pList_all_1);
+		for (ArrayList<Integer> pLista:pAll_list_1 ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		ArrayList<ArrayList<Integer>> pAll_list_2 = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> pList_all_2 = new ArrayList<Integer>();
+		pList_all_2.add(pList.get(1));
+		pList_all_2.add(pList.get(2));
+		pList_all_2.add(pList.get(3));
+		pList_all_2.add(pList.get(0));
+		pAll_list_2 = getAllCombinations(pList_all_2);
+		for (ArrayList<Integer> pLista:pAll_list_2 ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		return pAll_combinations;
+	}
+
+	public ArrayList<ArrayList<Integer>> getAllCombinations(ArrayList<Integer> pList)
+	{
+		ArrayList<ArrayList<Integer>> lista = new ArrayList<ArrayList<Integer>>();
+		
+		ArrayList<Integer> list_comb = new ArrayList<Integer>();
+
+		list_comb.add(pList.get(0));
+		list_comb.add(pList.get(1));
+		list_comb.add(pList.get(2));
+		list_comb.add(pList.get(3));
+
+		lista.add(list_comb);
+
+		ArrayList<Integer> list_comb_0 = new ArrayList<Integer>();
+
+		list_comb_0.add(pList.get(0));
+		list_comb_0.add(pList.get(1));
+		list_comb_0.add(pList.get(3));
+		list_comb_0.add(pList.get(2));
+
+		lista.add(list_comb_0);
+
+		ArrayList<Integer> list_comb_1 = new ArrayList<Integer>();
+
+		list_comb_1.add(pList.get(0));
+		list_comb_1.add(pList.get(3));
+		list_comb_1.add(pList.get(2));
+		list_comb_1.add(pList.get(1));
+
+		lista.add(list_comb_1);
+
+		ArrayList<Integer> list_comb_2 = new ArrayList<Integer>();
+
+		list_comb_2.add(pList.get(0));
+		list_comb_2.add(pList.get(3));
+		list_comb_2.add(pList.get(1));
+		list_comb_2.add(pList.get(2));
+
+		lista.add(list_comb_2);
+
+		ArrayList<Integer> list_comb_3 = new ArrayList<Integer>();
+
+		list_comb_3.add(pList.get(0));
+		list_comb_3.add(pList.get(2));
+		list_comb_3.add(pList.get(1));
+		list_comb_3.add(pList.get(3));
+
+		lista.add(list_comb_3);
+
+		ArrayList<Integer> list_comb_4 = new ArrayList<Integer>();
+
+		list_comb_4.add(pList.get(0));
+		list_comb_4.add(pList.get(2));
+		list_comb_4.add(pList.get(3));
+		list_comb_4.add(pList.get(1));
+
+		lista.add(list_comb_4);		
+
+		return lista;	
 	}
 
 	public Map<Ficha, Integer> startAllCeros()
