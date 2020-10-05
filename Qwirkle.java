@@ -194,10 +194,13 @@ class Qwirkle
 	public void procesarJugada(Jugador jugador, Jugada jugada) 
 	{
 		int cantPuntos = this.tablero.getPuntos(jugada);
-	
+		String points_cant = cantPuntos + "";
+
 		this.frame.mostrarJugada(jugada);
 		this.tablero.procesarJugada(jugada);
 		jugador.procesarJugada(jugada, cantPuntos);
+
+		FileOperations.createdFileXRound(jugador.getNombre(), points_cant, "0");
 	}
 
 	public void turno(Jugador jugador, Map<Ficha, Integer> pRepetFichas_withHand, Map<Ficha, ArrayList<ArrayList<Ficha>>> pAll_plays) 
