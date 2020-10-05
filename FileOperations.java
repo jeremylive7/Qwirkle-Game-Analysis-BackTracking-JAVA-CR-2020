@@ -62,32 +62,4 @@ public class FileOperations
 			}
 		}
 	}
-	
-	public static void addFileXTurno(String pName_player, String pPoints_round, String pTime_round) 
-	{
-		FileWriter flwriter = null;
-
-		try {
-			flwriter = new FileWriter("C:\\Users\\Jerem\\Desktop\\Proyecto JAVA\\Qwirkle-Game-Analysis-BackTracking-JAVA-CR-2020\\FilesTXT\\players-point.txt", true);
-			
-			BufferedWriter bfwriter = new BufferedWriter(flwriter);
-
-			bfwriter.write(pName_player + "," + pPoints_round + "," + pTime_round + "\n");
-			
-			bfwriter.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-
-			if (flwriter != null) 
-			{
-				try {
-					flwriter.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}	
 }
