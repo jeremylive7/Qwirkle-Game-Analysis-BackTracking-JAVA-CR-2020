@@ -17,7 +17,6 @@ class Qwirkle
 
 	public Qwirkle() 
 	{
-		
 		this.bolsa_fichas = new ArrayList<>();
 		this.fullFichasToBolsa();
 
@@ -61,6 +60,8 @@ class Qwirkle
 		System.out.println("Jugada escogida por el algoritmo: "+jugada);
 		System.out.println("Con un tiempo de: "+tiempo+" milisegundos.");
 		System.out.println("Y el jugador ganó un total de "+cantPuntos+" puntos.");
+
+		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
 		return false;
 	}
 
