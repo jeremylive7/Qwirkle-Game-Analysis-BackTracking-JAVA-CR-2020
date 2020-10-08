@@ -169,8 +169,8 @@ public class BackTraking
 			Jugadita parInicial = jugada.jugaditas.get(0);
 
 			// para el criterio de no ponerle un qwirkle fácil al adversario
-			if (jugada.puntos < SLFSUEQ) {
-				if ((esFila == null || esFila) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
+			if ((jugada.puntos < 5) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
+				if (esFila == null || esFila) {
 					int derecha = parInicial.y;
 					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
 						derecha++;// Busca por fila a la derecha algún lugar nulo
@@ -186,7 +186,7 @@ public class BackTraking
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 					}
 				}
-				if ((esFila == null || !esFila) && tablero.getFichas()[parInicial.y][parInicial.x].inhabilitado == 0) {
+				if (esFila == null || !esFila) {
 					int arriba = parInicial.x;
 					while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
 						arriba++;
@@ -208,7 +208,7 @@ public class BackTraking
 			boolean flag=false;
 			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
 				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
-				if(esFila==null||esFila){
+				if(esPorFila==null||esPorFila){
 					int nextY=y;
 					while(tablero.getFichas()[x][nextY]!=null&&nextY<Tablero.MATRIX_SIDE-1)nextY++;//Busca por fila a la derecha algún lugar nulo
 					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)&&true){
@@ -221,7 +221,7 @@ public class BackTraking
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
 						flag=true;
 					}	
-				}if (esFila==null||!esFila){
+				}if (esPorFila==null||!esPorFila){
 					int nextX=x;
 					while(tablero.getFichas()[nextX][y]!=null&&nextX<Tablero.MATRIX_SIDE-1)nextX++;
 					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)&&true){
