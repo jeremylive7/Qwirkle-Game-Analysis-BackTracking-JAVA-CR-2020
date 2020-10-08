@@ -169,7 +169,7 @@ public class BackTraking
 			Jugadita parInicial = jugada.jugaditas.get(0);
 
 			// para el criterio de no ponerle un qwirkle fácil al adversario
-			if ((jugada.puntos < 5) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
+			if ((jugada.puntos < SLFSUEQ) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
 				if (esFila == null || esFila) {
 					int derecha = parInicial.y;
 					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
@@ -184,7 +184,18 @@ public class BackTraking
 						jugada.puntos += 6;
 						jugada.complete=true;
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+						
+						if(jugada.jugaditas.get(0).y == derecha+1){
+							tablero.setFichaInhabilitada(parInicial.x, derecha+2);
+							tablero.setFichaInhabilitada(parInicial.x, izquierda-1);
+						}else if(jugada.jugaditas.get(0).y == izquierda-1)
+						{
+							tablero.setFichaInhabilitada(parInicial.x, derecha+1);
+							tablero.setFichaInhabilitada(parInicial.x, izquierda-2);
+							
+						}
 					}
+
 				}
 				if (esFila == null || !esFila) {
 					int arriba = parInicial.x;
@@ -199,6 +210,16 @@ public class BackTraking
 					if (jugada.jugaditas.size() + largo_jugada_tablero_upDown == 6){
 						jugada.puntos += 6;
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+
+						if(jugada.jugaditas.get(0).y == arriba+1){
+							tablero.setFichaInhabilitada(parInicial.x, arriba+2);
+							tablero.setFichaInhabilitada(parInicial.x, abajo-1);
+						}else if(jugada.jugaditas.get(0).y == abajo-1)
+						{
+							tablero.setFichaInhabilitada(parInicial.x, arriba+1);
+							tablero.setFichaInhabilitada(parInicial.x, abajo-2);
+							
+						}
 					}
 				}
 			}

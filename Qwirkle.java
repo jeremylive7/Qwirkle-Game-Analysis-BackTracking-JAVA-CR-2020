@@ -52,7 +52,7 @@ class Qwirkle
 		if (jugada.complete){
 			cantPuntos = tablero.getPuntos(jugada);
 			cantPuntos += 6;
-			this.inhabilitarCampoTablero(jugada);			
+			//this.inhabilitarCampoTablero(jugada);			
 		}else{
 			cantPuntos = tablero.getPuntos(jugada);
 		}
