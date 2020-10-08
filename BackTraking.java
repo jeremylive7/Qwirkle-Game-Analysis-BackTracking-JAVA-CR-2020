@@ -44,11 +44,17 @@ public class BackTraking
 	}
 	private void initJugadasWithBackTracking(){
 		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<>(mano)));
-/* 		ArrayList<ArrayList<Jugada>>
+/* 		ArrayList<ArrayList<Jugada>> jugadas
 		Jugada{
-			ArrayList<Jugadita> 
+			ArrayList<Jugadita> jugada
 			Boolean inLine
 			int puntos
+		}
+		Jugadita{
+			int x
+			int y
+			Ficha f
+			isSet estaEnEl_tablero
 		}  */
 	}
 	public Jugada getRespuesta(){
@@ -416,4 +422,4 @@ public class BackTraking
 			} 
 
 	 */
-																						
+																								
