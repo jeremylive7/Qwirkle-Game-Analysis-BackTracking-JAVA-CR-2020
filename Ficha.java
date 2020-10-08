@@ -7,8 +7,8 @@ public class Ficha
 	//Constructor
 	Ficha()
 	{
-		this.figura = null;
-		this.color = null;
+		this.figura = Figura.N;
+		this.color = Color.N;
 		this.inhabilitado = -1;
 	}
 	public Ficha(Figura figura,Color color) 
