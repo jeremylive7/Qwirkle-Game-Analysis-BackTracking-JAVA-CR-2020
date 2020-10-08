@@ -140,6 +140,7 @@ public class BackTraking
 		jugada.isLine = esPorFila;
 		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
 		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
+			//Ver donde colocar esta línea.
 			jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 			//Poda 1 se obtiene solo las jugadas que tengan alguna ficha repetida que correponda a una ficha repetida de la mano.
 			if (isItCheapInside(jugada.jugaditas, repet_fichas)) 
@@ -153,86 +154,6 @@ public class BackTraking
 			//Poda 3 se obteiene las jugadas que tengan un contraste mayor a la hora del siguiewnte turno para que no me afecte de 
 			//forma en que el jugador adversario gane mas puntos.
 			//Jugada semi completa 3 -> 2 si es de 4 -> 2
-			
-			Jugadita parInicial = jugada.jugaditas.get(0);
-			ArrayList<Jugadita> play_to_play = jugada.jugaditas;
-			ArrayList<Ficha> repet_fichas_tres = this.getFullRepetFichas(this.repet_fichas);
-			ArrayList<Jugadita> jugada_semicompleta_line = new ArrayList<Jugadita>();
-			ArrayList<Jugadita> jugada_semicompleta_colum = new ArrayList<Jugadita>();
-			ArrayList<Jugadita> fichas_miss_put_line = new ArrayList<Jugadita>();
-			ArrayList<Jugadita> fichas_miss_put_colum = new ArrayList<Jugadita>();
-			Boolean esPorFila = jugada.isLine;
-			int derecha = parInicial.y;
-			int izquierda = parInicial.y;
-			int arriba = parInicial.x;
-			int abajo = parInicial.x;
-
-			
-			if (jugada.puntos < SLFSUEQ) {
-				if (esPorFila == null || esPorFila)
-					while (this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
-						derecha++;// Busca por fila a la derecha algún lugar nulo
-
-				while (this.tablero.getFichas()[parInicial.x][izquierda] != null && izquierda > 0)
-					izquierda--;
-				
-				// Poda 4 que nosea de 5 fichas la jugada semi completa.
-				// si la ficha que falta no está en "repete_fichas" y la puedo jugar
-				// se descarta la jugada
-				if (derecha - izquierda == 5)
-					break;
-
-				jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
-				fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
-
-				if (isItEnterMissPutLine(izquierda, derecha, fichas_miss_put_line)) {
-					// Caso si la jugada semiCompleta es de 3 o 4 fichas
-					if (fichas_miss_put_line.size() >= 2 && fichas_miss_put_line.size() <= 3) {
-
-						for (Ficha pFicha : repet_fichas_tres) {
-							// Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las
-							// demas fichas que se puedan
-							// poner serian las que debo buscar para hacer una jugada inteligente.
-							if (!isFichaHere(pFicha, fichas_miss_put_line)) {
-								break;
-							}
-						}
-					}
-				}
-
-				if (repet_fichas_tres.size() != 0 && derecha - izquierda <= 4) {
-					break;
-				}
-			}
-
-			if (esPorFila == null || !esPorFila) {
-				while (this.tablero.getFichas()[abajo][parInicial.y] != null && abajo < Tablero.MATRIX_SIDE - 1)
-					abajo++;
-
-				while (this.tablero.getFichas()[arriba][parInicial.y] != null && arriba > 0)
-					arriba--;
-
-				if (abajo - arriba == 5)
-					break;
-
-				jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
-				fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
-
-				if (isItEnterMissPutColum(arriba, abajo, fichas_miss_put_colum)) {
-					if (fichas_miss_put_colum.size() >= 2 && fichas_miss_put_colum.size() <= 3) {
-						for (Ficha pFicha : repet_fichas_tres) {
-							if (!isFichaHere(pFicha, fichas_miss_put_colum)) {
-								break;
-							}
-						}
-					}
-				}
-
-				if (repet_fichas_tres.size() != 0 && derecha - izquierda <= 4) {
-					break;
-				}
-			}
-		}
 
 			//Poda 5 Cuando solo una jugada doble que le falte una ficha y que yo tenga esta ficha.
 			
@@ -369,6 +290,60 @@ public class BackTraking
 	}
 
 }
+
+
+
+
+
+
+/*
+
+
+	public boolean isItEnterMissPutColum(int pleft, int pRight, ArrayList<Jugadita> pMiss_fichas) {
+		boolean flag = false;
+
+		return flag;
+	}
+
+	public boolean isItEnterMissPutLine(int pleft, int pRight, ArrayList<Jugadita> pMiss_fichas) {
+		boolean flag = false;
+
+		return flag;
+	}
+
+	public boolean isFichaHere(Ficha pFicha, ArrayList<Jugadita> pMiss_putFichas) {
+		boolean flag = false;
+
+		return flag;
+	}
+
+	public ArrayList<Jugadita> getFichasMissPut(ArrayList<Jugadita> pPlay_semiCompleta) {
+		ArrayList<Jugadita> pList = new ArrayList<Jugadita>();
+
+		return pList;
+	}
+
+	public ArrayList<Jugadita> getPlaySemiCompletaLine(int pleft, int pRight, ArrayList<Jugadita> pJugada) {
+		ArrayList<Jugadita> pList = new ArrayList<Jugadita>();
+
+		return pList;
+	}
+
+	public ArrayList<Jugadita> getPlaySemiCompletaColum(int pDown, int pUp, ArrayList<Jugadita> pJugada) {
+		ArrayList<Jugadita> pList = new ArrayList<Jugadita>();
+
+		return pList;
+	}
+
+	public Jugada setJugadaWithRepetFicha(ArrayList<Ficha> pList, ArrayList<Jugada> pPlay) {
+		Jugada pJugada = new Jugada();
+		return pJugada;
+	}
+
+
+*/
+
+
 
 
 
