@@ -51,7 +51,6 @@ class Qwirkle
 		int cantPuntos = tablero.getPuntos(jugada);
 		jugador.procesarJugada(jugada,cantPuntos,tiempo);
 		tablero.procesarJugada(jugada);
-		//dao.procesarJugada(jugador,jugada,cantPuntos,tiempo);
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){
 			seTerminoElJuego();
 			return true;
@@ -69,7 +68,8 @@ class Qwirkle
 	}
 
 	private boolean turno(Jugador jugador) {
-		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(),jugador.getNombre().equals(jugador3.getNombre()));
+		BackTraking algoritmo = new BackTraking(tablero,this.getHandWithOutRepet(jugador),jugador.getNombre().equals(jugador3.getNombre()), 
+				this.repet_fichas);
 		long tiempo = System.currentTimeMillis();
 		Jugada jugada=algoritmo.getRespuesta();
 		tiempo=System.currentTimeMillis()-tiempo;
@@ -100,104 +100,6 @@ class Qwirkle
 	public void setTablero(Tablero tablero) {
 		this.tablero = tablero;
 	}
-/*
-	public void menu(Qwirkle pGame)
-	{
-		Tablero table = pGame.getTablero();
-		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
-
-		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
-
-		//Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
-
-		int largo_nueva_mano = 0;
-		boolean esRepetido = false;
-
-		while(this.opcion < 4){
-
-			do{
-				JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
-				//Muestro mano del jugador
-				this.showMano(jugadorActual);
-				
-				//Obtengo el # de la opcion
-				this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar mi jugada"
-					+ "\n"
-					+ "2. Solicitas salir del Juego al final de la ronda de turnos."));
-
-				if(opcion==1)
-				{
-					System.out.println("Elegiste seleccionar mi jugada");
-
-					System.out.println("Mano original: ");
-					this.showMano(pJugador);
-					
-					work_fichas_mano = this.getHandWithOutRepet(pJugador);
-					if(work_fichas_mano.size() != 6)
-					{
-						esRepetido = true;
-					}
-
-					System.out.println("\nNueva mano con repetidas eliminadas: ");
-					this.imprimirMano(work_fichas_mano);
-					
-					grupitos = this.getPossiblePlaysHand(work_fichas_mano);
-					this.showPossiblePlaysHand(grupitos);
-
-					jugadas_totales = getMostHigherScorePlay(getTotalJugadas(grupitos));
-					imprimirJugadaTotales(jugadas_totales);
-
-					playToSet = seleccionoJugada(table, jugadorActual);//Empieza turno, selecciono mi jugada
-					setJugadaTablero(playToSet);//Coloco jugada en el tablero
-					showPtsJugador(jugadorActual);//Imprimo pts
-
-					this.updateManoPlayer(jugadorActual, playToSet);
-
-					largo_nueva_mano = 6 - playToSet.size();
-					if(esRepetido)
-					{
-						largo_nueva_mano++;
-					}
-					jugadorActual.updateManoPlayer(getFichasDeLaBolsa(largo_nueva_mano));
-				}
-				else	//Salir del juego
-					break;
-						
-				jugadorActual=(jugadorActual==jugador1?jugador2:jugador1);
-
-			}while(true);
-		}
-	}
-
-	public void updateManoPlayer(Jugador pPlayer, int pLargoSet)
-	{
-		ArrrayList<Ficha> fichas = getFichasDeLaBolsa(pLargoSet);
-
-		for (Ficha pFicha : fichas) 
-		{			
-			pPlayer.setFichaMano(pFicha);	
-		}
-		
-	}
-
-	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFichas)
-	{
-		for (Ficha pFicha : pFichas) 
-		{
-			for(Map.Entry<Ficha, Integer> repetFichas:pRepetFichas.entrySet())
-			{
-				Ficha ficha_repet = repetFichas.getKey();  
-    		Integer value = repetFichas.getValue();
-    		if(pFicha == ficha_repet)
-    		{
-    			value++;
-    			pRepetFichas.put(ficha_repet, value);
-    		}
-			} 	
-		}
-	}
 
 	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
 	{
@@ -216,7 +118,7 @@ class Qwirkle
 			}
 		}
 		return mano_fichas;
-	}*/
+	}
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
@@ -361,15 +263,15 @@ class Qwirkle
 			case CIRCULO:
 				return "O";
 			case CUADRADO:
-				return "■";
+				return "C";
 			case ROMBO:
-				return "÷";
+				return "R";
 			case SOL:
-				return "§";
+				return "S";
 			case TREBOL:
-				return "¤";
+				return "T";
 			case X:
-				return "×";
+				return "X";
 		}
 		return "";
 	}

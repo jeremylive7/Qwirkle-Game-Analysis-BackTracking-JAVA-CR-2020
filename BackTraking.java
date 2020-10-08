@@ -19,18 +19,19 @@ public class BackTraking
 	private List<Jugada>jugadas;
 	private boolean esMejorado;
 	public final Random r=new Random();
-	//Constructor
+	private Map<Ficha, Integer> repet_fichas;
 	BackTraking(Tablero tablero,ArrayList<Ficha>mano) 
 	{		
 		this.tablero=tablero;
 		this.mano=new HashSet<>(mano);
 	}
 	
-	BackTraking(Tablero tablero,ArrayList<Ficha>mano,boolean esMejorado) 
+	BackTraking(Tablero tablero,ArrayList<Ficha>mano,boolean esMejorado, Map<Ficha, Integer> pRepet) 
 	{		
 		this.tablero=tablero;
 		this.mano=new HashSet<>(mano);
 		this.esMejorado=esMejorado;
+		this.repet_fichas = pRepet;
 		initJugadasWithBackTracking();
 		
 	}
@@ -50,42 +51,9 @@ public class BackTraking
 		return jugadas.get(0);
 	}
 	private Jugada getJugadaMejorado(){
+		getJugadaMejorado();
 		getJugadaBasico();
-		ejecutarMejorado();
 		return jugadas.get(0);
-	}
-	private boolean cumpleAlgunCriterioDePoda(Jugada jugada){
-		Boolean esPorFila=jugada.isLine;
-		Jugadita parInicial=jugada.jugaditas.get(0);
-		//para el criterio de no ponerle un qwirkle fácil al adversario
-		if(jugada.puntos<SLFSUEQ){
-			if(esPorFila==null||esPorFila){
-				int derecha=parInicial.y;
-				while(tablero.getFichas()[parInicial.x][derecha]!=null&&derecha<Tablero.MATRIX_SIDE - 1)
-					derecha++;// Busca por fila a la derecha algún lugar nulo
-				int izquierda=parInicial.y;
-				while(tablero.getFichas()[parInicial.x][izquierda]!=null&&izquierda>0)izquierda--;
-				//if(fichasPuestas[tablero.placesToPlay.get(x).get(y)]<3)return true;
-				if(derecha-izquierda==5)return true;
-			}
-			if (esPorFila==null||!esPorFila){
-				int arriba=parInicial.x;
-				while(tablero.getFichas()[arriba][parInicial.y]!=null&&arriba<Tablero.MATRIX_SIDE-1)arriba++;
-				int abajo=parInicial.x;
-				while(tablero.getFichas()[abajo][parInicial.y]!=null&&abajo>0)abajo--;
-				if(arriba-abajo==5)return true;
-			}
-			//falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular a la orientación de la jugada
-			//también falta considerar si el espacio que falta para el qwirkle fácil está como en medio 
-			//y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular pero con el espacio vacío atravezado
-			//también algo que faltaría pero sería ya demasiado (tal vez), es que si la ficha que falta para ese qwirkle fácil
-			//ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
-			//si en la jugada perpendicular la ficha que falta la tengo en la mano, es una jugada perfecta
-		}
-		return false;
-	}
-	private void ejecutarMejorado(){
-		jugadas.removeIf(jugada->cumpleAlgunCriterioDePoda(jugada));
 	}
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
@@ -128,11 +96,11 @@ public class BackTraking
 	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
 		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
 		for(Point xy : tablero.demeLasPosicionesEnQuePueddoEmpezarJugada()) {
-				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
-					if(tablero.placesToPlay.get(xy.x).get(xy.y).contains(entradaGrupito.getKey())){
-						generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, xy.x, xy.y);						
-					}
+			for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
+				if(tablero.placesToPlay.get(xy.x).get(xy.y).contains(entradaGrupito.getKey())){
+					generarArbolDeJugadas(entradaGrupito, todasLasPosiblesJugadasCompletas, xy.x, xy.y);						
 				}
+			}
 			
 		}
 		return todasLasPosiblesJugadasCompletas;
@@ -145,14 +113,154 @@ public class BackTraking
 	}
 	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
 					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
-					Jugada jugada,int x,int y,Boolean esPorFila){
-		//lo que ingresa es sí o sí una jugada válida
+					Jugada jugada,int x,int y,Boolean esPorFila)
+	{
 		fichasQueFaltanPorColocar.remove(fichaInicial);
 		jugada.jugaditas.add(new Jugadita(x, y, fichaInicial));
 		jugada.isLine = esPorFila;
 		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
 		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
+
+			//*Poda 1 se obtiene solo las jugadas que tengan alguna ficha repetida que correponda a una ficha repetida de la mano.
+			if (isItCheapInside(pJugada.jugaditas, repet_fichas)) {
+				pJugada.puntos += 500;
+			}
+			//Poda algoritmo mejorado.
+			//Poda 3 se obteiene las jugadas que tengan un contraste mayor a la hora del siguiewnte turno para que no me afecte de 
+			//forma en que el jugador adversario gane mas puntos.
+			//Jugada semi completa 3 -> 2 si es de 4 -> 2
+
+			//Poda 4. Obtencion.
+
+			//Poda 5 es que nosea de 5 fichas la jugada semi completa.
+
+			//Poda 6. Cuando solo una jugada doble que le falte una ficha y que yo tenga esta ficha.
+			
+			Boolean esPorFila = jugada.isLine;
+			Jugadita parInicial = jugada.jugaditas.get(0);
+
+			// para el criterio de no ponerle un qwirkle fácil al adversario
+			if (jugada.puntos < SLFSUEQ) {
+				if (esPorFila == null || esPorFila) {
+					int derecha = parInicial.y;
+					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
+						derecha++;// Busca por fila a la derecha algún lugar nulo
+					int izquierda = parInicial.y;
+					while (tablero.getFichas()[parInicial.x][izquierda] != null && izquierda > 0)
+						izquierda--;
+					// if(fichasPuestas[tablero.placesToPlay.get(x).get(y)]<3)return true;
+					if (derecha - izquierda == 5)
+						return;
+				}
+				if (esPorFila == null || !esPorFila) {
+					int arriba = parInicial.x;
+					while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
+						arriba++;
+					int abajo = parInicial.x;
+					while (tablero.getFichas()[abajo][parInicial.y] != null && abajo > 0)
+						abajo--;
+					if (arriba - abajo == 5)
+						return;
+				}
+				// falta evaluar si por cada ficha, prepara un qwirkle fácil pero perpendicular
+				// a la orientación de la jugada
+				// también falta considerar si el espacio que falta para el qwirkle fácil está
+				// como en medio
+				// y diay, ya que estamos, también si prepara un qwirkle fácil perpendicular
+				// pero con el espacio vacío atravezado
+				// también algo que faltaría pero sería ya demasiado (tal vez), es que si la
+				// ficha que falta para ese qwirkle fácil
+				// ya no se puede jugar (porque ya hay en el tablero 3 de esa ficha)
+				// si en la jugada perpendicular la ficha que falta la tengo en la mano, es una
+				// jugada perfecta
+			}
 			jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+
+			Jugadita parInicial = pJugada.jugaditas.get(0);
+			ArrayList<Jugadita> play_to_play = pJugada.jugaditas;
+			ArrayList<Ficha> repet_fichas_tres = this.getFullRepetFichas(this.repet_fichas);
+			ArrayList<Jugadita> jugada_semicompleta_line = new ArrayList<Jugadita>();
+			ArrayList<Jugadita> jugada_semicompleta_colum = new ArrayList<Jugadita>();
+			ArrayList<Jugadita> fichas_miss_put_line = new ArrayList<Jugadita>();
+			ArrayList<Jugadita> fichas_miss_put_colum = new ArrayList<Jugadita>();
+			Boolean esPorFila = pJugada.isLine;
+			int derecha = parInicial.y;
+			int izquierda = parInicial.y;
+			int arriba = parInicial.x;
+			int abajo = parInicial.x;
+			
+			if(pJugada.puntos < SLFSUEQ)
+			{
+				if(esPorFila == null || esPorFila)
+					while(this.tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
+						derecha++;// Busca por fila a la derecha algún lugar nulo
+
+					while(this.tablero.getFichas()[parInicial.x][izquierda] != null && izquierda>0)
+						izquierda--;
+					// si la ficha que falta no está en "repete_fichas" y la puedo jugar
+					//se descarta la jugada
+					if(derecha - izquierda == 5) return true;
+
+					jugada_semicompleta_line = this.getPlaySemiCompletaLine(izquierda, derecha, play_to_play);
+					fichas_miss_put_line = this.getFichasMissPut(jugada_semicompleta_line);
+
+					if(isItEnterMissPutLine(izquierda, derecha, fichas_miss_put_line))
+					{
+						//Caso si la jugada semiCompleta es de 3 o 4 fichas
+						if(fichas_miss_put_line.size() >= 2 && fichas_miss_put_line.size() <= 3)
+						{
+
+							for (Ficha pFicha : repet_fichas_tres) 
+							{
+								//Escoger la jugada que pueda ponerse esta picha para hacer cuenta que las demas fichas que se puedan
+								//poner serian las que debo buscar para hacer una jugada inteligente.	
+								if(!isFichaHere(pFicha, fichas_miss_put_line))
+								{
+									return true;
+								}
+							}					
+						}
+					}
+
+					if(repet_fichas_tres.size() != 0 && derecha - izquierda <= 4)
+					{
+						return true;
+					}
+				}
+
+				if (esPorFila == null || !esPorFila)
+				{
+					while(this.tablero.getFichas()[abajo][parInicial.y] != null && abajo < Tablero.MATRIX_SIDE - 1)
+						abajo++;
+
+					while(this.tablero.getFichas()[arriba][parInicial.y] != null && arriba > 0)
+						arriba--;
+
+					if(abajo - arriba == 5) return true;
+
+					jugada_semicompleta_colum = this.getPlaySemiCompletaColum(abajo, arriba, play_to_play);
+					fichas_miss_put_colum = this.getFichasMissPut(jugada_semicompleta_colum);
+
+					if(isItEnterMissPutColum(arriba, abajo, fichas_miss_put_colum))
+					{
+						if(fichas_miss_put_colum.size() >= 2 && fichas_miss_put_colum.size() <= 3)
+						{
+							for (Ficha pFicha : repet_fichas_tres) 
+							{
+								if(!isFichaHere(pFicha, fichas_miss_put_colum))
+								{
+									return true;
+								}
+							}					
+						}
+					}
+
+					if(repet_fichas_tres.size() != 0 && derecha - izquierda <= 4)
+					{
+						return true;
+					}
+				}	
+			} 
 		}
 		else{
 			boolean flag=false;
@@ -192,4 +300,41 @@ public class BackTraking
 		jugada.jugaditas.remove(jugada.jugaditas.size()-1);
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
+
+	public boolean isItCheapInside(ArrayList<Jugadita> pJugada, Map<Ficha, Integer> pList_repets) {
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				for (Jugadita pJugadita : pJugada) {
+					Ficha pFicha = pJugadita.ficha;
+					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
 }
+
+
+	public boolean isItCheapInside(ArrayList<Jugadita> pJugada, Map<Ficha, Integer> pList_repets) {
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				for (Jugadita pJugadita : pJugada) {
+					Ficha pFicha = pJugadita.ficha;
+					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
