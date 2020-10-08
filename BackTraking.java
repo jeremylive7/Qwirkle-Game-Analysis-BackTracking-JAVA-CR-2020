@@ -20,23 +20,36 @@ public class BackTraking
 	private boolean esMejorado;
 	public final Random r=new Random();
 	private Map<Ficha, Integer> repet_fichas;
+	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
+			Figura.ROMBO };
+	public static final Color[] COLORES = { Color.AMARILLO, Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO,
+			Color.VERDE };
+			
 	BackTraking(Tablero tablero,ArrayList<Ficha>mano) 
 	{		
 		this.tablero=tablero;
 		this.mano=new HashSet<>(mano);
 	}
 	
-	BackTraking(Tablero tablero,ArrayList<Ficha>mano,boolean esMejorado, Map<Ficha, Integer> pRepet) 
+	BackTraking(Tablero tablero,ArrayList<Ficha>mano,boolean esMejorado) 
 	{		
 		this.tablero=tablero;
 		this.mano=new HashSet<>(mano);
-		this.esMejorado=esMejorado;
-		this.repet_fichas = pRepet;
+		this.esMejorado= esMejorado;
+		this.repet_fichas = new HashMap<Ficha, Integer>();
+		this.repet_fichas = this.startAllCeros();
+		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), mano);
 		initJugadasWithBackTracking();
 		
 	}
 	private void initJugadasWithBackTracking(){
 		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<>(mano)));
+/* 		ArrayList<ArrayList<Jugada>>
+		Jugada{
+			ArrayList<Jugadita> 
+			Boolean inLine
+			int puntos
+		}  */
 	}
 	public Jugada getRespuesta(){
 		if(esMejorado)
@@ -51,7 +64,6 @@ public class BackTraking
 		return jugadas.get(0);
 	}
 	private Jugada getJugadaMejorado(){
-		getJugadaMejorado();
 		getJugadaBasico();
 		return jugadas.get(0);
 	}
@@ -120,10 +132,12 @@ public class BackTraking
 		jugada.isLine = esPorFila;
 		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
 		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
-
-			//*Poda 1 se obtiene solo las jugadas que tengan alguna ficha repetida que correponda a una ficha repetida de la mano.
-			if (isItCheapInside(pJugada.jugaditas, repet_fichas)) {
-				pJugada.puntos += 500;
+			jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+			//Poda 1 se obtiene solo las jugadas que tengan alguna ficha repetida que correponda a una ficha repetida de la mano.
+			if (isItCheapInside(jugada.jugaditas, repet_fichas)) 
+			{
+				jugada.puntos += 7;
+				System.out.println("-------------------------------------------------------------Entra en la poda 1");
 			}
 			//Poda algoritmo mejorado.
 			//Poda 3 se obteiene las jugadas que tengan un contraste mayor a la hora del siguiewnte turno para que no me afecte de 
@@ -136,6 +150,145 @@ public class BackTraking
 
 			//Poda 6. Cuando solo una jugada doble que le falte una ficha y que yo tenga esta ficha.
 			
+
+		}
+		else{
+			boolean flag=false;
+			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
+				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
+				if(esPorFila==null||esPorFila){
+					int nextY=y;
+					while(tablero.getFichas()[x][nextY]!=null&&nextY<Tablero.MATRIX_SIDE-1)nextY++;//Busca por fila a la derecha algún lugar nulo
+					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)&&true){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
+						flag=true;
+					}	
+					nextY=y;
+					while(tablero.getFichas()[x][nextY]!=null&&nextY>0)nextY--;//
+					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)&&true){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
+						flag=true;
+					}	
+				}if (esPorFila==null||!esPorFila){
+					int nextX=x;
+					while(tablero.getFichas()[nextX][y]!=null&&nextX<Tablero.MATRIX_SIDE-1)nextX++;
+					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)&&true){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
+						flag=true;
+					}
+					nextX=x;
+					while(tablero.getFichas()[nextX][y]!=null&&nextX>0)nextX--;
+					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)&&true){
+						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
+						flag=true;
+					}
+				}
+			}//Si no encontró lugar para poner 
+			if(!flag) jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+		}
+		tablero.getFichas()[x][y]=null;
+		jugada.jugaditas.remove(jugada.jugaditas.size()-1);
+		fichasQueFaltanPorColocar.add(fichaInicial);
+	}
+
+	public boolean isItCheapInside(List<Jugadita> pJugada, Map<Ficha, Integer> pList_repets) {
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				for (Jugadita pJugadita : pJugada) {
+					Ficha pFicha = pJugadita.ficha;
+					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public ArrayList<Ficha> getFullRepetFichas(Map<Ficha, Integer> pRepet) {
+		ArrayList<Ficha> pLista = new ArrayList<Ficha>();
+
+		for (Entry<Ficha, Integer> lista : pRepet.entrySet()) {
+			int total_repet = lista.getValue();
+			if (total_repet == 3) {
+				pLista.add(lista.getKey());
+			}
+		}
+		return pLista;
+	}
+
+	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero) {
+		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
+		int pFichas_tablero = pFichasTablero[0].length;
+
+		for (int indeX = 0; indeX < pFichas_tablero; indeX++) {
+			for (int indeY = 0; indeY < pFichas_tablero; indeY++) {
+				for (Map.Entry<Ficha, Integer> repetFichas : pRepet_fichas.entrySet()) {
+					Ficha ficha_repet = repetFichas.getKey();
+					if (pFichasTablero[indeX][indeY] == null) {
+						break;
+					} else if (pFichasTablero[indeX][indeY].getFigura() == ficha_repet.getFigura()
+							&& pFichasTablero[indeX][indeY].getColor() == ficha_repet.getColor()) {
+						Integer value = repetFichas.getValue();
+						value++;
+						pRepet_fichas.put(ficha_repet, value);
+					}
+				}
+			}
+		}
+		return pRepetFichas;
+	}
+
+	public Map<Ficha, Integer> updateRepetFichasWithHand(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFicha) {
+		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
+
+		for (Ficha ficha : pFicha) {
+			for (Map.Entry<Ficha, Integer> repetFichas : pRepetFichas.entrySet()) {
+				Ficha ficha_repet = repetFichas.getKey();
+				Integer value = repetFichas.getValue();
+				if (ficha == ficha_repet) {
+					value += value + 1;
+					pRepet_fichas.put(ficha_repet, value);
+				}
+			}
+		}
+		return pRepet_fichas;
+	}
+
+	public Map<Ficha, Integer> startAllCeros() {
+		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
+		ArrayList<Ficha> pTotal_fichas = this.getAllCheaps();
+		Integer initial_number = 0;
+
+		for (Ficha pFicha : pTotal_fichas) {
+			pList_repet.put(pFicha, initial_number);
+		}
+
+		return pList_repet;
+	}
+
+	public ArrayList<Ficha> getAllCheaps()
+	{
+		ArrayList<Ficha> lista = new ArrayList<Ficha>();
+		for (Figura figura:Qwirkle.FIGURAS)
+			for(Color color:Qwirkle.COLORES)
+				lista.add(new Ficha(figura,color));
+		
+
+		return lista;
+	}
+
+}
+
+
+
+
+	/*
+
+
 			Boolean esPorFila = jugada.isLine;
 			Jugadita parInicial = jugada.jugaditas.get(0);
 
@@ -261,80 +414,6 @@ public class BackTraking
 					}
 				}	
 			} 
-		}
-		else{
-			boolean flag=false;
-			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
-				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
-				if(esPorFila==null||esPorFila){
-					int nextY=y;
-					while(tablero.getFichas()[x][nextY]!=null&&nextY<Tablero.MATRIX_SIDE-1)nextY++;//Busca por fila a la derecha algún lugar nulo
-					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
-						flag=true;
-					}	
-					nextY=y;
-					while(tablero.getFichas()[x][nextY]!=null&&nextY>0)nextY--;//
-					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
-						flag=true;
-					}	
-				}if (esPorFila==null||!esPorFila){
-					int nextX=x;
-					while(tablero.getFichas()[nextX][y]!=null&&nextX<Tablero.MATRIX_SIDE-1)nextX++;
-					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
-						flag=true;
-					}
-					nextX=x;
-					while(tablero.getFichas()[nextX][y]!=null&&nextX>0)nextX--;
-					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)){
-						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
-						flag=true;
-					}
-				}
-			}//Si no encontró lugar para poner 
-			if(!flag) jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
-		}
-		tablero.getFichas()[x][y]=null;
-		jugada.jugaditas.remove(jugada.jugaditas.size()-1);
-		fichasQueFaltanPorColocar.add(fichaInicial);
-	}
 
-	public boolean isItCheapInside(ArrayList<Jugadita> pJugada, Map<Ficha, Integer> pList_repets) {
-		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
-			Ficha ficha = repets.getKey();
-			Integer value = repets.getValue();
-			if (value >= 2) {
-				for (Jugadita pJugadita : pJugada) {
-					Ficha pFicha = pJugadita.ficha;
-					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-
-}
-
-
-	public boolean isItCheapInside(ArrayList<Jugadita> pJugada, Map<Ficha, Integer> pList_repets) {
-		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
-			Ficha ficha = repets.getKey();
-			Integer value = repets.getValue();
-			if (value >= 2) {
-				for (Jugadita pJugadita : pJugada) {
-					Ficha pFicha = pJugadita.ficha;
-					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-
+	 */
+																						

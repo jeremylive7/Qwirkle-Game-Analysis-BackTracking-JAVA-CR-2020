@@ -7,7 +7,6 @@ class Qwirkle
 	private Jugador jugadorActual;
 	private Tablero tablero;
 	private List<Ficha> bolsa_fichas;
-	private Map<Ficha, Integer> repet_fichas = new HashMap<Ficha, Integer>();
 	private int opcion;
 	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
 			Figura.ROMBO };
@@ -68,8 +67,7 @@ class Qwirkle
 	}
 
 	private boolean turno(Jugador jugador) {
-		BackTraking algoritmo = new BackTraking(tablero,this.getHandWithOutRepet(jugador),jugador.getNombre().equals(jugador3.getNombre()), 
-				this.repet_fichas);
+		BackTraking algoritmo = new BackTraking(tablero,this.getHandWithOutRepet(jugador),jugador.getNombre().equals(jugador3.getNombre()));
 		long tiempo = System.currentTimeMillis();
 		Jugada jugada=algoritmo.getRespuesta();
 		tiempo=System.currentTimeMillis()-tiempo;
@@ -103,21 +101,8 @@ class Qwirkle
 
 	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
 	{
-		int largo_mano = pJugador.getCantMano()-1;
-		ArrayList<Ficha> mano_fichas = pJugador.getMano();
-
-		for (int index=0; index<largo_mano; index++) 
-		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
-					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
-				{
-					mano_fichas.remove(indey);
-				}
-			}
-		}
-		return mano_fichas;
+		
+		return new ArrayList<>(new HashSet<>(pJugador.getMano()));
 	}
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
