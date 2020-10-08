@@ -46,10 +46,12 @@ class Qwirkle
 		q.iniciarJuego();
 	}
 	
-	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo) {
+	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo) 
+	{
 		if (jugada.complete){
 			int cantPuntos = tablero.getPuntos(jugada);
 			cantPuntos += 6;
+			this.inhabilitarCampoTablero(jugada);			
 		}else{
 			int cantPuntos = tablero.getPuntos(jugada);
 		}
@@ -67,6 +69,38 @@ class Qwirkle
 
 		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
 		return false;
+	}
+
+	private void inhabilitarCampoTablero(Jugada jugada)
+	{
+		Boolean esPorFila = jugada.isLine;
+		Jugadita parInicial = jugada.jugaditas.get(0);
+
+		// para el criterio de no ponerle un qwirkle fácil al adversario
+		if (jugada.puntos < SLFSUEQ) {
+			if (esPorFila == null || esPorFila) {
+				int derecha = parInicial.y;
+				while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
+					derecha++;// Busca por fila a la derecha algún lugar nulo
+				int izquierda = parInicial.y;
+				while (tablero.getFichas()[parInicial.x][izquierda] != null && izquierda > 0)
+					izquierda--;
+
+				tablero.setFichaInhabilitada(parInicial.x, derecha+1);
+				tablero.setFichaInhabilitada(parInicial.x, izquierda-1);				
+			}
+			if (esPorFila == null || !esPorFila) {
+				int arriba = parInicial.x;
+				while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
+					arriba++;
+				int abajo = parInicial.x;
+				while (tablero.getFichas()[abajo][parInicial.y] != null && abajo > 0)
+					abajo--;
+
+				tablero.setFichaInhabilitada(arriba+1, parInicial.y);
+				tablero.setFichaInhabilitada(abajo-1, parInicial.y);
+			}
+
 	}
 
 	private void seTerminoElJuego() {

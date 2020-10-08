@@ -136,7 +136,6 @@ public class BackTraking
 					Jugada jugada,int x,int y,Boolean esPorFila)
 	{
 		fichasQueFaltanPorColocar.remove(fichaInicial);
-		//*****Colocar el -1 para los inhabilitados.
 		jugada.jugaditas.add(new Jugadita(x, y, fichaInicial));
 		jugada.isLine = esPorFila;
 		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
@@ -171,7 +170,7 @@ public class BackTraking
 
 			// para el criterio de no ponerle un qwirkle fácil al adversario
 			if (jugada.puntos < SLFSUEQ) {
-				if (esPorFila == null || esPorFila) {
+				if ((esPorFila == null || esPorFila) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
 					int derecha = parInicial.y;
 					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
 						derecha++;// Busca por fila a la derecha algún lugar nulo
@@ -187,7 +186,7 @@ public class BackTraking
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 					}
 				}
-				if (esPorFila == null || !esPorFila) {
+				if ((esPorFila == null || !esPorFila) && tablero.getFichas()[parInicial.y][parInicial.x].inhabilitado == 0) {
 					int arriba = parInicial.x;
 					while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
 						arriba++;

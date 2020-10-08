@@ -27,21 +27,18 @@ class Tablero
 		}
 
 	}
+
+	public void setFichaInhabilitada(int x, int y)
+	{
+		this.ficha[x][y] = new Ficha();
+	}
+
 	public void procesarJugada(Jugada jugada) {
 		for(Jugadita par:jugada.jugaditas){
 			meterFichaEnXY(par.ficha, par.x, par.y);
 		}
 	}
-/*
-	public Map<Integer,Map<Integer,List<Ficha>>> setPlacesToPlay(Ficha ficha, int x, int y)
-	{
-		Map<Integer,List<Ficha>> places = new HashMap<Integer,List<Ficha>>();
-		List<Ficha> lista_jugada = new ArrayList<Ficha>();
-		lista_jugada.add(ficha);
-		places.put(y, lista_jugada);
-		this.placesToPlay.put(x, places);
-	}
-*/
+
 	public boolean meterFichaEnXY(final Ficha ficha,final int x,final int y){
 		if(x<0||y<0||x>=MATRIX_SIDE||y>=MATRIX_SIDE)
 			return false;
@@ -51,10 +48,10 @@ class Tablero
 		return true;
 	}
 	
-
 	public List<Ficha>getCualesSePuedePoner(int x,int y){
 		return placesToPlay.computeIfAbsent(x, k->new HashMap<>()).computeIfAbsent(y,k->new ArrayList<>(todasLasFichas));
 	}
+	
 	private void updatePlacesToPlay(int x,int y){
 		
 		//para todos los de abajo, hacer intersección con arriba
@@ -190,3 +187,14 @@ class Tablero
 		);
 	}
 }
+
+/*
+	public Map<Integer,Map<Integer,List<Ficha>>> setPlacesToPlay(Ficha ficha, int x, int y)
+	{
+		Map<Integer,List<Ficha>> places = new HashMap<Integer,List<Ficha>>();
+		List<Ficha> lista_jugada = new ArrayList<Ficha>();
+		lista_jugada.add(ficha);
+		places.put(y, lista_jugada);
+		this.placesToPlay.put(x, places);
+	}
+*/

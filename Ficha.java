@@ -2,12 +2,20 @@ public class Ficha
 {
 	public Figura figura;
 	public Color color;
+	public int inhabilitado;
 
 	//Constructor
+	Ficha()
+	{
+		this.figura = null;
+		this.color = null;
+		this.inhabilitado = -1;
+	}
 	public Ficha(Figura figura,Color color) 
 	{		
 		this.figura = figura;
 		this.color = color;
+		this.inhabilitado = 0;
 	}
 	private String getSimboloColor(Color c)
 	{
@@ -32,15 +40,15 @@ public class Ficha
 			case CIRCULO:
 				return "O";
 			case CUADRADO:
-				return "■";
+				return "C";
 			case ROMBO:
-				return "÷";
+				return "R";
 			case SOL:
-				return "§";
+				return "S";
 			case TREBOL:
-				return "¤";
+				return "T";
 			case X:
-				return "×";
+				return "X";
 		}
 		return "";
 	}
