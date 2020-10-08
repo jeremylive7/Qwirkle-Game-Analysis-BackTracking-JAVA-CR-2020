@@ -140,20 +140,27 @@ public class BackTraking
 		jugada.isLine = esPorFila;
 		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
 		if(fichasQueFaltanPorColocar.isEmpty()){ //Si no hacen falta fichas por colocar, este arbol de posible jugada estaría completo, por lo que termina la recursividad
-			//Ver donde colocar esta línea.
-			jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+			
 			//Poda 1 se obtiene solo las jugadas que tengan alguna ficha repetida que correponda a una ficha repetida de la mano.
-			if (isItCheapInside(jugada.jugaditas, repet_fichas)) 
-			{
-				jugada.puntos += 7;
-				System.out.println("-------------------------------------------------------------Entra en la poda 1");
-			}
+			//**No esta programado.
+
 			//(Se hace al final de todo, en el sort)Poda 2 obtener el de mayor puntaje.
 
 			//Poda algoritmo mejorado.
 			//Poda 3 se obteiene las jugadas que tengan un contraste mayor a la hora del siguiewnte turno para que no me afecte de 
 			//forma en que el jugador adversario gane mas puntos.
-			//Jugada semi completa 3 -> 2 si es de 4 -> 2
+			//**No esta progrmado la manera de pensar que si localiza la ficha que ah salido dos veces, esta debe ser de las fichas que faltan por jugar.
+			if (this.isItCheapInside(jugada.jugaditas, repet_fichas) && this.esMejorado) 
+			{
+				jugada.puntos += 7;
+				jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+				System.out.println("-------------------------------------------------------------Entra en la poda 1");
+			}else{
+				//Ver donde colocar esta línea.
+				jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+			}
+			
+			//Poda 4 Jugada semi completa 3 -> 2 si es de 4 -> 2
 
 			//Poda 5 Cuando solo una jugada doble que le falte una ficha y que yo tenga esta ficha.
 			
@@ -214,7 +221,6 @@ public class BackTraking
 		}
 		return false;
 	}
-
 
 	public ArrayList<Ficha> getFullRepetFichas(Map<Ficha, Integer> pRepet) {
 		ArrayList<Ficha> pLista = new ArrayList<Ficha>();
