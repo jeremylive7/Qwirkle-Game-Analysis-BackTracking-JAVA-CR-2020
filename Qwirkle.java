@@ -47,7 +47,13 @@ class Qwirkle
 	}
 	
 	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo) {
-		int cantPuntos = tablero.getPuntos(jugada);
+		if (jugada.complete){
+			int cantPuntos = tablero.getPuntos(jugada);
+			cantPuntos += 6;
+		}else{
+			int cantPuntos = tablero.getPuntos(jugada);
+		}
+		
 		jugador.procesarJugada(jugada,cantPuntos,tiempo);
 		tablero.procesarJugada(jugada);
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){

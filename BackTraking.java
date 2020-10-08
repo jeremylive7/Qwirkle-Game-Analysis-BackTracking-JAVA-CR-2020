@@ -136,6 +136,7 @@ public class BackTraking
 					Jugada jugada,int x,int y,Boolean esPorFila)
 	{
 		fichasQueFaltanPorColocar.remove(fichaInicial);
+		//*****Colocar el -1 para los inhabilitados.
 		jugada.jugaditas.add(new Jugadita(x, y, fichaInicial));
 		jugada.isLine = esPorFila;
 		tablero.getFichas()[x][y]=fichaInicial;//hacer la jugada de forma hipotética (porque luego se deshace la jugada)
@@ -150,7 +151,7 @@ public class BackTraking
 			//Poda 3 se obteiene las jugadas que tengan un contraste mayor a la hora del siguiewnte turno para que no me afecte de 
 			//forma en que el jugador adversario gane mas puntos.
 			//**No esta progrmado la manera de pensar que si localiza la ficha que ah salido dos veces, esta debe ser de las fichas que faltan por jugar.
-			if (this.isItCheapInside(jugada.jugaditas, repet_fichas) && this.esMejorado) 
+/*			if (this.isItCheapInside(jugada.jugaditas, repet_fichas) && this.esMejorado) 
 			{
 				jugada.puntos += 7;
 				jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
@@ -158,13 +159,49 @@ public class BackTraking
 			}else{
 				//Ver donde colocar esta línea.
 				jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
-			}
+			}*/
 			
 			//Poda 4 Jugada semi completa 3 -> 2 si es de 4 -> 2
 
 			//Poda 5 Cuando solo una jugada doble que le falte una ficha y que yo tenga esta ficha.
 			
 			
+			Boolean esPorFila = jugada.isLine;
+			Jugadita parInicial = jugada.jugaditas.get(0);
+
+			// para el criterio de no ponerle un qwirkle fácil al adversario
+			if (jugada.puntos < SLFSUEQ) {
+				if (esPorFila == null || esPorFila) {
+					int derecha = parInicial.y;
+					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
+						derecha++;// Busca por fila a la derecha algún lugar nulo
+					int izquierda = parInicial.y;
+					while (tablero.getFichas()[parInicial.x][izquierda] != null && izquierda > 0)
+						izquierda--;
+					int largo_jugada_tablero = derecha - izquierda;
+					if (largo_jugada_tablero == 5)
+						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+					if (jugada.jugaditas.size() + largo_jugada_tablero == 6){
+						jugada.puntos += 6;
+						jugada.complete=true;
+						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+					}
+				}
+				if (esPorFila == null || !esPorFila) {
+					int arriba = parInicial.x;
+					while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
+						arriba++;
+					int abajo = parInicial.x;
+					while (tablero.getFichas()[abajo][parInicial.y] != null && abajo > 0)
+						abajo--;
+					int largo_jugada_tablero_upDown = arriba - abajo;
+					if (largo_jugada_tablero_upDown == 5)
+						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+					if (jugada.jugaditas.size() + largo_jugada_tablero == 6){
+						jugada.puntos += 6;
+						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
+					}
+				}
 
 		}
 		else{
