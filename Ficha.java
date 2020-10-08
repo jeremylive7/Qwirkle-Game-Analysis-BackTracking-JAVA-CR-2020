@@ -31,6 +31,8 @@ public class Ficha
 			return "Ro";
 		else if(c==Color.VERDE)
 			return "Ve";
+		else if(c==Color.N)
+			return "-";
 		else return "";
 		
 	}
@@ -49,6 +51,8 @@ public class Ficha
 				return "T";
 			case X:
 				return "X";
+			case N:
+				return "-1";
 		}
 		return "";
 	}
