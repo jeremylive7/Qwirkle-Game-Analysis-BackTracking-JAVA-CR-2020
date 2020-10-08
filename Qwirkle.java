@@ -297,6 +297,7 @@ class Qwirkle
 				return "T";
 			case X:
 				return "X";
+			case N:return "N";
 		}
 		return "";
 	}
