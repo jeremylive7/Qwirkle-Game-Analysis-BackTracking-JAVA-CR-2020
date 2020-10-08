@@ -20,10 +20,6 @@ public class BackTraking
 	private boolean esMejorado;
 	public final Random r=new Random();
 	private Map<Ficha, Integer> repet_fichas;
-	public static final Figura[] FIGURAS = { Figura.CIRCULO, Figura.CUADRADO, Figura.SOL, Figura.TREBOL, Figura.X,
-			Figura.ROMBO };
-	public static final Color[] COLORES = { Color.AMARILLO, Color.AZUL, Color.NARANJA, Color.MORADO, Color.ROJO,
-			Color.VERDE };
 			
 	BackTraking(Tablero tablero,ArrayList<Ficha>mano) 
 	{		
@@ -195,6 +191,12 @@ public class BackTraking
 							
 						}
 					}
+/*					if(parInicial se puede jugar? )
+					{
+						hacer add
+					}else{
+						inhabilitado
+					}*/
 
 				}
 				if (esFila == null || !esFila) {

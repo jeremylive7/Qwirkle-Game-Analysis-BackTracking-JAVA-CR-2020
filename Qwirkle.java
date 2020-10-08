@@ -52,7 +52,6 @@ class Qwirkle
 		if (jugada.complete){
 			cantPuntos = tablero.getPuntos(jugada);
 			cantPuntos += 6;
-			//this.inhabilitarCampoTablero(jugada);			
 		}else{
 			cantPuntos = tablero.getPuntos(jugada);
 		}
@@ -70,37 +69,6 @@ class Qwirkle
 
 		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
 		return false;
-	}
-
-	private void inhabilitarCampoTablero(Jugada jugada)
-	{
-		Boolean esPorFila = jugada.isLine;
-		Jugadita parInicial = jugada.jugaditas.get(0);
-
-		if (esPorFila == null || esPorFila) {
-			int derecha = parInicial.y;
-			while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
-				derecha++;// Busca por fila a la derecha algún lugar nulo
-			int izquierda = parInicial.y;
-			while (tablero.getFichas()[parInicial.x][izquierda] != null && izquierda > 0)
-				izquierda--;
-
-			tablero.setFichaInhabilitada(parInicial.x, derecha+1);
-			tablero.setFichaInhabilitada(parInicial.x, izquierda-1);				
-		}
-		if (esPorFila == null || !esPorFila) {
-			int arriba = parInicial.x;
-			while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
-				arriba++;
-			int abajo = parInicial.x;
-			while (tablero.getFichas()[abajo][parInicial.y] != null && abajo > 0)
-				abajo--;
-
-			tablero.setFichaInhabilitada(arriba+1, parInicial.y);
-			tablero.setFichaInhabilitada(abajo-1, parInicial.y);
-		}
-	
-
 	}
 
 	private void seTerminoElJuego() {
@@ -143,70 +111,6 @@ class Qwirkle
 	{
 		
 		return new ArrayList<>(new HashSet<>(pJugador.getMano()));
-	}
-
-	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
-	{
-		int cant_man = pFichas.size()-1;
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-
-		for(int pI=0; pI<cant_man; pI++)
-		{
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
-			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
-			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
-
-			for(int pJ=0; pJ<cant_man; pJ++)
-			{			
-				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
-				{
-					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
-					{
-						combination_list_1.add(pFichas.get(pJ));	
-					}
-					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
-					{
-						combination_list_2.add(pFichas.get(pJ));
-					}
-				}
-			}
-				
-			lista_fichas_slices.add(combination_list_1);
-			lista_fichas_slices.add(combination_list_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-
-			if(combination_list_1.size() == 2)
-			{
-				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
-
-				lista_fichas_slices.add(combination_list_1_1);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
-
-			if(combination_list_2.size() == 2)
-			{
-				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
-
-				lista_fichas_slices.add(combination_list_1_2);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
-			}
-		}
-		return grupos;
-	}
-
-	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
-	{
-		int contador = 0;
-		ArrayList<Ficha> combination = new ArrayList<Ficha>();
-
-		for (int index=1; index >= 0; index--) 
-		{
-				combination.add(contador, pList.get(index));
-				contador = 1;
-		}
-		return combination;
 	}
 
 	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
