@@ -169,7 +169,7 @@ public class BackTraking
 			Jugadita parInicial = jugada.jugaditas.get(0);
 
 			// para el criterio de no ponerle un qwirkle fácil al adversario
-			if ((jugada.puntos < SLFSUEQ) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
+			if ((jugada.puntos < SLFSUEQ) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado != -1) {
 				if (esFila == null || esFila) {
 					int derecha = parInicial.y;
 					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
@@ -222,6 +222,8 @@ public class BackTraking
 						}
 					}
 				}
+			}else{
+				jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 			}
 
 		}
