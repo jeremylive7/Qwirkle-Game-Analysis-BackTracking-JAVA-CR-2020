@@ -30,7 +30,7 @@ class Tablero
 
 	public void setFichaInhabilitada(int x, int y)
 	{
-		this.ficha[x][y] = new Ficha();
+		this.fichas[x][y] = new Ficha();
 	}
 
 	public void procesarJugada(Jugada jugada) {

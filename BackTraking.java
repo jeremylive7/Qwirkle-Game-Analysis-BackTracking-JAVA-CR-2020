@@ -165,12 +165,12 @@ public class BackTraking
 			//Poda 5 Cuando solo una jugada doble que le falte una ficha y que yo tenga esta ficha.
 			
 			
-			Boolean esPorFila = jugada.isLine;
+			Boolean esFila = jugada.isLine;
 			Jugadita parInicial = jugada.jugaditas.get(0);
 
 			// para el criterio de no ponerle un qwirkle fácil al adversario
 			if (jugada.puntos < SLFSUEQ) {
-				if ((esPorFila == null || esPorFila) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
+				if ((esFila == null || esFila) && tablero.getFichas()[parInicial.x][parInicial.y].inhabilitado == 0) {
 					int derecha = parInicial.y;
 					while (tablero.getFichas()[parInicial.x][derecha] != null && derecha < Tablero.MATRIX_SIDE - 1)
 						derecha++;// Busca por fila a la derecha algún lugar nulo
@@ -186,7 +186,7 @@ public class BackTraking
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 					}
 				}
-				if ((esPorFila == null || !esPorFila) && tablero.getFichas()[parInicial.y][parInicial.x].inhabilitado == 0) {
+				if ((esFila == null || !esFila) && tablero.getFichas()[parInicial.y][parInicial.x].inhabilitado == 0) {
 					int arriba = parInicial.x;
 					while (tablero.getFichas()[arriba][parInicial.y] != null && arriba < Tablero.MATRIX_SIDE - 1)
 						arriba++;
@@ -196,18 +196,19 @@ public class BackTraking
 					int largo_jugada_tablero_upDown = arriba - abajo;
 					if (largo_jugada_tablero_upDown == 5)
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
-					if (jugada.jugaditas.size() + largo_jugada_tablero == 6){
+					if (jugada.jugaditas.size() + largo_jugada_tablero_upDown == 6){
 						jugada.puntos += 6;
 						jugadasCompletas.add(jugada.copy(tablero.getPuntos(jugada)));
 					}
 				}
+			}
 
 		}
 		else{
 			boolean flag=false;
 			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
 				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
-				if(esPorFila==null||esPorFila){
+				if(esFila==null||esFila){
 					int nextY=y;
 					while(tablero.getFichas()[x][nextY]!=null&&nextY<Tablero.MATRIX_SIDE-1)nextY++;//Busca por fila a la derecha algún lugar nulo
 					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)&&true){
@@ -220,7 +221,7 @@ public class BackTraking
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
 						flag=true;
 					}	
-				}if (esPorFila==null||!esPorFila){
+				}if (esFila==null||!esFila){
 					int nextX=x;
 					while(tablero.getFichas()[nextX][y]!=null&&nextX<Tablero.MATRIX_SIDE-1)nextX++;
 					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)&&true){
