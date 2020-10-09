@@ -50,8 +50,8 @@ public class BackTraking
 		return jugadas.get(0);
 	}
 	private Jugada getJugadaMejorado(){
-		getJugadaBasico();
 		ejecutarMejorado();
+		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		return jugadas.get(0);
 	}
 	private boolean cumpleAlgunCriterioDePoda(Jugada jugada){
@@ -161,26 +161,26 @@ public class BackTraking
 				if(esPorFila==null||esPorFila){
 					int nextY=y;
 					while(tablero.getFichas()[x][nextY]!=null&&nextY<Tablero.MATRIX_SIDE-1)nextY++;//Busca por fila a la derecha algún lugar nulo
-					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)){
+					if(tablero.getCualesSePuedePoner(x,nextY,jugada).contains(fichaPorColocar)){
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
 						flag=true;
 					}	
 					nextY=y;
 					while(tablero.getFichas()[x][nextY]!=null&&nextY>0)nextY--;//
-					if(tablero.getCualesSePuedePoner(x,nextY).contains(fichaPorColocar)){
+					if(tablero.getCualesSePuedePoner(x,nextY,jugada).contains(fichaPorColocar)){
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,nextY,true);
 						flag=true;
 					}	
 				}if (esPorFila==null||!esPorFila){
 					int nextX=x;
 					while(tablero.getFichas()[nextX][y]!=null&&nextX<Tablero.MATRIX_SIDE-1)nextX++;
-					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)){
+					if(tablero.getCualesSePuedePoner(nextX, y,jugada).contains(fichaPorColocar)){
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
 						flag=true;
 					}
 					nextX=x;
 					while(tablero.getFichas()[nextX][y]!=null&&nextX>0)nextX--;
-					if(tablero.getCualesSePuedePoner(nextX, y).contains(fichaPorColocar)){
+					if(tablero.getCualesSePuedePoner(nextX, y,jugada).contains(fichaPorColocar)){
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, nextX, y,false);
 						flag=true;
 					}
