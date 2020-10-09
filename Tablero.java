@@ -51,6 +51,10 @@ class Tablero
 		return true;
 	}
 	
+	public List<Ficha>getCualesSePuedePoner(int x,int y,Jugada jugada){
+		
+		return null;
+	}
 
 	public List<Ficha>getCualesSePuedePoner(int x,int y){
 		return placesToPlay.computeIfAbsent(x, k->new HashMap<>()).computeIfAbsent(y,k->new ArrayList<>(todasLasFichas));
