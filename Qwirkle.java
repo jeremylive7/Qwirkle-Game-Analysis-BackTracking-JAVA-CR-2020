@@ -32,13 +32,11 @@ class Qwirkle
 	public void iniciarJuego(){
 		imprimirTablero();
 		while(jugador1==null){
+			System.out.println("Quedan "+bolsa_fichas.size()+" fichas en la bolsa.");
 			System.out.println("Estado del jugador básico: \n"+jugador2);
 			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
 			if(jugadorHumanoHizoSuJugada())
 				break;
-			try{
-				Thread.sleep(1500);
-			}catch(Exception e){}
 		}	
 	}
 
@@ -69,8 +67,8 @@ class Qwirkle
 	}
 
 	private boolean turno(Jugador jugador) {
-		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(),jugador.getNombre().equals(jugador3.getNombre()));
 		long tiempo = System.currentTimeMillis();
+		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(),jugador.getNombre().equals(jugador3.getNombre()));
 		Jugada jugada=algoritmo.getRespuesta();
 		tiempo=System.currentTimeMillis()-tiempo;
 		return procesarJugada(jugador, jugada,tiempo);
@@ -83,10 +81,6 @@ class Qwirkle
 			return true;
 		// juega algoritmo mejorado
 		System.out.println("Esperando 3 segundos...");
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-		} // Para que haya un tiempo entre las jugadas de cada uno
 		imprimirTablero();
 		if(turno(jugador3))
 			return true;

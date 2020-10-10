@@ -151,6 +151,10 @@ cuando pega por columna algo por color, por columna solo puede generar los que p
 		//para la jugada con figura y la jugada por color, eliminar las que nothing to see with las otras fichas de ese vector de jugada (x,y)
 		Ficha[][]t=tablero.getFichas();
 		Ficha f=jugadaDeLaMano.getKey();
+		if((t[x][y-1]!=null&&t[x][y+1]!=null&&t[x][y-1].noCombina(t[x][y+1]))||t[x-1][y]!=null&&t[x+1][y]!=null&&t[x+1][y].noCombina(t[x-1][y])){
+			System.out.println("Satanás es muy grande, porque aquí puede que haga jugadas de más de 6 xdxdxd:c");
+			return;
+		}
 		if(!jugadaDeLaMano.getValue().get(1).isEmpty()&&(//no quiero que considerer esta posibilidad si no puede armar más jugada
 				(t[x][y-1]==null&&t[x][y+1]==null)||//si tiene total libertad por fila
 				(t[x][y-1]!=null&&t[x][y-1].figura==f.figura)||(t[x][y+1]!=null&&t[x][y+1].figura==f.figura))){//o pega en fila por figura
@@ -180,23 +184,35 @@ cuando pega por columna algo por color, por columna solo puede generar los que p
 		}
 		else{
 			boolean flag=false;
+			int derecha=y;
+			int izquierda=y;
+			while(tablero.getFichas()[x][derecha]!=null&&derecha<Tablero.MATRIX_SIDE-1){
+				Ficha f=tablero.getFichas()[x][derecha];
+				fichasQueFaltanPorColocar.removeIf(j->
+					j.noCombina(f)
+				);
+				derecha++;//aquí falta algo--->eliminar de la jugada las que se están "saltando"
+			}
+			while(tablero.getFichas()[x][izquierda]!=null&&izquierda>0){
+				Ficha f=tablero.getFichas()[x][izquierda];
+				fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
+				izquierda--;
+			}
+			int arriba=x;
+			int abajo=x;
+			while(tablero.getFichas()[arriba][y]!=null&&arriba<Tablero.MATRIX_SIDE-1){
+				Ficha f=tablero.getFichas()[arriba][y];
+				fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
+				arriba++;
+			}
+			while(tablero.getFichas()[abajo][y]!=null&&abajo>0){
+				Ficha f=tablero.getFichas()[abajo][y];
+				fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
+				abajo--;
+			}
 			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
 				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
 				if(esPorFila==null||esPorFila){
-					int derecha=y;
-					int izquierda=y;
-					while(tablero.getFichas()[x][derecha]!=null&&derecha<Tablero.MATRIX_SIDE-1){
-						Ficha f=tablero.getFichas()[x][derecha];
-						fichasQueFaltanPorColocar.removeIf(j->
-							j.noCombina(f)
-						);
-						derecha++;//aquí falta algo--->eliminar de la jugada las que se están "saltando"
-					}
-					while(tablero.getFichas()[x][izquierda]!=null&&izquierda>0){
-						Ficha f=tablero.getFichas()[x][izquierda];
-						fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
-						izquierda--;
-					}
 					if(tablero.getCualesSePuedePoner(x,derecha).contains(fichaPorColocar)){
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, x,derecha,true);
 						flag=true;
@@ -206,18 +222,6 @@ cuando pega por columna algo por color, por columna solo puede generar los que p
 						flag=true;
 					}	
 				}if (esPorFila==null||!esPorFila){
-					int arriba=x;
-					int abajo=x;
-					while(tablero.getFichas()[arriba][y]!=null&&arriba<Tablero.MATRIX_SIDE-1){
-						Ficha f=tablero.getFichas()[arriba][y];
-						fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
-						arriba++;
-					}
-					while(tablero.getFichas()[abajo][y]!=null&&abajo>0){
-						Ficha f=tablero.getFichas()[abajo][y];
-						fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
-						abajo--;
-					}
 					if(tablero.getCualesSePuedePoner(arriba, y).contains(fichaPorColocar)){
 						generarArbolDeJugadas(fichasQueFaltanPorColocar, fichaPorColocar, jugadasCompletas, jugada, arriba, y,false);
 						flag=true;

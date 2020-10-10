@@ -7,7 +7,7 @@ import java.awt.Point;
 
 class Tablero
 {
-	static final int MATRIX_SIDE=16;
+	static final int MATRIX_SIDE=20;
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
 	Set<Point>placesWithAnTokkenOnTheSide;
