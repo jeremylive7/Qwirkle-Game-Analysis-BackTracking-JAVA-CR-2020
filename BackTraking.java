@@ -153,7 +153,7 @@ cuando pega por columna algo por color, por columna solo puede generar los que p
 		Ficha f=jugadaDeLaMano.getKey();
 		if((t[x][y-1]!=null&&t[x][y+1]!=null&&t[x][y-1].noCombina(t[x][y+1]))||t[x-1][y]!=null&&t[x+1][y]!=null&&t[x+1][y].noCombina(t[x-1][y])){
 			System.out.println("Satanás es muy grande, porque aquí puede que haga jugadas de más de 6 xdxdxd:c");
-			return;
+			return;//hay varios errores aún, pero cuesta encontrarlos c:
 		}
 		if(!jugadaDeLaMano.getValue().get(1).isEmpty()&&(//no quiero que considerer esta posibilidad si no puede armar más jugada
 				(t[x][y-1]==null&&t[x][y+1]==null)||//si tiene total libertad por fila
