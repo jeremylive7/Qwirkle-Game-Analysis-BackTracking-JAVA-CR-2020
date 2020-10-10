@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +7,7 @@ import java.awt.Point;
 
 class Tablero
 {
-	static final int MATRIX_SIDE=21;
+	static final int MATRIX_SIDE=16;
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
 	Set<Point>placesWithAnTokkenOnTheSide;
