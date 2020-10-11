@@ -5,9 +5,10 @@ class Main
 		//Empieza el juego
 		Qwirkle qwirkle;
 		qwirkle = new Qwirkle();
-		qwirkle.getTablero().llenarTableroConEjemplo();
-		qwirkle.imprimirTablero();
-		qwirkle.menu();
+
+		qwirkle.iniciarJuego();
+
+		//qwirkle.menu(qwirkle);
 
 		System.exit(0);
 	}
