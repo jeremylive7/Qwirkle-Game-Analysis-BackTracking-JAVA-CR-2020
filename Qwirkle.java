@@ -30,13 +30,15 @@ class Qwirkle
 	}
 
 	public void iniciarJuego(){
-		imprimirTablero();
+		//imprimirTablero();
 		while(jugador1==null){
 			System.out.println("Quedan "+bolsa_fichas.size()+" fichas en la bolsa.");
 			System.out.println("Estado del jugador básico: \n"+jugador2);
 			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
-			if(jugadorHumanoHizoSuJugada())
+			if(jugadorHumanoHizoSuJugada()){
+				seTerminoElJuego();
 				break;
+			}
 		}	
 	}
 
@@ -51,19 +53,21 @@ class Qwirkle
 		tablero.procesarJugada(jugada);
 		//dao.procesarJugada(jugador,jugada,cantPuntos,tiempo);
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){
-			seTerminoElJuego();
 			return true;
 		}
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
-		System.out.println("Jugada escogida por el algoritmo: "+jugada);
+		System.out.println("Jugada escogida por "+jugador.nombre+": "+jugada);
 		System.out.println("Con un tiempo de: "+tiempo+" milisegundos.");
 		System.out.println("Y el jugador ganó un total de "+cantPuntos+" puntos.");
 
-		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
+		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore(), jugador.tiempo);
 		return false;
 	}
 
 	private void seTerminoElJuego() {
+		FileOperations.finDeTurno(jugador2.getNombre(),jugador2.tiempo,jugador2.score);
+		FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
+		imprimirTablero();
 	}
 
 	private boolean turno(Jugador jugador) {
@@ -81,10 +85,10 @@ class Qwirkle
 			return true;
 		// juega algoritmo mejorado
 		System.out.println("Esperando 3 segundos...");
-		imprimirTablero();
+		//imprimirTablero();
 		if(turno(jugador3))
 			return true;
-		imprimirTablero();
+		//imprimirTablero();
 		return false;
 		
 	}
@@ -400,7 +404,7 @@ class Qwirkle
 	}
 	public ArrayList<Ficha>getFichasDeLaBolsa(int cantFichas){
 		ArrayList<Ficha>out=new ArrayList<>();
-		while(cantFichas-->0)
+		while(cantFichas-->0&&bolsa_fichas.size()>0)
 			out.add(popRandomFicha());
 		return out;
 	}

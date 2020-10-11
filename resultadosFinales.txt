@@ -1,0 +1,6 @@
+Edgerik,87,190
+Roberto,19,192
+Edgerik,108,198
+Roberto,136,203
+Edgerik,94,174
+Roberto,149,188

@@ -13,11 +13,21 @@ public class Jugada {
 		return n;
 	}
 	public String toString(){
-		String out="[";
+		String out="\n";
+		int alpha=jugaditas.get(0).x;
+		int betta=jugaditas.get(0).y-1;
 		for(Jugadita j:jugaditas){
-			out+=j.ficha+",";
+			if(j.x<alpha){
+				out="## "+j.ficha+" ##\n"+out;
+			}else if (j.x>alpha)
+				out+="## "+j.ficha+" ##\n";
+			else if(j.y<betta)
+				out="## "+j.ficha+" ##"+out;
+			else 
+				out+="## "+j.ficha+" ##";
+			alpha=j.x;
+			betta=j.y;
 		}
-		out=out.substring(0,out.length()-1)+"]";
 		return out;
 	}
 }
