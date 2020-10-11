@@ -186,29 +186,32 @@ cuando pega por columna algo por color, por columna solo puede generar los que p
 			boolean flag=false;
 			int derecha=y;
 			int izquierda=y;
-			while(tablero.getFichas()[x][derecha]!=null&&derecha<Tablero.MATRIX_SIDE-1){
-				Ficha f=tablero.getFichas()[x][derecha];
-				fichasQueFaltanPorColocar.removeIf(j->
-					j.noCombina(f)
-				);
-				derecha++;//aquí falta algo--->eliminar de la jugada las que se están "saltando"
-			}
-			while(tablero.getFichas()[x][izquierda]!=null&&izquierda>0){
-				Ficha f=tablero.getFichas()[x][izquierda];
-				fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
-				izquierda--;
-			}
 			int arriba=x;
 			int abajo=x;
-			while(tablero.getFichas()[arriba][y]!=null&&arriba<Tablero.MATRIX_SIDE-1){
-				Ficha f=tablero.getFichas()[arriba][y];
-				fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
-				arriba++;
-			}
-			while(tablero.getFichas()[abajo][y]!=null&&abajo>0){
-				Ficha f=tablero.getFichas()[abajo][y];
-				fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
-				abajo--;
+			if(esPorFila==null||esPorFila){
+				while(tablero.getFichas()[x][derecha]!=null&&derecha<Tablero.MATRIX_SIDE-1){
+					Ficha f=tablero.getFichas()[x][derecha];
+					fichasQueFaltanPorColocar.removeIf(j->
+						j.noCombina(f)
+					);
+					derecha++;//aquí falta algo--->eliminar de la jugada las que se están "saltando"
+				}
+				while(tablero.getFichas()[x][izquierda]!=null&&izquierda>0){
+					Ficha f=tablero.getFichas()[x][izquierda];
+					fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
+					izquierda--;
+				}
+			}if (esPorFila==null||!esPorFila){
+				while(tablero.getFichas()[arriba][y]!=null&&arriba<Tablero.MATRIX_SIDE-1){
+					Ficha f=tablero.getFichas()[arriba][y];
+					fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
+					arriba++;
+				}
+				while(tablero.getFichas()[abajo][y]!=null&&abajo>0){
+					Ficha f=tablero.getFichas()[abajo][y];
+					fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
+					abajo--;
+				}
 			}
 			for (int indiceFichasPorColocar=0;indiceFichasPorColocar<fichasQueFaltanPorColocar.size();indiceFichasPorColocar++){//Para cada ficha
 				Ficha fichaPorColocar=fichasQueFaltanPorColocar.get(indiceFichasPorColocar);
