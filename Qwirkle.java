@@ -355,15 +355,15 @@ class Qwirkle
 			case CIRCULO:
 				return "O";
 			case CUADRADO:
-				return "■";
+				return "C";
 			case ROMBO:
-				return "÷";
+				return "R";
 			case SOL:
-				return "§";
+				return "S";
 			case TREBOL:
-				return "¤";
+				return "T";
 			case X:
-				return "×";
+				return "X";
 		}
 		return "";
 	}
