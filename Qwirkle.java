@@ -68,6 +68,7 @@ class Qwirkle
 
 	private boolean turno(Jugador jugador) {
 		long tiempo = System.currentTimeMillis();
+		this.imprimirMano(jugador.getMano());
 		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(),jugador.getNombre().equals(jugador3.getNombre()));
 		Jugada jugada=algoritmo.getRespuesta();
 		tiempo=System.currentTimeMillis()-tiempo;

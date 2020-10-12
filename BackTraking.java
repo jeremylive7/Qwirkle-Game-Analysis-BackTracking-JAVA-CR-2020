@@ -113,6 +113,22 @@ public class BackTraking
 		
 	}
 
+	public boolean isItChipInside(List<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				for (Ficha pFicha : pJugada) {
+					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+
 	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
 					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
 					Jugada jugada,int x,int y,Boolean esPorFila)
@@ -135,12 +151,8 @@ public class BackTraking
 			if (isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 50));	
-			}else 
+			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), ))
 			{
-				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)));	
-
-			}
-
 			/*
 
 					Poda #2
@@ -148,10 +160,21 @@ public class BackTraking
 						De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
 
 			*/
-			List<Ficha> missing_chips = getMissingChips(y, x, esPorFila, jugada);
 
-			showArray(missing_chips);
+
+
+			}else 
+			{
+				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)));	
+
+			}
+
+
 			
+			//List<Ficha> missing_chips = getMissingChips(y, x, esPorFila, jugada);
+			//showArray(missing_chips);
+			
+
 
 
 
@@ -244,6 +267,21 @@ public class BackTraking
 		return false;
 	}
 
+	public List<Ficha>getCualesFaltan(List<Jugadita>fichasDeLaJugada)
+	{
+		List<Ficha>losQueSePuedenPoner=new ArrayList<>(this.tablero.todasLasFichas);
+	
+		for(Jugadita f1: fichasDeLaJugada){
+			for(int k=0;k<losQueSePuedenPoner.size();){
+				if(f1.ficha.noCombina(losQueSePuedenPoner.get(k)))
+					losQueSePuedenPoner.remove(k);
+				else k++;
+			}
+		}
+		return losQueSePuedenPoner;
+
+	}
+
 	public List<Ficha> getMissingChips(int y, int x, Boolean pEsPorFila, Jugada pJugada)
 	{
 		List<Jugadita> jugada_tablero = new ArrayList<Jugadita>();
@@ -285,20 +323,8 @@ public class BackTraking
 			jugada_tablero.sort((o1,o2)->Integer.compare(o1.y, o2.y));
 
 			showArrayPlay(jugada_tablero);
-			List<Ficha> fichas_puedo_poner = this.tablero.getCualesSePuedePoner(x , izquierda);
-			//imprimirList(fichas_puedo_poner);
-
-			for (Jugadita pPlay: pJugada.jugaditas) 
-			{
-				for (Ficha pFicha: fichas_puedo_poner) 
-				{
-					if(!(pFicha.getFigura() == pPlay.ficha.getFigura() &&
-								pFicha.getColor() == pPlay.ficha.getColor()))
-					{
-						fichas_puedo_poner_verdad.add(pFicha);
-					}
-				}
-			}
+			
+			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
 		}
 
 		if (pEsPorFila == null || !pEsPorFila)
@@ -329,21 +355,9 @@ public class BackTraking
 
 			jugada_tablero.sort((o1,o2)->Integer.compare(o1.x, o2.x));
 
-			showArrayPlay(jugada_tablero);
-			List<Ficha> fichas_puedo_poner = this.tablero.getCualesSePuedePoner(arriba, y);
-			//imprimirList(fichas_puedo_poner);
-
-			for (Jugadita pPlay: pJugada.jugaditas) 
-			{
-				for (Ficha pFicha: fichas_puedo_poner) 
-				{
-					if(!(pFicha.getFigura() == pPlay.ficha.getFigura() &&
-								pFicha.getColor() == pPlay.ficha.getColor()))
-					{
-						fichas_puedo_poner_verdad.add(pFicha);
-					}
-				}
-			}
+			//showArrayPlay(jugada_tablero);
+			
+			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
 		}
 
 

@@ -11,7 +11,7 @@ class Tablero
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
 	Set<Point>placesWithAnTokkenOnTheSide;
-	protected static List<Ficha>todasLasFichas;
+	public static List<Ficha>todasLasFichas;
 
 	//Constructor
 	public Tablero() 
