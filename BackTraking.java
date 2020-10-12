@@ -20,6 +20,8 @@ public class BackTraking
 	private boolean esMejorado;
 	public final Random r=new Random();
 	private ArrayList<Ficha> fichas_repetidasMano;
+	private Map<Ficha, Integer> repet_fichas;
+
 
 	BackTraking(Tablero tablero,ArrayList<Ficha>pMano,boolean esMejorado) 
 	{		
@@ -28,6 +30,10 @@ public class BackTraking
 		this.esMejorado=esMejorado;
 
 		this.fichas_repetidasMano = getRepetsHand(pMano);
+		
+		this.repet_fichas = new HashMap<Ficha, Integer>();
+		this.repet_fichas = this.startAllCeros();
+		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), this.mano);
 
 		initJugadasWithBackTracking();
 		
@@ -114,18 +120,19 @@ public class BackTraking
 	}
 
 	public boolean isItChipInside(List<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
+		int contador = 0;
 		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
 			Ficha ficha = repets.getKey();
 			Integer value = repets.getValue();
 			if (value >= 2) {
 				for (Ficha pFicha : pJugada) {
 					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
-						return true;
+						contador++;
 					}
 				}
 			}
 		}
-		return false;
+		return ((float)contador / pJugada.size()) > 0.5;
 	}
 
 
@@ -148,25 +155,21 @@ public class BackTraking
 
 			*/
 
-			if (isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
+			if (this.isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 50));	
-			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), ))
-			{
 			/*
-
 					Poda #2
 
 						De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
 
 			*/
-
-
-
+			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas))
+			{
+				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 100));	
 			}else 
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)));	
-
 			}
 
 
@@ -253,6 +256,19 @@ public class BackTraking
 		tablero.getFichas()[x][y]=null;
 		jugada.jugaditas.remove(jugada.jugaditas.size()-1);
 		fichasQueFaltanPorColocar.add(fichaInicial);
+	}
+
+
+	public Map<Ficha, Integer> startAllCeros() {
+		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
+		ArrayList<Ficha> pTotal_fichas = this.getAllCheaps();
+		Integer initial_number = 0;
+
+		for (Ficha pFicha : pTotal_fichas) {
+			pList_repet.put(pFicha, initial_number);
+		}
+
+		return pList_repet;
 	}
 
 	public Boolean isItInJugadaRepetFicha(ArrayList<Ficha> pFichas_repets, List<Jugadita> pJugada)
@@ -514,6 +530,45 @@ public class BackTraking
 			}
 		}
 		return fichas_repetidas_mano;
+	}
+
+
+	public Map<Ficha, Integer> updateRepetFichasWithHand(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFicha) {
+		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
+
+		for (Ficha ficha : pFicha) {
+			for (Map.Entry<Ficha, Integer> repetFichas : pRepetFichas.entrySet()) {
+				Ficha ficha_repet = repetFichas.getKey();
+				Integer value = repetFichas.getValue();
+				if (ficha == ficha_repet) {
+					value += value + 1;
+					pRepet_fichas.put(ficha_repet, value);
+				}
+			}
+		}
+		return pRepet_fichas;
+	}
+
+	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero) {
+		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
+		int pFichas_tablero = pFichasTablero[0].length;
+
+		for (int indeX = 0; indeX < pFichas_tablero; indeX++) {
+			for (int indeY = 0; indeY < pFichas_tablero; indeY++) {
+				for (Map.Entry<Ficha, Integer> repetFichas : pRepet_fichas.entrySet()) {
+					Ficha ficha_repet = repetFichas.getKey();
+					if (pFichasTablero[indeX][indeY] == null) {
+						break;
+					} else if (pFichasTablero[indeX][indeY].getFigura() == ficha_repet.getFigura()
+							&& pFichasTablero[indeX][indeY].getColor() == ficha_repet.getColor()) {
+						Integer value = repetFichas.getValue();
+						value++;
+						pRepet_fichas.put(ficha_repet, value);
+					}
+				}
+			}
+		}
+		return pRepetFichas;
 	}
 
 }
