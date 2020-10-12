@@ -33,7 +33,7 @@ public class BackTraking
 		
 		this.repet_fichas = new HashMap<Ficha, Integer>();
 		this.repet_fichas = this.startAllCeros();
-		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), this.mano);
+		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), new ArrayList<>(this.mano));
 
 		initJugadasWithBackTracking();
 		
@@ -119,23 +119,6 @@ public class BackTraking
 		
 	}
 
-	public boolean isItChipInside(List<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
-		int contador = 0;
-		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
-			Ficha ficha = repets.getKey();
-			Integer value = repets.getValue();
-			if (value >= 2) {
-				for (Ficha pFicha : pJugada) {
-					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
-						contador++;
-					}
-				}
-			}
-		}
-		return ((float)contador / pJugada.size()) > 0.5;
-	}
-
-
 	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
 					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
 					Jugada jugada,int x,int y,Boolean esPorFila)
@@ -154,7 +137,6 @@ public class BackTraking
 						Esta poda trata de identificar las jugadas que tengan al menos una ficha igual a una ficha que este repetida en la mano del jugador actual.
 
 			*/
-
 			if (this.isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 50));	
@@ -171,29 +153,8 @@ public class BackTraking
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)));	
 			}
-
-
-			
 			//List<Ficha> missing_chips = getMissingChips(y, x, esPorFila, jugada);
 			//showArray(missing_chips);
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		}
 		else{
 			boolean flag=false;
@@ -258,6 +219,21 @@ public class BackTraking
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
 
+	public boolean isItChipInside(List<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
+		int contador = 0;
+		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
+			Ficha ficha = repets.getKey();
+			Integer value = repets.getValue();
+			if (value >= 2) {
+				for (Ficha pFicha : pJugada) {
+					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
+						contador++;
+					}
+				}
+			}
+		}
+		return ((float)contador / pJugada.size()) > 0.5;
+	}
 
 	public Map<Ficha, Integer> startAllCeros() {
 		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
@@ -269,6 +245,17 @@ public class BackTraking
 		}
 
 		return pList_repet;
+	}
+
+	public ArrayList<Ficha> getAllCheaps()
+	{
+		ArrayList<Ficha> lista = new ArrayList<Ficha>();
+		for (Figura figura:Qwirkle.FIGURAS)
+			for(Color color:Qwirkle.COLORES)
+				lista.add(new Ficha(figura,color));
+		
+
+		return lista;
 	}
 
 	public Boolean isItInJugadaRepetFicha(ArrayList<Ficha> pFichas_repets, List<Jugadita> pJugada)
@@ -338,7 +325,7 @@ public class BackTraking
 
 			jugada_tablero.sort((o1,o2)->Integer.compare(o1.y, o2.y));
 
-			showArrayPlay(jugada_tablero);
+			//showArrayPlay(jugada_tablero);
 			
 			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
 		}
@@ -375,10 +362,6 @@ public class BackTraking
 			
 			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
 		}
-
-
-		
-
 		return fichas_puedo_poner_verdad;
 	}
 
@@ -416,8 +399,6 @@ public class BackTraking
 			grupos.put(pFichas.get(pI), lista_fichas_slices);
 			
 		}
-		
-
 		return grupos;
 	}
 
