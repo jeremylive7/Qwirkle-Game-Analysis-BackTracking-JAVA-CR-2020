@@ -7,14 +7,16 @@ public class Jugadita {
         this.y = y;
         this.ficha = ficha;
     }
-    
-	public int hashCode(){
-		return 0;
-	}
-    public boolean equals(Object obj)
+
+    public boolean equals(Object x)
     {
-    	Jugadita jug = (Jugadita)obj;
-    	return jug!=null&&ficha.equals(jug.ficha)&&x==jug.x&&y==jug.y;
+    	Jugadita pX = (Jugadita)x;
+    	if(pX.ficha.getColor() == ficha.getColor() &&
+    		pX.ficha.getFigura() == ficha.getFigura())
+    	{
+    		return true;
+    	}
+    	return false;
     }
     
 }

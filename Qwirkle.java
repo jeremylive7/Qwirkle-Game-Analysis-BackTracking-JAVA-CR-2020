@@ -79,10 +79,10 @@ class Qwirkle
 		// juega algoritmo básico
 		if(turno(jugador2))
 			return true;
-		imprimirTablero();
+		//imprimirTablero();
 		if(turno(jugador3))
 			return true;
-		imprimirTablero();
+		//imprimirTablero();
 		return false;
 		
 	}

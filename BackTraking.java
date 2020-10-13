@@ -36,7 +36,7 @@ public class BackTraking
 
 	public Jugada getRespuesta()
 	{
-		jugadas=new ArrayList<>(getJugadas(getCombMano(new ArrayList<>(mano))));
+		jugadas=getJugadas(getCombMano(new ArrayList<>(mano)));
 		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		return jugadas.get(0);
 	}
@@ -74,8 +74,8 @@ public class BackTraking
 		}
 		return grupos;
 	}
-	public Set<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
-		Set<Jugada>todasLasPosiblesJugadasCompletas=new HashSet<>();
+	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
+		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
 		for(Point xy : tablero.demeLasPosicionesEnQuePueddoEmpezarJugada()) {
 				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
 					if(tablero.getCualesSePuedePoner(xy.x,xy.y).contains(entradaGrupito.getKey())){
@@ -87,7 +87,7 @@ public class BackTraking
 	}
 
 	private void generarArbolDeJugadas(Entry<Ficha,ArrayList<ArrayList<Ficha>>>jugadaDeLaMano,
-			Set<Jugada>jugadasCompletas,int x, int y)
+			List<Jugada>jugadasCompletas,int x, int y)
 	{
 		Ficha[][] t = tablero.getFichas();
 		Ficha f = jugadaDeLaMano.getKey();
@@ -130,7 +130,7 @@ public class BackTraking
 	}
 
 	private void generarArbolDeJugadas(List<Ficha>fichasQueFaltanPorColocar,
-					Ficha fichaInicial,Set<Jugada>jugadasCompletas, 
+					Ficha fichaInicial,List<Jugada>jugadasCompletas, 
 					Jugada jugada,int x,int y,Boolean esPorFila)
 	{
 		fichasQueFaltanPorColocar.remove(fichaInicial);
@@ -140,22 +140,24 @@ public class BackTraking
 
 		if(fichasQueFaltanPorColocar.isEmpty())
 		{	
-			int bono=0;
-			
 			/* Poda #1
 			Esta poda trata de identificar las jugadas que tengan al menos una ficha igual a una ficha que este repetida en la mano del jugador actual.
 			*/
 			if (this.isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
-				bono+=6;
-			
+			{
+				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 50));	
+				//this.showArrayList(this.fichas_repetidasMano);
 			/* Poda #2
 			De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
 			*/
-			if(esMejorado && this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas))
-				bono+=6;
-			
-			jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)+bono));	
-			
+			}else if(esMejorado && this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas))
+			{
+				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 100));	
+
+			}else 
+			{
+				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)));	
+			}
 		}
 		else{
 			boolean flag=false;
@@ -226,7 +228,7 @@ public class BackTraking
 		
 	*/
 
-	public boolean isItInJugadaRepetFicha(ArrayList<Ficha> pFichas_repets, Set<Jugadita> pJugada)
+	public Boolean isItInJugadaRepetFicha(ArrayList<Ficha> pFichas_repets, List<Jugadita> pJugada)
 	{
 		for (Ficha pRepetFicha : pFichas_repets) 
 		{
@@ -598,7 +600,7 @@ public class BackTraking
 		System.out.println(out+"]");
 	}
 
-	public void showArrayPlay(Set<Jugadita> pMano)
+	public void showArrayPlay(List<Jugadita> pMano)
 	{
 		String out="\nJugada del tablero con la que juego en este turno suponiendo -- [ ";
 		for (Jugadita jugadita : pMano)
