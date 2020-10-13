@@ -10,10 +10,6 @@ import java.awt.Point;
 
 public class BackTraking
 {
-	/**
-	 * Score Limit For Set Up Easy Qwirkle
-	 */
-	private static final int SLFSUEQ=12;
 	private Tablero tablero;
 	private Set<Ficha>mano;
 	private List<Jugada>jugadas;
@@ -35,17 +31,7 @@ public class BackTraking
 		this.repet_fichas = this.startAllCeros();
 		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), new ArrayList<>(this.mano));
 
-
-		this.showPossiblePlaysHand(getPossiblePlaysHand(new ArrayList<>(mano)));
-/*
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		list.add(1);
-		list.add(2);
-		list.add(3);
-		list.add(4);
-
-		this.showAllComb(this.getAllCombToEachComb(list));
-*/
+		//this.showPossiblePlaysHand(getPossiblePlaysHand(new ArrayList<>(mano)));
 	}
 
 	public Jugada getRespuesta()
@@ -420,12 +406,6 @@ public class BackTraking
 		return pRepet_fichas;
 	}
 
-/*	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
-	{
-		
-		return new ArrayList<>(new HashSet<>(pJugador.getMano()));
-	}
-*/
 	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero) {
 		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
 		int pFichas_tablero = pFichasTablero[0].length;
@@ -498,45 +478,6 @@ public class BackTraking
 			lista_fichas_slices.add(combination_list_1);
 			lista_fichas_slices.add(combination_list_2);
 			grupos.put(pFichas.get(pI), lista_fichas_slices);
-
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices2 = new ArrayList<ArrayList<Ficha>>();
-			if (combination_list_1.size() == 2) {
-				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
-
-				lista_fichas_slices2.add(combination_list_1_1);
-				grupos.put(pFichas.get(pI), lista_fichas_slices2);
-			}
-
-			if (combination_list_2.size() == 2) {
-				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
-
-				lista_fichas_slices2.add(combination_list_1_2);
-				grupos.put(pFichas.get(pI), lista_fichas_slices2);
-			}
-
-			if (combination_list_1.size() == 3) {
-				ArrayList<ArrayList<Ficha>> combination_list_3_1 = this.getAllCombinations(combination_list_1);
-				grupos.put(pFichas.get(pI), combination_list_3_1);
-			}
-
-			if (combination_list_2.size() == 3) {
-				ArrayList<ArrayList<Ficha>> combination_list_3_2 = this.getAllCombinations(combination_list_2);
-				grupos.put(pFichas.get(pI), combination_list_3_2);
-			}
-
-/*
-			ArrayList<Ficha> playOf4 = new ArrayList<Ficha>();
-			playOf4.add(pFichas.get(pI));*/
-			//playOf4.add(combination_list_1);
-
-			//getAllCombToEachComb(playOf4);
-/*			lista_fichas_slices.add(combination_list_1_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-*/
-/*			ArrayList<Ficha> play_of4 = new ArrayList<Ficha>();
-			play_of4.add(pFichas.get(pI));
-			play_of4.add(combination_list_2);*/
-
 		}
 		return grupos;
 	}
@@ -552,73 +493,6 @@ public class BackTraking
 		return combination;
 	}
 
-	public void showAllComb(ArrayList<ArrayList<Integer>> pLista)
-	{
-		for (ArrayList<Integer> pListita : pLista) 
-		{
-			System.out.println("[");
-			for (Integer pNum : pListita) 
-			{
-				System.out.println(pNum+",");
-			}	
-			System.out.println("]");
-		}
-	}
-
-	public ArrayList<ArrayList<Ficha>> getAllCombinations(ArrayList<Ficha> pList)
-	{
-		ArrayList<ArrayList<Ficha>> lista = new ArrayList<ArrayList<Ficha>>();
-		
-		ArrayList<Ficha> list_comb = new ArrayList<Ficha>();
-
-		list_comb.add(pList.get(0));
-		list_comb.add(pList.get(1));
-		list_comb.add(pList.get(2));
-
-		lista.add(list_comb);
-
-		ArrayList<Ficha> list_comb_0 = new ArrayList<Ficha>();
-
-		list_comb_0.add(pList.get(0));
-		list_comb_0.add(pList.get(2));
-		list_comb_0.add(pList.get(1));
-
-		lista.add(list_comb_0);
-
-		ArrayList<Ficha> list_comb_1 = new ArrayList<Ficha>();
-
-		list_comb_1.add(pList.get(2));
-		list_comb_1.add(pList.get(1));
-		list_comb_1.add(pList.get(0));
-
-		lista.add(list_comb_1);
-
-		ArrayList<Ficha> list_comb_2 = new ArrayList<Ficha>();
-
-		list_comb_2.add(pList.get(2));
-		list_comb_2.add(pList.get(0));
-		list_comb_2.add(pList.get(1));
-
-		lista.add(list_comb_2);
-
-		ArrayList<Ficha> list_comb_3 = new ArrayList<Ficha>();
-
-		list_comb_3.add(pList.get(1));
-		list_comb_3.add(pList.get(0));
-		list_comb_3.add(pList.get(2));
-
-		lista.add(list_comb_3);
-
-		ArrayList<Ficha> list_comb_4 = new ArrayList<Ficha>();
-
-		list_comb_4.add(pList.get(1));
-		list_comb_4.add(pList.get(2));
-		list_comb_4.add(pList.get(0));
-
-		lista.add(list_comb_4);		
-
-		return lista;	
-	}
 
 	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
 	{
@@ -741,58 +615,130 @@ public class BackTraking
 }
 
 
-/*
 
 
-	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
-	{
-		int cant_man = pFichas.size();
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
-		for(int pI=0; pI<cant_man; pI++)
-		{
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
-			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
-			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
 
-			for(int pJ=0; pJ<cant_man; pJ++)
-			{			
-				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
-				{
-					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
-					{
-						combination_list_1.add(pFichas.get(pJ));	
-					}
-					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
-					{
-						combination_list_2.add(pFichas.get(pJ));
-					}
-				}
+
+
+
+/*			ArrayList<ArrayList<Ficha>> lista_fichas_slices2 = new ArrayList<ArrayList<Ficha>>();
+			if (combination_list_1.size() == 2) {
+				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
+
+				lista_fichas_slices2.add(combination_list_1_1);
+				grupos.put(pFichas.get(pI), lista_fichas_slices2);
 			}
-				
-			lista_fichas_slices.add(combination_list_1);
-			lista_fichas_slices.add(combination_list_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-			
-		}
-		return grupos;
-	}
 
+			if (combination_list_2.size() == 2) {
+				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
 
-*/
+				lista_fichas_slices2.add(combination_list_1_2);
+				grupos.put(pFichas.get(pI), lista_fichas_slices2);
+			}
 
+			if (combination_list_1.size() == 3) {
+				ArrayList<ArrayList<Ficha>> combination_list_3_1 = this.getAllCombinations(combination_list_1);
+				grupos.put(pFichas.get(pI), combination_list_3_1);
+			}
 
-
-
-
-
+			if (combination_list_2.size() == 3) {
+				ArrayList<ArrayList<Ficha>> combination_list_3_2 = this.getAllCombinations(combination_list_2);
+				grupos.put(pFichas.get(pI), combination_list_3_2);
+			}*/
 
 
 
 
 	/*
+
+
+
+
+
+	public void showAllComb(ArrayList<ArrayList<Integer>> pLista)
+	{
+		for (ArrayList<Integer> pListita : pLista) 
+		{
+			System.out.println("[");
+			for (Integer pNum : pListita) 
+			{
+				System.out.println(pNum+",");
+			}	
+			System.out.println("]");
+		}
+	}
+
+	public ArrayList<ArrayList<Ficha>> getAllCombinations(ArrayList<Ficha> pList)
+	{
+		ArrayList<ArrayList<Ficha>> lista = new ArrayList<ArrayList<Ficha>>();
+		
+		ArrayList<Ficha> list_comb = new ArrayList<Ficha>();
+
+		list_comb.add(pList.get(0));
+		list_comb.add(pList.get(1));
+		list_comb.add(pList.get(2));
+
+		lista.add(list_comb);
+
+		ArrayList<Ficha> list_comb_0 = new ArrayList<Ficha>();
+
+		list_comb_0.add(pList.get(0));
+		list_comb_0.add(pList.get(2));
+		list_comb_0.add(pList.get(1));
+
+		lista.add(list_comb_0);
+
+		ArrayList<Ficha> list_comb_1 = new ArrayList<Ficha>();
+
+		list_comb_1.add(pList.get(2));
+		list_comb_1.add(pList.get(1));
+		list_comb_1.add(pList.get(0));
+
+		lista.add(list_comb_1);
+
+		ArrayList<Ficha> list_comb_2 = new ArrayList<Ficha>();
+
+		list_comb_2.add(pList.get(2));
+		list_comb_2.add(pList.get(0));
+		list_comb_2.add(pList.get(1));
+
+		lista.add(list_comb_2);
+
+		ArrayList<Ficha> list_comb_3 = new ArrayList<Ficha>();
+
+		list_comb_3.add(pList.get(1));
+		list_comb_3.add(pList.get(0));
+		list_comb_3.add(pList.get(2));
+
+		lista.add(list_comb_3);
+
+		ArrayList<Ficha> list_comb_4 = new ArrayList<Ficha>();
+
+		list_comb_4.add(pList.get(1));
+		list_comb_4.add(pList.get(2));
+		list_comb_4.add(pList.get(0));
+
+		lista.add(list_comb_4);		
+
+		return lista;	
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	public ArrayList<ArrayList<Integer>> getAllCombToEachComb(ArrayList<Integer> pList)
 	{
