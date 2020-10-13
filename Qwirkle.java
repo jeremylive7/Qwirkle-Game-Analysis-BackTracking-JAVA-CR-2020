@@ -15,6 +15,13 @@ class Qwirkle
 			Color.VERDE };
 	public static final int CANT_CARTAS_EN_LA_MANO = 6;
 
+	private List<Ficha> getQwirkleEjemplo(){
+		List<Ficha>fichas=new ArrayList<>();
+		for(Figura fig:FIGURAS)
+			fichas.add(new Ficha(fig,Color.ROJO));
+		return fichas;
+	}
+
 	public Qwirkle() 
 	{
 		this.bolsa_fichas = new ArrayList<>();
@@ -25,7 +32,7 @@ class Qwirkle
 		jugador3 = new Jugador("Roberto", getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO));
 		
 		this.tablero = new Tablero();
-		this.tablero.llenarTableroConEjemplo();
+		this.tablero.ponerPrimeraFicha();
 		
 	}
 	
@@ -51,6 +58,11 @@ class Qwirkle
 		q.iniciarJuego();
 	}
 	
+	private void seTerminoElJuego() {
+		//FileOperations.finDeTurno(jugador2.getNombre(),jugador2.tiempo,jugador2.score);
+		//FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
+		imprimirTablero();
+	}
 	private boolean procesarJugada2(Jugador jugador, Jugada jugada,long tiempo) {
 		int cantPuntos = tablero.getPuntos(jugada);
 		jugador.procesarJugada(jugada,cantPuntos,tiempo);
@@ -64,7 +76,7 @@ class Qwirkle
 		System.out.println("Con un tiempo de: "+tiempo+" milisegundos.");
 		System.out.println("Y el jugador ganó un total de "+cantPuntos+" puntos.");
 
-		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
+		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "" , tiempo + "");
 		return false;
 	}
 
@@ -73,8 +85,6 @@ class Qwirkle
 		// juega algoritmo básico
 		if(turno(jugador2))
 			return true;
-		// juega algoritmo mejorado
-		System.out.println("Esperando 3 segundos...");
 		//imprimirTablero();
 		if(turno(jugador3))
 			return true;
@@ -93,10 +103,10 @@ class Qwirkle
 		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		System.out.println("\nTurno del jugador "+jugador.getNombre());
 		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		tablero.procesarJugada(jugada);
 		int cantPuntos = tablero.getPuntos(jugada);
 		jugador.procesarJugada(jugada,cantPuntos,tiempo);
-		tablero.procesarJugada(jugada);
-
+		
 		
 		System.out.println("\n-------------------------------------------");
 		System.out.println("JUGADA escogida por el algoritmo: "+jugada);

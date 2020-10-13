@@ -150,7 +150,7 @@ public class BackTraking
 			/* Poda #2
 			De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
 			*/
-			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas) && esMejorado)
+			}else if(esMejorado && this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas))
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 100));	
 
@@ -264,7 +264,7 @@ public class BackTraking
 				}
 			}
 		}
-		return ((float)contador / pJugada_faltan.size()) > 0.5;
+		return ((float)contador) / pJugada_faltan.size() > 0.5;
 	}
 
 	public List<Ficha>getCualesFaltan(List<Jugadita> fichasDeLaJugada)

@@ -7,7 +7,7 @@ import java.awt.Point;
 
 class Tablero
 {
-	static final int MATRIX_SIDE=30;
+	static final int MATRIX_SIDE=25;
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
 	Set<Point>placesWithAnTokkenOnTheSide;
@@ -115,7 +115,6 @@ class Tablero
 				jugada.puntos+=contarFila(jugadita);			
 		}
 		if(jugada.isLine==null||jugada.isLine.booleanValue())
-			
 			jugada.puntos+=contarFila(jugada.jugaditas.get(0));
 		else
 			jugada.puntos+=contarColumna(jugada.jugaditas.get(0));
@@ -134,8 +133,8 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		if(finHilera-inicioHilera==6)return 12;
-		return finHilera-inicioHilera+1;
+		if(finHilera-inicioHilera==5)return 12;
+		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
 	}
 	private int contarFila(Jugadita jugadita){
 		int inicioHilera,finHilera;
@@ -150,8 +149,8 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		if(finHilera-inicioHilera==6)return 12;
-		return finHilera-inicioHilera+1;
+		if(finHilera-inicioHilera==5)return 12;
+		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
 	}
 	
 	public Ficha[][]getFichas(){
@@ -167,11 +166,16 @@ class Tablero
 		}
 		return out;
 	}
-	public void llenarTableroConEjemplo(){
+	public void ponerPrimeraFicha(){
 		final int mitadDeLaMatriz=MATRIX_SIDE/2;
-		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.AZUL), mitadDeLaMatriz-1, mitadDeLaMatriz);
 		meterFichaEnXY(new Ficha(Figura.ROMBO,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz);
-		meterFichaEnXY(new Ficha(Figura.TREBOL,Color.ROJO), mitadDeLaMatriz, mitadDeLaMatriz-1);
+	}
+	public void ejemploQwirkleDe84Puntos(){
+		for(int i=10;i<16;i++){
+			for (int j=11;j<16;j++){
+				meterFichaEnXY(new Ficha(Qwirkle.FIGURAS[(j+i)%6],Color.ROJO), i, j);
+			}
+		}
 	}
 	public List<Point> demeLasPosicionesEnQuePueddoEmpezarJugada() {
 		List<Point>out=new ArrayList<>();
