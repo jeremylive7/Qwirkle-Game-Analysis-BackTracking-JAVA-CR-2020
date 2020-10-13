@@ -550,3 +550,74 @@ public class BackTraking
 
 	*/
 }
+
+
+/*
+
+
+	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
+	{
+		int cant_man = pFichas.size()-1;
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+
+		for(int pI=0; pI<cant_man; pI++)
+		{
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
+			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
+			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
+
+			for(int pJ=0; pJ<cant_man; pJ++)
+			{			
+				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
+				{
+					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
+					{
+						combination_list_1.add(pFichas.get(pJ));	
+					}
+					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
+					{
+						combination_list_2.add(pFichas.get(pJ));
+					}
+				}
+			}
+				
+			lista_fichas_slices.add(combination_list_1);
+			lista_fichas_slices.add(combination_list_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
+
+			if(combination_list_1.size() == 2)
+			{
+				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
+
+				lista_fichas_slices.add(combination_list_1_1);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+
+			if(combination_list_2.size() == 2)
+			{
+				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
+
+				lista_fichas_slices.add(combination_list_1_2);
+				grupos.put(pFichas.get(pI), lista_fichas_slices);
+			}
+		}
+		return grupos;
+	}
+
+	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
+	{
+		int contador = 0;
+		ArrayList<Ficha> combination = new ArrayList<Ficha>();
+
+		for (int index=1; index >= 0; index--) 
+		{
+				combination.add(contador, pList.get(index));
+				contador = 1;
+		}
+		return combination;
+	}
+
+
+*/

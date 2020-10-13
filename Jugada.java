@@ -15,7 +15,7 @@ public class Jugada {
 	public String toString(){
 		String out="[";
 		for(Jugadita j:jugaditas){
-			out+=j.ficha+",";
+			out+=j.ficha+"(x: "+j.x+" y: "+j.y+"),";
 		}
 		out=out.substring(0,out.length()-1)+"]";
 		return out;
