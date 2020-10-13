@@ -35,8 +35,10 @@ class Qwirkle
 			System.out.println("Quedan "+bolsa_fichas.size()+" fichas en la bolsa.");
 			System.out.println("Estado del jugador básico: \n"+jugador2);
 			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
-			if(jugadorHumanoHizoSuJugada())
+			if(jugadorHumanoHizoSuJugada()){
+				seTerminoElJuego();
 				break;
+			}
 		}	
 	}
 
@@ -51,7 +53,6 @@ class Qwirkle
 		tablero.procesarJugada(jugada);
 		//dao.procesarJugada(jugador,jugada,cantPuntos,tiempo);
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){
-			seTerminoElJuego();
 			return true;
 		}
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
@@ -64,6 +65,9 @@ class Qwirkle
 	}
 
 	private void seTerminoElJuego() {
+		FileOperations.finDeTurno(jugador2.getNombre(),jugador2.tiempo,jugador2.score);
+		FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
+		imprimirTablero();
 	}
 
 	private boolean turno(Jugador jugador) {
