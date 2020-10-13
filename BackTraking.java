@@ -30,6 +30,7 @@ public class BackTraking
 		this.esMejorado=esMejorado;
 
 		this.fichas_repetidasMano = getRepetsHand(pMano);
+		this.showArrayList(this.fichas_repetidasMano);
 		
 		this.repet_fichas = new HashMap<Ficha, Integer>();
 		this.repet_fichas = this.startAllCeros();
@@ -375,6 +376,12 @@ public class BackTraking
 		return pRepet_fichas;
 	}
 
+/*	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
+	{
+		
+		return new ArrayList<>(new HashSet<>(pJugador.getMano()));
+	}
+*/
 	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero) {
 		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
 		int pFichas_tablero = pFichasTablero[0].length;
@@ -403,16 +410,12 @@ public class BackTraking
 		ArrayList<Ficha> mano_fichas = pMano;
 		ArrayList<Ficha> fichas_repetidas_mano = new ArrayList<Ficha>();
 
-		for (int index=0; index<largo_mano; index++) 
+		for (int index=1; index<largo_mano; index++) 
 		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
-					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
-				{
-					fichas_repetidas_mano.add(mano_fichas.get(indey));
-				}
-			}
+			if(pMano.contains(pMano.get(index)))
+			{
+				fichas_repetidas_mano.add(mano_fichas.get(indey));
+			}		
 		}
 		return fichas_repetidas_mano;
 	}
@@ -421,140 +424,6 @@ public class BackTraking
 		Metodos para el Objeto Mapa que tiene todas las posibles jugadas de la mano.
 		
 	*/
-
-	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
-	{
-		int cant_man = pFichas.size();
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-
-		for(int pI=0; pI<cant_man; pI++)
-		{
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
-			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
-			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
-
-			for(int pJ=0; pJ<cant_man; pJ++)
-			{			
-				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
-				{
-					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
-					{
-						combination_list_1.add(pFichas.get(pJ));	
-					}
-					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
-					{
-						combination_list_2.add(pFichas.get(pJ));
-					}
-				}
-			}
-				
-			lista_fichas_slices.add(combination_list_1);
-			lista_fichas_slices.add(combination_list_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-			
-		}
-		return grupos;
-	}
-
-
-	/*
-		Metodo para imprimir el juego.
-
-	*/
-
-	private String getSimboloColor(Color c)
-	{
-		if(c==Color.AMARILLO)
-			return "Am";
-		else if(c==Color.AZUL)
-			return "Az";
-		else if(c==Color.NARANJA)
-			return "Na";
-		else if(c==Color.MORADO)
-			return "Mo";
-		else if(c==Color.ROJO)
-			return "Ro";
-		else if(c==Color.VERDE)
-			return "Ve";
-		else return "...";
-		
-	}
-	private String getSimboloFigura(Figura f)
-	{
-		switch(f){
-			case CIRCULO:
-				return "O";
-			case CUADRADO:
-				return "C";
-			case ROMBO:
-				return "R";
-			case SOL:
-				return "S";
-			case TREBOL:
-				return "T";
-			case X:
-				return "X";
-		}
-		return "....";
-	}
-	private String fichaToSimbol(Ficha ficha)
-	{
-		if(ficha==null)return "---";
-		return getSimboloFigura(ficha.getFigura())+getSimboloColor(ficha.getColor());
-	}
-	
-	public void imprimirMano(Set<Ficha> pMano)
-	{
-		String out="\nMano sin repetidas [ ";
-		for (Ficha ficha : pMano)
-		{
-			out+= fichaToSimbol(ficha)+", ";
-		}
-		System.out.println(out+"]");
-	}
-	
-
-	public void showArray(List<Ficha> pMano)
-	{
-		String out="\nFichas que faltan por jugar -- [ ";
-		for (Ficha ficha : pMano)
-		{
-			out+= fichaToSimbol(ficha)+", ";
-		}
-		System.out.println(out+"]");
-	}
-
-	public void showArrayPlay(List<Jugadita> pMano)
-	{
-		String out="\nJugada del tablero con la que juego en este turno suponiendo -- [ ";
-		for (Jugadita jugadita : pMano)
-		{
-			System.out.println("x: "+ jugadita.x + " y: " + jugadita.y);
-			out+= fichaToSimbol(jugadita.ficha)+", ";
-		}
-		System.out.println(out+"]");
-	}
-
-	public void showJugadas(List<Jugada> pJugadas)
-	{
-		for (Jugada pPlay : pJugadas) {
-			showArrayPlay(pPlay.jugaditas);
-		}
-	}
-
-	/*
-
-		Final de la clase BackTraking.
-
-	*/
-}
-
-
-/*
-
-
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
 		int cant_man = pFichas.size()-1;
@@ -617,6 +486,149 @@ public class BackTraking
 				contador = 1;
 		}
 		return combination;
+	}
+
+
+
+	/*
+		Metodo para imprimir el juego.
+
+	*/
+
+	private String getSimboloColor(Color c)
+	{
+		if(c==Color.AMARILLO)
+			return "Am";
+		else if(c==Color.AZUL)
+			return "Az";
+		else if(c==Color.NARANJA)
+			return "Na";
+		else if(c==Color.MORADO)
+			return "Mo";
+		else if(c==Color.ROJO)
+			return "Ro";
+		else if(c==Color.VERDE)
+			return "Ve";
+		else return "...";
+		
+	}
+	private String getSimboloFigura(Figura f)
+	{
+		switch(f){
+			case CIRCULO:
+				return "O";
+			case CUADRADO:
+				return "C";
+			case ROMBO:
+				return "R";
+			case SOL:
+				return "S";
+			case TREBOL:
+				return "T";
+			case X:
+				return "X";
+		}
+		return "....";
+	}
+	private String fichaToSimbol(Ficha ficha)
+	{
+		if(ficha==null)return "---";
+		return getSimboloFigura(ficha.getFigura())+getSimboloColor(ficha.getColor());
+	}
+	
+	public void imprimirMano(Set<Ficha> pMano)
+	{
+		String out="\nMano sin repetidas [ ";
+		for (Ficha ficha : pMano)
+		{
+			out+= fichaToSimbol(ficha)+", ";
+		}
+		System.out.println(out+"]");
+	}
+
+	public void showArrayList(ArrayList<Ficha> pMano)
+	{
+		String out="\nFichas repetidas de la mano --> [ ";
+		for (Ficha ficha : pMano)
+		{
+			out+= fichaToSimbol(ficha)+", ";
+		}
+		System.out.println(out+"]");
+	}	
+
+	public void showArray(List<Ficha> pMano)
+	{
+		String out="\nFichas que faltan por jugar -- [ ";
+		for (Ficha ficha : pMano)
+		{
+			out+= fichaToSimbol(ficha)+", ";
+		}
+		System.out.println(out+"]");
+	}
+
+	public void showArrayPlay(List<Jugadita> pMano)
+	{
+		String out="\nJugada del tablero con la que juego en este turno suponiendo -- [ ";
+		for (Jugadita jugadita : pMano)
+		{
+			System.out.println("x: "+ jugadita.x + " y: " + jugadita.y);
+			out+= fichaToSimbol(jugadita.ficha)+", ";
+		}
+		System.out.println(out+"]");
+	}
+
+	public void showJugadas(List<Jugada> pJugadas)
+	{
+		for (Jugada pPlay : pJugadas) {
+			showArrayPlay(pPlay.jugaditas);
+		}
+	}
+
+	/*
+
+		Final de la clase BackTraking.
+
+	*/
+}
+
+
+/*
+
+
+	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
+	{
+		int cant_man = pFichas.size();
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+
+		for(int pI=0; pI<cant_man; pI++)
+		{
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
+			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
+			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
+
+			for(int pJ=0; pJ<cant_man; pJ++)
+			{			
+				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
+				{
+					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
+					{
+						combination_list_1.add(pFichas.get(pJ));	
+					}
+					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
+					{
+						combination_list_2.add(pFichas.get(pJ));
+					}
+				}
+			}
+				
+			lista_fichas_slices.add(combination_list_1);
+			lista_fichas_slices.add(combination_list_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
+			
+		}
+		return grupos;
 	}
 
 
