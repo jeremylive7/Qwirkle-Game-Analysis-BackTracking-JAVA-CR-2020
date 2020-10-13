@@ -36,13 +36,45 @@ public class BackTraking
 
 	public Jugada getRespuesta()
 	{
-		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<>(mano)));
+		jugadas=getJugadas(getCombMano(new ArrayList<>(mano)));
 		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		return jugadas.get(0);
 	}
 
-	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos)
+	public Map<Ficha, ArrayList<ArrayList<Ficha>>>getCombMano(ArrayList<Ficha>pFichas)
 	{
+		int cant_man = pFichas.size();
+		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
+
+		for(int pI=0; pI<cant_man; pI++)
+		{
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
+			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
+			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
+
+			for(int pJ=0; pJ<cant_man; pJ++)
+			{			
+				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
+				{
+					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
+					{
+						combination_list_1.add(pFichas.get(pJ));	
+					}
+					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
+						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
+					{
+						combination_list_2.add(pFichas.get(pJ));
+					}
+				}
+			}				
+			lista_fichas_slices.add(combination_list_1);
+			lista_fichas_slices.add(combination_list_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
+		}
+		return grupos;
+	}
+	public List<Jugada>getJugadas(Map<Ficha,ArrayList<ArrayList<Ficha>>>grupitos){
 		List<Jugada>todasLasPosiblesJugadasCompletas=new ArrayList<>();
 		for(Point xy : tablero.demeLasPosicionesEnQuePueddoEmpezarJugada()) {
 				for(Entry<Ficha,ArrayList<ArrayList<Ficha>>> entradaGrupito:grupitos.entrySet()){
@@ -140,16 +172,17 @@ public class BackTraking
 					fichasQueFaltanPorColocar.removeIf(j->
 						j.noCombina(f)
 					);
-					derecha++;//aquí falta algo--->eliminar de la jugada las que se están "saltando"
+					derecha++;
 				}
 				while(this.tablero.getFichas()[x][izquierda]!=null&&izquierda>0){
 					Ficha f=this.tablero.getFichas()[x][izquierda];
 					fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
 					izquierda--;
 				}
-			}if (esPorFila==null||!esPorFila){
-				while(this.tablero.getFichas()[arriba][y]!=null&&arriba<Tablero.MATRIX_SIDE-1){
-					Ficha f=this.tablero.getFichas()[arriba][y];
+			}
+			if (esPorFila==null||!esPorFila){
+				while(tablero.getFichas()[arriba][y]!=null&&arriba<Tablero.MATRIX_SIDE-1){
+					Ficha f=tablero.getFichas()[arriba][y];
 					fichasQueFaltanPorColocar.removeIf(j->j.noCombina(f));
 					arriba++;
 				}

@@ -3,10 +3,10 @@ import java.util.List;
 
 class Jugador
 {
-	private int score;
+	int score;
 	private ArrayList<Ficha> mano;
-	private String nombre;
-	private double tiempo;
+	String nombre;
+	long tiempo;
 
 	//Constructor
 	public Jugador(String pNombre,List<Ficha>manoInicial) 
@@ -16,11 +16,12 @@ class Jugador
 		this.nombre = pNombre;
 	}
 
-	public void procesarJugada(Jugada jugada, int cantPuntos,double t){
+	public void procesarJugada(Jugada jugada, int cantPuntos,long t){
 		score+=cantPuntos;
 		tiempo+=t;
 		for(Jugadita par:jugada.jugaditas)
 			mano.remove(par.ficha);
+		if(mano.isEmpty())score+=6;
 	}
 	public String toString(){
 		String out="Nombre: "+nombre+"\nScore: "+score+"\nTiempo total: "+tiempo+"\nMano: [";
@@ -63,11 +64,11 @@ class Jugador
 		}
 	}
 
-	public double getTiempo() {
+	public long getTiempo() {
 		return tiempo;
 	}
 
-	public void setTiempo(double tiempo) {
+	public void setTiempo(long tiempo) {
 		this.tiempo = tiempo;
 	}
 }

@@ -134,6 +134,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
+		if(finHilera-inicioHilera==6)return 12;
 		return finHilera-inicioHilera+1;
 	}
 	private int contarFila(Jugadita jugadita){
@@ -149,6 +150,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
+		if(finHilera-inicioHilera==6)return 12;
 		return finHilera-inicioHilera+1;
 	}
 	
