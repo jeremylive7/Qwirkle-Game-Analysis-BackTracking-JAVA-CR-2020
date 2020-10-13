@@ -36,7 +36,21 @@ public class BackTraking
 		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), new ArrayList<>(this.mano));
 
 
-		this.showPossiblePlaysHand(getPossiblePlaysHand(new ArrayList<>(mano)));
+/*		ArrayList<ArrayList<Integer>, ArrayList<Integer>> lista =  new ArrayList<ArrayList<Integer>, ArrayList<Integer>>();
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		l.add(1);
+		l.add(2);
+
+		ArrayList<Integer> a = new ArrayList<Integer>();
+	    a.add(3);
+		a.add(4);
+
+		lista.get(0).add(l);
+		lista.get(0).add(a);
+*/
+		
+
+		//this.showPossiblePlaysHand(getPossiblePlaysHand(new ArrayList<>(mano)));
 /*
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		list.add(1);
@@ -466,7 +480,7 @@ public class BackTraking
 			lista_fichas_slices.add(combination_list_2);
 			grupos.put(pFichas.get(pI), lista_fichas_slices);
 
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices2 = new ArrayList<ArrayList<Ficha>>();
+/*			ArrayList<ArrayList<Ficha>> lista_fichas_slices2 = new ArrayList<ArrayList<Ficha>>();
 			if (combination_list_1.size() == 2) {
 				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
 
@@ -489,21 +503,7 @@ public class BackTraking
 			if (combination_list_2.size() == 3) {
 				ArrayList<ArrayList<Ficha>> combination_list_3_2 = this.getAllCombinations(combination_list_2);
 				grupos.put(pFichas.get(pI), combination_list_3_2);
-			}
-
-/*
-			ArrayList<Ficha> playOf4 = new ArrayList<Ficha>();
-			playOf4.add(pFichas.get(pI));*/
-			//playOf4.add(combination_list_1);
-
-			//getAllCombToEachComb(playOf4);
-/*			lista_fichas_slices.add(combination_list_1_2);
-			grupos.put(pFichas.get(pI), lista_fichas_slices);
-*/
-/*			ArrayList<Ficha> play_of4 = new ArrayList<Ficha>();
-			play_of4.add(pFichas.get(pI));
-			play_of4.add(combination_list_2);*/
-
+			}*/
 		}
 		return grupos;
 	}
