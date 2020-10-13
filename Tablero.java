@@ -11,7 +11,7 @@ class Tablero
 	private final Ficha[][] fichas;
 	Map<Integer,Map<Integer,List<Ficha>>>placesToPlay;
 	Set<Point>placesWithAnTokkenOnTheSide;
-	protected static List<Ficha>todasLasFichas;
+	public static List<Ficha>todasLasFichas;
 
 	//Constructor
 	public Tablero() 
@@ -115,6 +115,7 @@ class Tablero
 				jugada.puntos+=contarFila(jugadita);			
 		}
 		if(jugada.isLine==null||jugada.isLine.booleanValue())
+			
 			jugada.puntos+=contarFila(jugada.jugaditas.get(0));
 		else
 			jugada.puntos+=contarColumna(jugada.jugaditas.get(0));
@@ -133,6 +134,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
+		if(finHilera-inicioHilera==6)return 12;
 		return finHilera-inicioHilera+1;
 	}
 	private int contarFila(Jugadita jugadita){
@@ -148,6 +150,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
+		if(finHilera-inicioHilera==6)return 12;
 		return finHilera-inicioHilera+1;
 	}
 	

@@ -21,6 +21,7 @@ class Jugador
 		tiempo+=t;
 		for(Jugadita par:jugada.jugaditas)
 			mano.remove(par.ficha);
+		if(mano.isEmpty())score+=6;
 	}
 	public String toString(){
 		String out="Nombre: "+nombre+"\nScore: "+score+"\nTiempo total: "+tiempo+"\nMano: [";
