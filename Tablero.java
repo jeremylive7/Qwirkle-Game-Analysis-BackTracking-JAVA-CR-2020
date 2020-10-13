@@ -133,7 +133,12 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		if(finHilera-inicioHilera==5)return 12;
+		if(finHilera-inicioHilera==5)
+		{
+			System.out.println("!!!!!!!!!!!!!!!!!Hizo Qwirkle!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+							+"\n!!!!!!!!!!!!!GANA 6 PUNTOS DE BONO!!!!!!!!!!!!!!!!!!!!!!");
+			return 12;
+		}
 		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
 	}
 	private int contarFila(Jugadita jugadita){
@@ -149,7 +154,12 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		if(finHilera-inicioHilera==5)return 12;
+		if(finHilera-inicioHilera==5)
+		{
+			System.out.println("!!!!!!!!!!!!!!!!!Hizo Qwirkle!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+							+"\n!!!!!!!!!!!!!GANA 6 PUNTOS DE BONO!!!!!!!!!!!!!!!!!!!!!!");
+			return 12;
+		}
 		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
 	}
 	
