@@ -34,31 +34,11 @@ public class BackTraking
 		this.repet_fichas = new HashMap<Ficha, Integer>();
 		this.repet_fichas = this.startAllCeros();
 		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), new ArrayList<>(this.mano));
-
-		initJugadasWithBackTracking();
-		
 	}
 
-	private void initJugadasWithBackTracking(){
+	public Jugada getRespuesta()
+	{
 		jugadas=getJugadas(getPossiblePlaysHand(new ArrayList<>(mano)));
-	}
-
-	public Jugada getRespuesta(){
-		if(esMejorado)
-			return getJugadaMejorado();
-		else
-			return getJugadaBasico();
-	}
-
-	private Jugada getJugadaBasico(){
-		if(jugadas.isEmpty())
-			System.out.println("Satanásxd");
-		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
-		return jugadas.get(0);
-	}
-
-	private Jugada getJugadaMejorado(){
-
 		jugadas.sort((o1,o2)->Integer.compare(o2.puntos, o1.puntos));
 		return jugadas.get(0);
 	}
@@ -130,23 +110,16 @@ public class BackTraking
 
 		if(fichasQueFaltanPorColocar.isEmpty())
 		{	
-			/*
-	
-					Poda #1
-
-						Esta poda trata de identificar las jugadas que tengan al menos una ficha igual a una ficha que este repetida en la mano del jugador actual.
-
+			/* Poda #1
+			Esta poda trata de identificar las jugadas que tengan al menos una ficha igual a una ficha que este repetida en la mano del jugador actual.
 			*/
 			if (this.isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 50));	
-			/*
-					Poda #2
-
-						De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
-
+			/* Poda #2
+			De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
 			*/
-			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas))
+			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas) && esMejorado)
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 100));	
 			}else 
@@ -219,6 +192,29 @@ public class BackTraking
 		fichasQueFaltanPorColocar.add(fichaInicial);
 	}
 
+	/*
+		Metodo Poda #1
+		
+	*/
+
+	public Boolean isItInJugadaRepetFicha(ArrayList<Ficha> pFichas_repets, List<Jugadita> pJugada)
+	{
+		for (Ficha pRepetFicha : pFichas_repets) 
+		{
+			if(pJugada.contains(pRepetFicha))
+			{
+				return true;
+			}			
+		}	
+		return false;
+	}
+
+	/*
+
+		Metodos Poda #2
+
+	*/
+
 	public boolean isItChipInside(List<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
 		int contador = 0;
 		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
@@ -233,41 +229,6 @@ public class BackTraking
 			}
 		}
 		return ((float)contador / pJugada.size()) > 0.5;
-	}
-
-	public Map<Ficha, Integer> startAllCeros() {
-		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
-		ArrayList<Ficha> pTotal_fichas = this.getAllCheaps();
-		Integer initial_number = 0;
-
-		for (Ficha pFicha : pTotal_fichas) {
-			pList_repet.put(pFicha, initial_number);
-		}
-
-		return pList_repet;
-	}
-
-	public ArrayList<Ficha> getAllCheaps()
-	{
-		ArrayList<Ficha> lista = new ArrayList<Ficha>();
-		for (Figura figura:Qwirkle.FIGURAS)
-			for(Color color:Qwirkle.COLORES)
-				lista.add(new Ficha(figura,color));
-		
-
-		return lista;
-	}
-
-	public Boolean isItInJugadaRepetFicha(ArrayList<Ficha> pFichas_repets, List<Jugadita> pJugada)
-	{
-		for (Ficha pRepetFicha : pFichas_repets) 
-		{
-			if(pJugada.contains(pRepetFicha))
-			{
-				return true;
-			}			
-		}	
-		return false;
 	}
 
 	public List<Ficha>getCualesFaltan(List<Jugadita>fichasDeLaJugada)
@@ -365,6 +326,98 @@ public class BackTraking
 		return fichas_puedo_poner_verdad;
 	}
 
+	/*
+	
+		Metodos Objeto que lleva la cuenta de las fichas que ya han saliedo de la bolsa de fichas
+
+	*/
+
+	public Map<Ficha, Integer> startAllCeros() 
+	{
+		Map<Ficha, Integer> pList_repet = new HashMap<Ficha, Integer>();
+		ArrayList<Ficha> pTotal_fichas = this.getAllCheaps();
+		Integer initial_number = 0;
+
+		for (Ficha pFicha : pTotal_fichas) {
+			pList_repet.put(pFicha, initial_number);
+		}
+
+		return pList_repet;
+	}
+
+	public ArrayList<Ficha> getAllCheaps()
+	{
+		ArrayList<Ficha> lista = new ArrayList<Ficha>();
+		for (Figura figura:Qwirkle.FIGURAS)
+			for(Color color:Qwirkle.COLORES)
+				lista.add(new Ficha(figura,color));
+		
+
+		return lista;
+	}
+
+	public Map<Ficha, Integer> updateRepetFichasWithHand(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFicha) {
+		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
+
+		for (Ficha ficha : pFicha) {
+			for (Map.Entry<Ficha, Integer> repetFichas : pRepetFichas.entrySet()) {
+				Ficha ficha_repet = repetFichas.getKey();
+				Integer value = repetFichas.getValue();
+				if (ficha == ficha_repet) {
+					value += value + 1;
+					pRepet_fichas.put(ficha_repet, value);
+				}
+			}
+		}
+		return pRepet_fichas;
+	}
+
+	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero) {
+		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
+		int pFichas_tablero = pFichasTablero[0].length;
+
+		for (int indeX = 0; indeX < pFichas_tablero; indeX++) {
+			for (int indeY = 0; indeY < pFichas_tablero; indeY++) {
+				for (Map.Entry<Ficha, Integer> repetFichas : pRepet_fichas.entrySet()) {
+					Ficha ficha_repet = repetFichas.getKey();
+					if (pFichasTablero[indeX][indeY] == null) {
+						break;
+					} else if (pFichasTablero[indeX][indeY].getFigura() == ficha_repet.getFigura()
+							&& pFichasTablero[indeX][indeY].getColor() == ficha_repet.getColor()) {
+						Integer value = repetFichas.getValue();
+						value++;
+						pRepet_fichas.put(ficha_repet, value);
+					}
+				}
+			}
+		}
+		return pRepetFichas;
+	}
+
+	public ArrayList<Ficha> getRepetsHand(ArrayList<Ficha> pMano)
+	{
+		int largo_mano = pMano.size()-1;
+		ArrayList<Ficha> mano_fichas = pMano;
+		ArrayList<Ficha> fichas_repetidas_mano = new ArrayList<Ficha>();
+
+		for (int index=0; index<largo_mano; index++) 
+		{
+			for (int indey=index+1; indey<=largo_mano; indey++) 
+			{	
+				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
+					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
+				{
+					fichas_repetidas_mano.add(mano_fichas.get(indey));
+				}
+			}
+		}
+		return fichas_repetidas_mano;
+	}
+
+	/*
+		Metodos para el Objeto Mapa que tiene todas las posibles jugadas de la mano.
+		
+	*/
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
@@ -401,6 +454,12 @@ public class BackTraking
 		}
 		return grupos;
 	}
+
+
+	/*
+		Metodo para imprimir el juego.
+
+	*/
 
 	private String getSimboloColor(Color c)
 	{
@@ -492,64 +551,9 @@ public class BackTraking
 		}
 	}
 
+	/*
 
-	public ArrayList<Ficha> getRepetsHand(ArrayList<Ficha> pMano)
-	{
-		int largo_mano = pMano.size()-1;
-		ArrayList<Ficha> mano_fichas = pMano;
-		ArrayList<Ficha> fichas_repetidas_mano = new ArrayList<Ficha>();
+		Final de la clase BackTraking.
 
-		for (int index=0; index<largo_mano; index++) 
-		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
-					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
-				{
-					fichas_repetidas_mano.add(mano_fichas.get(indey));
-				}
-			}
-		}
-		return fichas_repetidas_mano;
-	}
-
-
-	public Map<Ficha, Integer> updateRepetFichasWithHand(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFicha) {
-		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
-
-		for (Ficha ficha : pFicha) {
-			for (Map.Entry<Ficha, Integer> repetFichas : pRepetFichas.entrySet()) {
-				Ficha ficha_repet = repetFichas.getKey();
-				Integer value = repetFichas.getValue();
-				if (ficha == ficha_repet) {
-					value += value + 1;
-					pRepet_fichas.put(ficha_repet, value);
-				}
-			}
-		}
-		return pRepet_fichas;
-	}
-
-	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, Ficha[][] pFichasTablero) {
-		Map<Ficha, Integer> pRepet_fichas = pRepetFichas;
-		int pFichas_tablero = pFichasTablero[0].length;
-
-		for (int indeX = 0; indeX < pFichas_tablero; indeX++) {
-			for (int indeY = 0; indeY < pFichas_tablero; indeY++) {
-				for (Map.Entry<Ficha, Integer> repetFichas : pRepet_fichas.entrySet()) {
-					Ficha ficha_repet = repetFichas.getKey();
-					if (pFichasTablero[indeX][indeY] == null) {
-						break;
-					} else if (pFichasTablero[indeX][indeY].getFigura() == ficha_repet.getFigura()
-							&& pFichasTablero[indeX][indeY].getColor() == ficha_repet.getColor()) {
-						Integer value = repetFichas.getValue();
-						value++;
-						pRepet_fichas.put(ficha_repet, value);
-					}
-				}
-			}
-		}
-		return pRepetFichas;
-	}
-
+	*/
 }
