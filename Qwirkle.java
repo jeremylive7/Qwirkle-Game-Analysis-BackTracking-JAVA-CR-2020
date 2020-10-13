@@ -404,7 +404,7 @@ class Qwirkle
 	}
 	public ArrayList<Ficha>getFichasDeLaBolsa(int cantFichas){
 		ArrayList<Ficha>out=new ArrayList<>();
-		while(cantFichas-->0)
+		while(cantFichas-->0&&!bolsa_fichas.isEmpty())
 			out.add(popRandomFicha());
 		return out;
 	}

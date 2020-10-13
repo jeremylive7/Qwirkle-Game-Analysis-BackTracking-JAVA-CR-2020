@@ -3,10 +3,10 @@ import java.util.List;
 
 class Jugador
 {
-	private int score;
+	int score;
 	private ArrayList<Ficha> mano;
 	private String nombre;
-	private double tiempo;
+	double tiempo;
 
 	//Constructor
 	public Jugador(String pNombre,List<Ficha>manoInicial) 
