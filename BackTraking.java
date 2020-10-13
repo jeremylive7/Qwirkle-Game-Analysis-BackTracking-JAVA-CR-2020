@@ -215,25 +215,32 @@ public class BackTraking
 
 	*/
 
-	public boolean isItChipInside(List<Ficha> pJugada, Map<Ficha, Integer> pList_repets) {
+	public boolean isItChipInside(List<Ficha> pJugada_faltan, Map<Ficha, Integer> pList_repets) 
+	{
+		this.showArray(pJugada_faltan);
+
 		int contador = 0;
+
 		for (Map.Entry<Ficha, Integer> repets : pList_repets.entrySet()) {
 			Ficha ficha = repets.getKey();
 			Integer value = repets.getValue();
 			if (value >= 2) {
-				for (Ficha pFicha : pJugada) {
+				for (Ficha pFicha : pJugada_faltan) {
 					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
+						System.out.println("Poda#2: Esta ficha esta en la jugada que falta y ah salido dos o tres veces "+fichaToSimbol(pFicha));
 						contador++;
 					}
 				}
 			}
 		}
-		return ((float)contador / pJugada.size()) > 0.5;
+		return ((float)contador / pJugada_faltan.size()) > 0.5;
 	}
 
-	public List<Ficha>getCualesFaltan(List<Jugadita>fichasDeLaJugada)
+	public List<Ficha>getCualesFaltan(List<Jugadita> fichasDeLaJugada)
 	{
-		List<Ficha>losQueSePuedenPoner=new ArrayList<>(this.tablero.todasLasFichas);
+		this.showArrayPlay(fichasDeLaJugada);
+
+		List<Ficha>losQueSePuedenPoner = new ArrayList<>(this.tablero.todasLasFichas);
 	
 		for(Jugadita f1: fichasDeLaJugada){
 			for(int k=0;k<losQueSePuedenPoner.size();){
@@ -285,8 +292,6 @@ public class BackTraking
 			}
 
 			jugada_tablero.sort((o1,o2)->Integer.compare(o1.y, o2.y));
-
-			//showArrayPlay(jugada_tablero);
 			
 			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
 		}
@@ -319,8 +324,6 @@ public class BackTraking
 
 			jugada_tablero.sort((o1,o2)->Integer.compare(o1.x, o2.x));
 
-			//showArrayPlay(jugada_tablero);
-			
 			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
 		}
 		return fichas_puedo_poner_verdad;
@@ -502,16 +505,6 @@ public class BackTraking
 		return getSimboloFigura(ficha.getFigura())+getSimboloColor(ficha.getColor());
 	}
 	
-	public void imprimirList(List<Ficha> pMano)
-	{
-		String out="\nlista de fichas que puedo jugar - [ ";
-		for (Ficha ficha : pMano)
-		{
-			out+= fichaToSimbol(ficha)+", ";
-		}
-		System.out.println(out+"]");
-	}
-
 	public void imprimirMano(Set<Ficha> pMano)
 	{
 		String out="\nMano sin repetidas [ ";
@@ -535,7 +528,7 @@ public class BackTraking
 
 	public void showArrayPlay(List<Jugadita> pMano)
 	{
-		String out="\njugada del tablero con la que juego en ese turno suponiendo -- [ ";
+		String out="\nJugada del tablero con la que juego en este turno suponiendo -- [ ";
 		for (Jugadita jugadita : pMano)
 		{
 			System.out.println("x: "+ jugadita.x + " y: " + jugadita.y);
