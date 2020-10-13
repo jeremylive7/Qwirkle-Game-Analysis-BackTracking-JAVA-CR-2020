@@ -30,11 +30,22 @@ public class BackTraking
 		this.esMejorado=esMejorado;
 
 		this.fichas_repetidasMano = getRepetsHand(pMano);
-		this.showArrayList(this.fichas_repetidasMano);
 		
 		this.repet_fichas = new HashMap<Ficha, Integer>();
 		this.repet_fichas = this.startAllCeros();
 		this.repet_fichas = this.updateRepetFichasWithHand(updateRepetFichas(this.repet_fichas, tablero.getFichas()), new ArrayList<>(this.mano));
+
+
+		this.showPossiblePlaysHand(getPossiblePlaysHand(new ArrayList<>(mano)));
+/*
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(4);
+
+		this.showAllComb(this.getAllCombToEachComb(list));
+*/
 	}
 
 	public Jugada getRespuesta()
@@ -117,18 +128,18 @@ public class BackTraking
 			if (this.isItInJugadaRepetFicha(this.fichas_repetidasMano, jugada.jugaditas))
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 50));	
+				//this.showArrayList(this.fichas_repetidasMano);
 			/* Poda #2
 			De las fichas que faltan para que se logre un Qwirkle, ya haya salido dos veces, esa jugada es inteligente.
 			*/
 			}else if(this.isItChipInside(getMissingChips(y, x, esPorFila, jugada), this.repet_fichas) && esMejorado)
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada) + 100));	
+
 			}else 
 			{
 				jugadasCompletas.add(jugada.copy(this.tablero.getPuntos(jugada)));	
 			}
-			//List<Ficha> missing_chips = getMissingChips(y, x, esPorFila, jugada);
-			//showArray(missing_chips);
 		}
 		else{
 			boolean flag=false;
@@ -410,12 +421,16 @@ public class BackTraking
 		ArrayList<Ficha> mano_fichas = pMano;
 		ArrayList<Ficha> fichas_repetidas_mano = new ArrayList<Ficha>();
 
-		for (int index=1; index<largo_mano; index++) 
+		for (int index=0; index<largo_mano; index++) 
 		{
-			if(pMano.contains(pMano.get(index)))
-			{
-				fichas_repetidas_mano.add(mano_fichas.get(indey));
-			}		
+			for (int indey=index+1; indey<=largo_mano; indey++) 
+			{	
+				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
+					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
+				{
+					fichas_repetidas_mano.add(mano_fichas.get(indey));
+				}
+			}	
 		}
 		return fichas_repetidas_mano;
 	}
@@ -424,72 +439,173 @@ public class BackTraking
 		Metodos para el Objeto Mapa que tiene todas las posibles jugadas de la mano.
 		
 	*/
-	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
-	{
-		int cant_man = pFichas.size()-1;
+
+	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas) {
+		int cant_man = pFichas.size();
 		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
 
-		for(int pI=0; pI<cant_man; pI++)
-		{
-			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
+		for (int pI = 0; pI < cant_man; pI++) 
+		{	
 			ArrayList<Ficha> combination_list_1 = new ArrayList<Ficha>();
 			ArrayList<Ficha> combination_list_2 = new ArrayList<Ficha>();
 
-			for(int pJ=0; pJ<cant_man; pJ++)
-			{			
-				if(!pFichas.get(pI).noCombina(pFichas.get(pJ)))
-				{
-					if(pFichas.get(pI).getFigura()!=pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()==pFichas.get(pJ).getColor())
-					{
-						combination_list_1.add(pFichas.get(pJ));	
-					}
-					else if(pFichas.get(pI).getFigura()==pFichas.get(pJ).getFigura()
-						&&pFichas.get(pI).getColor()!=pFichas.get(pJ).getColor())
-					{
+			for (int pJ = 0; pJ < cant_man; pJ++) {
+				if (!pFichas.get(pI).noCombina(pFichas.get(pJ))) {
+					if (pFichas.get(pI).getFigura() != pFichas.get(pJ).getFigura()
+							&& pFichas.get(pI).getColor() == pFichas.get(pJ).getColor()) {
+						combination_list_1.add(pFichas.get(pJ));
+					} else if (pFichas.get(pI).getFigura() == pFichas.get(pJ).getFigura()
+							&& pFichas.get(pI).getColor() != pFichas.get(pJ).getColor()) {
 						combination_list_2.add(pFichas.get(pJ));
 					}
 				}
 			}
-				
+
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices = new ArrayList<ArrayList<Ficha>>();
 			lista_fichas_slices.add(combination_list_1);
 			lista_fichas_slices.add(combination_list_2);
 			grupos.put(pFichas.get(pI), lista_fichas_slices);
 
-			if(combination_list_1.size() == 2)
-			{
+			ArrayList<ArrayList<Ficha>> lista_fichas_slices2 = new ArrayList<ArrayList<Ficha>>();
+			if (combination_list_1.size() == 2) {
 				ArrayList<Ficha> combination_list_1_1 = getCombinationList1(combination_list_1);
 
-				lista_fichas_slices.add(combination_list_1_1);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
+				lista_fichas_slices2.add(combination_list_1_1);
+				grupos.put(pFichas.get(pI), lista_fichas_slices2);
 			}
 
-			if(combination_list_2.size() == 2)
-			{
+			if (combination_list_2.size() == 2) {
 				ArrayList<Ficha> combination_list_1_2 = getCombinationList1(combination_list_2);
 
-				lista_fichas_slices.add(combination_list_1_2);
-				grupos.put(pFichas.get(pI), lista_fichas_slices);
+				lista_fichas_slices2.add(combination_list_1_2);
+				grupos.put(pFichas.get(pI), lista_fichas_slices2);
 			}
+
+			if (combination_list_1.size() == 3) {
+				ArrayList<ArrayList<Ficha>> combination_list_3_1 = this.getAllCombinations(combination_list_1);
+				grupos.put(pFichas.get(pI), combination_list_3_1);
+			}
+
+			if (combination_list_2.size() == 3) {
+				ArrayList<ArrayList<Ficha>> combination_list_3_2 = this.getAllCombinations(combination_list_2);
+				grupos.put(pFichas.get(pI), combination_list_3_2);
+			}
+
+/*
+			ArrayList<Ficha> playOf4 = new ArrayList<Ficha>();
+			playOf4.add(pFichas.get(pI));*/
+			//playOf4.add(combination_list_1);
+
+			//getAllCombToEachComb(playOf4);
+/*			lista_fichas_slices.add(combination_list_1_2);
+			grupos.put(pFichas.get(pI), lista_fichas_slices);
+*/
+/*			ArrayList<Ficha> play_of4 = new ArrayList<Ficha>();
+			play_of4.add(pFichas.get(pI));
+			play_of4.add(combination_list_2);*/
+
 		}
 		return grupos;
 	}
 
-	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList)
-	{
+	public ArrayList<Ficha> getCombinationList1(ArrayList<Ficha> pList) {
 		int contador = 0;
 		ArrayList<Ficha> combination = new ArrayList<Ficha>();
 
-		for (int index=1; index >= 0; index--) 
-		{
-				combination.add(contador, pList.get(index));
-				contador = 1;
+		for (int index = 1; index >= 0; index--) {
+			combination.add(contador, pList.get(index));
+			contador = 1;
 		}
 		return combination;
 	}
 
+	public void showAllComb(ArrayList<ArrayList<Integer>> pLista)
+	{
+		for (ArrayList<Integer> pListita : pLista) 
+		{
+			System.out.println("[");
+			for (Integer pNum : pListita) 
+			{
+				System.out.println(pNum+",");
+			}	
+			System.out.println("]");
+		}
+	}
 
+	public ArrayList<ArrayList<Ficha>> getAllCombinations(ArrayList<Ficha> pList)
+	{
+		ArrayList<ArrayList<Ficha>> lista = new ArrayList<ArrayList<Ficha>>();
+		
+		ArrayList<Ficha> list_comb = new ArrayList<Ficha>();
 
+		list_comb.add(pList.get(0));
+		list_comb.add(pList.get(1));
+		list_comb.add(pList.get(2));
+
+		lista.add(list_comb);
+
+		ArrayList<Ficha> list_comb_0 = new ArrayList<Ficha>();
+
+		list_comb_0.add(pList.get(0));
+		list_comb_0.add(pList.get(2));
+		list_comb_0.add(pList.get(1));
+
+		lista.add(list_comb_0);
+
+		ArrayList<Ficha> list_comb_1 = new ArrayList<Ficha>();
+
+		list_comb_1.add(pList.get(2));
+		list_comb_1.add(pList.get(1));
+		list_comb_1.add(pList.get(0));
+
+		lista.add(list_comb_1);
+
+		ArrayList<Ficha> list_comb_2 = new ArrayList<Ficha>();
+
+		list_comb_2.add(pList.get(2));
+		list_comb_2.add(pList.get(0));
+		list_comb_2.add(pList.get(1));
+
+		lista.add(list_comb_2);
+
+		ArrayList<Ficha> list_comb_3 = new ArrayList<Ficha>();
+
+		list_comb_3.add(pList.get(1));
+		list_comb_3.add(pList.get(0));
+		list_comb_3.add(pList.get(2));
+
+		lista.add(list_comb_3);
+
+		ArrayList<Ficha> list_comb_4 = new ArrayList<Ficha>();
+
+		list_comb_4.add(pList.get(1));
+		list_comb_4.add(pList.get(2));
+		list_comb_4.add(pList.get(0));
+
+		lista.add(list_comb_4);		
+
+		return lista;	
+	}
+
+	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
+	{
+		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
+		{    
+    	Ficha key = entry.getKey();  
+    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
+    	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
+    		+ ", tiene las siguientes jugadas: ");
+    	
+    	for (ArrayList<Ficha> playList : value) 
+			{
+				for (Ficha ficha : playList) 
+				{
+					System.out.println(fichaToSimbol(ficha));		
+				}
+				System.out.println("-");
+			}
+		}
+	}
 	/*
 		Metodo para imprimir el juego.
 
@@ -633,3 +749,64 @@ public class BackTraking
 
 
 */
+
+
+
+
+
+
+
+
+
+
+	/*
+	
+	public ArrayList<ArrayList<Integer>> getAllCombToEachComb(ArrayList<Integer> pList)
+	{
+		ArrayList<ArrayList<Integer>> pAll_combinations = new ArrayList<ArrayList<Integer>>();
+
+		ArrayList<ArrayList<Integer>> pAll_list = new ArrayList<ArrayList<Integer>>();
+		pAll_list = getAllCombinations(pList);
+		for (ArrayList<Integer> pLista:pAll_list ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		ArrayList<ArrayList<Integer>> pAll_list_0 = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> pList_all = new ArrayList<Integer>();
+		pList_all.add(pList.get(3));
+		pList_all.add(pList.get(0));
+		pList_all.add(pList.get(1));
+		pList_all.add(pList.get(2));
+		pAll_list_0 = getAllCombinations(pList_all);
+		for (ArrayList<Integer> pLista:pAll_list_0 ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		ArrayList<ArrayList<Integer>> pAll_list_1 = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> pList_all_1 = new ArrayList<Integer>();
+		pList_all_1.add(pList.get(2));
+		pList_all_1.add(pList.get(3));
+		pList_all_1.add(pList.get(0));
+		pList_all_1.add(pList.get(1));
+		pAll_list_1 = getAllCombinations(pList_all_1);
+		for (ArrayList<Integer> pLista:pAll_list_1 ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		ArrayList<ArrayList<Integer>> pAll_list_2 = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> pList_all_2 = new ArrayList<Integer>();
+		pList_all_2.add(pList.get(1));
+		pList_all_2.add(pList.get(2));
+		pList_all_2.add(pList.get(3));
+		pList_all_2.add(pList.get(0));
+		pAll_list_2 = getAllCombinations(pList_all_2);
+		for (ArrayList<Integer> pLista:pAll_list_2 ) 
+		{
+			pAll_combinations.add(pLista);	
+		}
+
+		return pAll_combinations;
+	}*/

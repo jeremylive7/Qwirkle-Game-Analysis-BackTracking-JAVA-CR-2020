@@ -119,27 +119,6 @@ class Qwirkle
 		this.tablero = tablero;
 	}
 
-
-	public void showPossiblePlaysHand(Map<Ficha, ArrayList<ArrayList<Ficha>>> pGrupo)
-	{
-		for(Map.Entry<Ficha, ArrayList<ArrayList<Ficha>>> entry:pGrupo.entrySet())
-		{    
-    	Ficha key = entry.getKey();  
-    	ArrayList<ArrayList<Ficha>> value = entry.getValue(); 
-    	System.out.println("\nLa ficha: " + fichaToSimbol(key) 
-    		+ ", tiene las siguientes jugadas: ");
-    	
-    	for (ArrayList<Ficha> playList : value) 
-			{
-				for (Ficha ficha : playList) 
-				{
-					System.out.println(fichaToSimbol(ficha));		
-				}
-				System.out.println("-");
-			}
-		}
-	}
-
 	public void imprimirMano(ArrayList<Ficha> pMano)
 	{
 		String out="\n[ ";
