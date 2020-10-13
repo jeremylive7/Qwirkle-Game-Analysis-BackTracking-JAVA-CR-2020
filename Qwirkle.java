@@ -69,6 +69,7 @@ class Qwirkle
 		FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
 		imprimirTablero();
 	}
+	
 
 	private boolean turno(Jugador jugador) {
 		long tiempo = System.currentTimeMillis();
@@ -97,123 +98,6 @@ class Qwirkle
 	public void setTablero(Tablero tablero) {
 		this.tablero = tablero;
 	}
-/*
-	public void menu(Qwirkle pGame)
-	{
-		Tablero table = pGame.getTablero();
-		ArrayList<Ficha> playToSet = new ArrayList<Ficha>();
-
-		ArrayList<Ficha> work_fichas_mano = new ArrayList<Ficha>();
-		Map<Ficha, ArrayList<ArrayList<Ficha>>> grupitos = new HashMap<Ficha, ArrayList<ArrayList<Ficha>>>();
-		ArrayList<ArrayList<Ficha>> jugadas_totales = new ArrayList<ArrayList<Ficha>>();
-
-		//Map<Ficha, Integer> repetFichas_withHand = this.repet_fichas;
-
-		int largo_nueva_mano = 0;
-		boolean esRepetido = false;
-
-		while(this.opcion < 4){
-
-			do{
-				JOptionPane.showMessageDialog(this.frame, "Es el turno del jugador " + jugadorActual.getNombre());
-				//Muestro mano del jugador
-				this.showMano(jugadorActual);
-				
-				//Obtengo el # de la opcion
-				this.opcion = Integer.parseInt(JOptionPane.showInputDialog("1. Seleccionar mi jugada"
-					+ "\n"
-					+ "2. Solicitas salir del Juego al final de la ronda de turnos."));
-
-				if(opcion==1)
-				{
-					System.out.println("Elegiste seleccionar mi jugada");
-
-					System.out.println("Mano original: ");
-					this.showMano(pJugador);
-					
-					work_fichas_mano = this.getHandWithOutRepet(pJugador);
-					if(work_fichas_mano.size() != 6)
-					{
-						esRepetido = true;
-					}
-
-					System.out.println("\nNueva mano con repetidas eliminadas: ");
-					this.imprimirMano(work_fichas_mano);
-					
-					grupitos = this.getPossiblePlaysHand(work_fichas_mano);
-					this.showPossiblePlaysHand(grupitos);
-
-					jugadas_totales = getMostHigherScorePlay(getTotalJugadas(grupitos));
-					imprimirJugadaTotales(jugadas_totales);
-
-					playToSet = seleccionoJugada(table, jugadorActual);//Empieza turno, selecciono mi jugada
-					setJugadaTablero(playToSet);//Coloco jugada en el tablero
-					showPtsJugador(jugadorActual);//Imprimo pts
-
-					this.updateManoPlayer(jugadorActual, playToSet);
-
-					largo_nueva_mano = 6 - playToSet.size();
-					if(esRepetido)
-					{
-						largo_nueva_mano++;
-					}
-					jugadorActual.updateManoPlayer(getFichasDeLaBolsa(largo_nueva_mano));
-				}
-				else	//Salir del juego
-					break;
-						
-				jugadorActual=(jugadorActual==jugador1?jugador2:jugador1);
-
-			}while(true);
-		}
-	}
-
-	public void updateManoPlayer(Jugador pPlayer, int pLargoSet)
-	{
-		ArrrayList<Ficha> fichas = getFichasDeLaBolsa(pLargoSet);
-
-		for (Ficha pFicha : fichas) 
-		{			
-			pPlayer.setFichaMano(pFicha);	
-		}
-		
-	}
-
-	public Map<Ficha, Integer> updateRepetFichas(Map<Ficha, Integer> pRepetFichas, ArrayList<Ficha> pFichas)
-	{
-		for (Ficha pFicha : pFichas) 
-		{
-			for(Map.Entry<Ficha, Integer> repetFichas:pRepetFichas.entrySet())
-			{
-				Ficha ficha_repet = repetFichas.getKey();  
-    		Integer value = repetFichas.getValue();
-    		if(pFicha == ficha_repet)
-    		{
-    			value++;
-    			pRepetFichas.put(ficha_repet, value);
-    		}
-			} 	
-		}
-	}
-
-	public ArrayList<Ficha> getHandWithOutRepet(Jugador pJugador)
-	{
-		int largo_mano = pJugador.getCantMano()-1;
-		ArrayList<Ficha> mano_fichas = pJugador.getMano();
-
-		for (int index=0; index<largo_mano; index++) 
-		{
-			for (int indey=index+1; indey<=largo_mano; indey++) 
-			{	
-				if(mano_fichas.get(index).getFigura()==mano_fichas.get(indey).getFigura()
-					&&mano_fichas.get(index).getColor()==mano_fichas.get(indey).getColor())
-				{
-					mano_fichas.remove(indey);
-				}
-			}
-		}
-		return mano_fichas;
-	}*/
 
 	public Map<Ficha, ArrayList<ArrayList<Ficha>>> getPossiblePlaysHand(ArrayList<Ficha> pFichas)
 	{
@@ -308,19 +192,6 @@ class Qwirkle
 		}
 		System.out.println(out+"]");
 	}
-/*
-	public void imprimirJugadaTotales(ArrayList<ArrayList<Ficha>> pJugadasTotales)
-	{
-		for (ArrayList<Ficha> pList : pJugadasTotales)
-		{
-			String out="\n[ ";
-			for (Ficha ficha : pList) 
-			{
-				out+= fichaToSimbol(pList)+", ";	
-			}
-			System.out.println(out+"]");
-		}
-	}*/
 
 	public void fullFichasToBolsa()
 	{	
@@ -410,27 +281,6 @@ class Qwirkle
 	public Ficha popRandomFicha(){
 		return bolsa_fichas.remove((int)(Math.random()*(bolsa_fichas.size()-1)));
 	}
-/*
-	public void showPtsJugador(Jugador pJugador)
-	{
-		System.out.println(pJugador.getScore().getPtsTotales());
-	}
-	public void setJugadaTablero(ArrayList<Ficha> pPlay)
-	{
-		
-	}
-	
-	public List<Ficha> seleccionoJugada(Tablero pTable, Jugador pPlayer)
-	{
-		ArrayList<Ficha> player_hand = pPlayer.getMano();
-		
-		List<Jugada> jugadasCompletas = pTable.getJugadas(pTable.getPossiblePlaysHand(player_hand));
-		pTable.setPointsAllPlays(jugadasCompletas);
-		jugadasCompletas.sort((o1, o2) -> Integer.compare(o2.puntos, o1.puntos));
-
-		return jugadasCompletas.get(0);
-	}*/
-
 	/*
 			EJEMPLO #1
 	*/
@@ -454,25 +304,3 @@ class Qwirkle
 	}
 
 }
-
-
-
-
-
-
-/*	
-	//Lleno matriz en blanco
-	public void fullMatrizEmpty()
-	{
-		//Matriz 6x6
-		for (int i=0; i<this.dimencion_inicial; i++) {
-			this.fichas_totales = new Fichas();
-			for (int j=0; j<this.dimencion_inicial; j++) {
-				this.ficha = new Ficha();
-				this.fichas_totales.setFichasFila(ficha);
-			}
-			this.tablero.setOneFilaFichas(fichas_totales);		
-		}
-
-	}
-*/
