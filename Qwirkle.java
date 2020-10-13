@@ -84,7 +84,6 @@ class Qwirkle
 		if(turno(jugador2))
 			return true;
 		// juega algoritmo mejorado
-		System.out.println("Esperando 3 segundos...");
 		//imprimirTablero();
 		if(turno(jugador3))
 			return true;

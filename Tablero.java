@@ -106,6 +106,18 @@ class Tablero
 				break;
 			}
 	}
+	public List<Ficha>getCualesFaltan(List<Ficha>fichasDeLaJugada){
+		List<Ficha>losQueSePuedenPoner=new ArrayList<>(todasLasFichas);
+		for(Ficha f1:fichasDeLaJugada){
+			for(int k=0;k<losQueSePuedenPoner.size();){
+				if(f1.noCombina(losQueSePuedenPoner.get(k)))
+					losQueSePuedenPoner.remove(k);
+				else k++;
+			}
+		}
+		return losQueSePuedenPoner;
+
+	}
 	public int getPuntos(Jugada jugada){//Tengo dudas con esta función.
 		jugada.puntos=0;
 		for(Jugadita jugadita:jugada.jugaditas){
@@ -133,6 +145,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
+		if(finHilera-inicioHilera==6)return 12;
 		return finHilera-inicioHilera+1;
 	}
 	private int contarFila(Jugadita jugadita){
@@ -148,6 +161,7 @@ class Tablero
 				break;
 			else finHilera++;
 		}
+		if(finHilera-inicioHilera==6)return 12;
 		return finHilera-inicioHilera+1;
 	}
 	
