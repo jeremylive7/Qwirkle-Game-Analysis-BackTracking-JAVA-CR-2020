@@ -217,7 +217,7 @@ public class BackTraking
 
 	public boolean isItChipInside(List<Ficha> pJugada_faltan, Map<Ficha, Integer> pList_repets) 
 	{
-		this.showArray(pJugada_faltan);
+		//this.showArray(pJugada_faltan);
 
 		int contador = 0;
 
@@ -227,7 +227,7 @@ public class BackTraking
 			if (value >= 2) {
 				for (Ficha pFicha : pJugada_faltan) {
 					if (ficha.getFigura() == pFicha.getFigura() && ficha.getColor() == pFicha.getColor()) {
-						System.out.println("Poda#2: Esta ficha esta en la jugada que falta y ah salido dos o tres veces "+fichaToSimbol(pFicha));
+						//System.out.println("Poda#2: Esta ficha esta en la jugada que falta y ah salido dos o tres veces "+fichaToSimbol(pFicha));
 						contador++;
 					}
 				}
@@ -238,7 +238,7 @@ public class BackTraking
 
 	public List<Ficha>getCualesFaltan(List<Jugadita> fichasDeLaJugada)
 	{
-		this.showArrayPlay(fichasDeLaJugada);
+		//this.showArrayPlay(fichasDeLaJugada);
 
 		List<Ficha>losQueSePuedenPoner = new ArrayList<>(this.tablero.todasLasFichas);
 	

@@ -115,6 +115,7 @@ class Tablero
 				jugada.puntos+=contarFila(jugadita);			
 		}
 		if(jugada.isLine==null||jugada.isLine.booleanValue())
+			
 			jugada.puntos+=contarFila(jugada.jugaditas.get(0));
 		else
 			jugada.puntos+=contarColumna(jugada.jugaditas.get(0));
