@@ -35,6 +35,12 @@ class Qwirkle
 		this.tablero.ponerPrimeraFicha();
 		
 	}
+
+	public static void main(String[] args)
+	{
+		Qwirkle q=new Qwirkle();
+		q.iniciarJuego();
+	}
 	
 	public void iniciarJuego()
 	{
@@ -47,37 +53,21 @@ class Qwirkle
 			System.out.println("\n-------------------------------------------");
 			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
 			if(jugadorHumanoHizoSuJugada()){
-				seTerminoElJuego();
+				//seTerminoElJuego();
 				break;
 			}
 		}	
 	}
 
-	public static void main(String[] args){
-		Qwirkle q=new Qwirkle();
-		q.iniciarJuego();
-	}
-	
-	private void seTerminoElJuego() {
-		//FileOperations.finDeTurno(jugador2.getNombre(),jugador2.tiempo,jugador2.score);
-		//FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
-		imprimirTablero();
-	}
-	private boolean procesarJugada2(Jugador jugador, Jugada jugada,long tiempo) {
-		int cantPuntos = tablero.getPuntos(jugada);
-		jugador.procesarJugada(jugada,cantPuntos,tiempo);
-		tablero.procesarJugada(jugada);
-		//dao.procesarJugada(jugador,jugada,cantPuntos,tiempo);
-		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty()){
-			return true;
-		}
-		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
-		System.out.println("Jugada escogida por el algoritmo: "+jugada);
-		System.out.println("Con un tiempo de: "+tiempo+" milisegundos.");
-		System.out.println("Y el jugador ganó un total de "+cantPuntos+" puntos.");
+	private boolean turno(Jugador jugador) 
+	{
+		long tiempo = System.currentTimeMillis();
+		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(), jugador.getNombre().equals(jugador3.getNombre()));
+		Jugada jugada = algoritmo.getRespuesta();
+		
+		tiempo = System.currentTimeMillis() - tiempo;
 
-		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "" , tiempo + "");
-		return false;
+		return procesarJugada(jugador, jugada, tiempo);
 	}
 
 	public boolean jugadorHumanoHizoSuJugada() {
@@ -97,7 +87,6 @@ class Qwirkle
 		FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
 		imprimirTablero();
 	}*/
-
 	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo)
 	{
 		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -114,32 +103,20 @@ class Qwirkle
 		System.out.println("Con un TIEMPO de: "+tiempo+" milisegundos.");
 		System.out.println("\n-------------------------------------------");
 		System.out.println("Y el jugador "+jugador.getNombre()+" gano un total de "+cantPuntos+" PUNTOS.");
-		System.out.println("\n-------------------------------------------");
 
 		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
 
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty())
 		{
 			System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println("El jugador "+jugador.getNombre()+" ganó la partida");
+			System.out.println("El jugador "+jugador.getNombre()+" gano la partida");
 			System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return true;
 		}
+
 		jugador.getMano().addAll(getFichasDeLaBolsa(CANT_CARTAS_EN_LA_MANO - jugador.getMano().size()));
+
 		return false;
-	}
-
-	private boolean turno(Jugador jugador) 
-	{
-		long tiempo = System.currentTimeMillis();
-		
-		BackTraking algoritmo = new BackTraking(tablero,jugador.getMano(), jugador.getNombre().equals(jugador3.getNombre()));
-
-		Jugada jugada = algoritmo.getRespuesta();
-		
-		tiempo = System.currentTimeMillis() - tiempo;
-		
-		return procesarJugada(jugador, jugada,tiempo);
 	}
 
 	public Tablero getTablero() {
