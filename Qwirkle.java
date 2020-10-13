@@ -40,7 +40,7 @@ class Qwirkle
 			System.out.println("\n-------------------------------------------");
 			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
 			if(jugadorHumanoHizoSuJugada()){
-				seTerminoElJuego();
+				//seTerminoElJuego();
 				break;
 			}
 		}	
