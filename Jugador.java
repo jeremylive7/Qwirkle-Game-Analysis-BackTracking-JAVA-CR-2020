@@ -21,7 +21,11 @@ class Jugador
 		tiempo+=t;
 		for(Jugadita par:jugada.jugaditas)
 			mano.remove(par.ficha);
-		if(mano.isEmpty())score+=6;
+		if(mano.isEmpty())
+		{
+			score+=6;
+			System.out.println("\nEl jugador "+this.nombre+" GANA 6 PUNTOS por haber jugado todas sus fichas de la mano.");
+		}
 	}
 	public String toString(){
 		String out="Nombre: "+nombre+"\nScore: "+score+"\nTiempo total: "+tiempo+"\nMano: [";
