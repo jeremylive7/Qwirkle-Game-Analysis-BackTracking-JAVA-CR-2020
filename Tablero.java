@@ -120,6 +120,65 @@ class Tablero
 			jugada.puntos+=contarColumna(jugada.jugaditas.iterator().next());
 		return jugada.puntos;
 	}
+
+	public int getPuntosQwirkle(Jugada jugada){//Tengo dudas con esta función.
+		jugada.puntos=0;
+		for(Jugadita jugadita:jugada.jugaditas){
+			if(jugada.isLine!=null&&jugada.isLine.booleanValue())
+				jugada.puntos+=contarColumna2(jugadita);			
+			else 
+				jugada.puntos+=contarFila2(jugadita);			
+		}
+		if(jugada.isLine==null||jugada.isLine.booleanValue())
+			jugada.puntos+=contarFila(jugada.jugaditas.iterator().next());
+		else
+			jugada.puntos+=contarColumna(jugada.jugaditas.iterator().next());
+		return jugada.puntos;
+	}
+
+		private int contarColumna2(Jugadita jugadita){
+		int inicioHilera,finHilera;
+		finHilera=inicioHilera=jugadita.x;
+		while(inicioHilera>0){
+			if(fichas[inicioHilera-1][jugadita.y]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[finHilera+1][jugadita.y]==null)
+				break;
+			else finHilera++;
+		}
+		if(finHilera-inicioHilera==5)
+		{
+			System.out.println("!!!!!!!!!!!!!!!!!Hizo Qwirkle!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+							+"\n!!!!!!!!!!!!!GANA 6 PUNTOS DE BONO!!!!!!!!!!!!!!!!!!!!!!");
+			return 12;
+		}
+		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
+	}
+	private int contarFila2(Jugadita jugadita){
+		int inicioHilera,finHilera;
+		inicioHilera=finHilera=jugadita.y;
+		while(inicioHilera>0){
+			if(fichas[jugadita.x][inicioHilera-1]==null)
+				break;
+			else inicioHilera--;
+		}
+		while(finHilera<MATRIX_SIDE-1){
+			if(fichas[jugadita.x][finHilera+1]==null)
+				break;
+			else finHilera++;
+		}
+		if(finHilera-inicioHilera==5)
+		{
+			System.out.println("!!!!!!!!!!!!!!!!!Hizo Qwirkle!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+							+"\n!!!!!!!!!!!!!GANA 6 PUNTOS DE BONO!!!!!!!!!!!!!!!!!!!!!!");
+			return 12;
+		}
+		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
+	}
+
 	private int contarColumna(Jugadita jugadita){
 		int inicioHilera,finHilera;
 		finHilera=inicioHilera=jugadita.x;
@@ -133,7 +192,10 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		if(finHilera-inicioHilera==5)return 12;
+		if(finHilera-inicioHilera==5)
+		{
+			return 12;
+		}
 		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
 	}
 	private int contarFila(Jugadita jugadita){
@@ -149,7 +211,10 @@ class Tablero
 				break;
 			else finHilera++;
 		}
-		if(finHilera-inicioHilera==5)return 12;
+		if(finHilera-inicioHilera==5)
+		{
+			return 12;
+		}
 		return finHilera-inicioHilera+(finHilera-inicioHilera>0?1:0);
 	}
 	

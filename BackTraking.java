@@ -294,7 +294,8 @@ public class BackTraking
 		int arriba = x;
 		int abajo = x;
 
-		List<Jugadita> jugada_tablero = new ArrayList<Jugadita>();
+		Set<Jugadita> jugada_tablero = new HashSet<>();
+		Set<Jugadita> jugada_tablero1 = new HashSet<>();
 		if(pEsPorFila == null || pEsPorFila)
 		{
 			while(this.tablero.getFichas()[x][derecha] !=  null && derecha < Tablero.MATRIX_SIDE - 1)
@@ -313,26 +314,42 @@ public class BackTraking
 			}
 			//this.showArrayPlay(jugada_tablero);	
 			
+
+			boolean pValue = false;
+
 			for (Jugadita pPlay: pJugada.jugaditas) 
 			{
-				if(!jugada_tablero.contains(pPlay))
+				for (Jugadita pJ : jugada_tablero) 
 				{
+					if((pPlay.ficha.getFigura()==pJ.ficha.getFigura() &&
+						pPlay.ficha.getColor()==pJ.ficha.getColor()))
+					{
+						pValue = true;			
+					}
+				}
+				if(pValue == false){
 					Jugadita pJugadita2 = new Jugadita(pPlay.x, pPlay.y, pPlay.ficha);
-					jugada_tablero.add(pJugadita2);
+					jugada_tablero1.add(pJugadita2);
 				}
 			}
 
-			jugada_tablero.sort((o1,o2)->Integer.compare(o1.y, o2.y));
+			for (Jugadita pJu: jugada_tablero1) {
+				jugada_tablero.add(pJu);
+			}
+
+			List<Jugadita> pJugada_tablero2 = new ArrayList<>(jugada_tablero);
+
+			pJugada_tablero2.sort((o1,o2)->Integer.compare(o1.y, o2.y));
 
 			List<Ficha> fichas_puedo_poner_verdad = new ArrayList<Ficha>();
-			fichas_puedo_poner_verdad = getCualesFaltan(jugada_tablero);
+			fichas_puedo_poner_verdad = getCualesFaltan(pJugada_tablero2);
 			return fichas_puedo_poner_verdad;
 		}
 
-
+		Set<Jugadita> jugada_tablero2 = new HashSet<>();
+		Set<Jugadita> jugada_tablero22 = new HashSet<>();
 		if (pEsPorFila == null || !pEsPorFila)
 		{
-			List<Jugadita> jugada_tablero2 = new ArrayList<Jugadita>();
 			while(this.tablero.getFichas()[abajo][y] != null && abajo < Tablero.MATRIX_SIDE - 1)
 				abajo++;
 
@@ -349,19 +366,35 @@ public class BackTraking
 			}
 			//this.showArrayPlay(jugada_tablero2);
 
+			boolean pValue = false;
+
 			for (Jugadita pPlay: pJugada.jugaditas) 
 			{
-				if(!jugada_tablero2.contains(pPlay))
+				for (Jugadita pJ : jugada_tablero2) 
 				{
-					Jugadita pJugadita00 = new Jugadita(pPlay.x, pPlay.y, pPlay.ficha);
-					jugada_tablero2.add(pJugadita00);
+					if((pPlay.ficha.getFigura()==pJ.ficha.getFigura() &&
+						pPlay.ficha.getColor()==pJ.ficha.getColor()))
+					{
+					pValue = true;			
+					}
+				}
+				if(pValue == false){
+					Jugadita pJugadita2 = new Jugadita(pPlay.x, pPlay.y, pPlay.ficha);
+					jugada_tablero22.add(pJugadita2);
+				
 				}
 			}
 
-			jugada_tablero2.sort((o1,o2)->Integer.compare(o1.x, o2.x));
+			for (Jugadita pJu: jugada_tablero22) {
+				jugada_tablero2.add(pJu);
+			}
+
+			List<Jugadita> pJugada_tablero = new ArrayList<>(jugada_tablero2);
+
+			pJugada_tablero.sort((o1,o2)->Integer.compare(o1.x, o2.x));
 
 			List<Ficha> fichas_puedo_poner_verdad2 = new ArrayList<Ficha>();
-			fichas_puedo_poner_verdad2 = getCualesFaltan(jugada_tablero2);
+			fichas_puedo_poner_verdad2 = getCualesFaltan(pJugada_tablero);
 			return fichas_puedo_poner_verdad2;
 		}
 		List<Ficha> lista_vacia = new ArrayList<Ficha>();
@@ -598,7 +631,7 @@ public class BackTraking
 		System.out.println(out+"]");
 	}
 
-	public void showArrayPlay(Set<Jugadita> pMano)
+	public void showArrayPlay(List<Jugadita> pMano)
 	{
 		String out="\nJugada del tablero con la que juego en este turno suponiendo -- [ ";
 		for (Jugadita jugadita : pMano)
@@ -609,12 +642,6 @@ public class BackTraking
 		System.out.println(out+"]");
 	}
 
-	public void showJugadas(List<Jugada> pJugadas)
-	{
-		for (Jugada pPlay : pJugadas) {
-			showArrayPlay(pPlay.jugaditas);
-		}
-	}
 
 	/*
 

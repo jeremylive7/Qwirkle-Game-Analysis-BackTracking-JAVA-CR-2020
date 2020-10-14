@@ -69,6 +69,10 @@ class Qwirkle
 		
 		tiempo = System.currentTimeMillis() - tiempo;
 
+		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("\nTurno del jugador "+jugador.getNombre());
+		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 		return procesarJugada(jugador, jugada, tiempo);
 	}
 
@@ -92,11 +96,8 @@ class Qwirkle
 
 	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo)
 	{
-		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println("\nTurno del jugador "+jugador.getNombre());
-		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		tablero.procesarJugada(jugada);
-		int cantPuntos = tablero.getPuntos(jugada);
+		int cantPuntos = tablero.getPuntosQwirkle(jugada);
 		jugador.procesarJugada(jugada,cantPuntos,tiempo);
 		
 		
