@@ -250,7 +250,7 @@ public class BackTraking
 
 	public boolean isItChipInside(List<Ficha> pJugada_faltan, Map<Ficha, Integer> pList_repets) 
 	{
-		//this.showArray(pJugada_faltan);
+		this.showArray(pJugada_faltan);
 
 		int contador = 0;
 
@@ -271,7 +271,7 @@ public class BackTraking
 
 	public List<Ficha>getCualesFaltan(List<Jugadita> fichasDeLaJugada)
 	{
-		//this.showArrayPlay(fichasDeLaJugada);
+		this.showArrayPlay(fichasDeLaJugada);
 
 		List<Ficha>losQueSePuedenPoner = new ArrayList<>(this.tablero.todasLasFichas);
 	
@@ -598,7 +598,7 @@ public class BackTraking
 		System.out.println(out+"]");
 	}
 
-	public void showArrayPlay(Set<Jugadita> pMano)
+	public void showArrayPlay(List<Jugadita> pMano)
 	{
 		String out="\nJugada del tablero con la que juego en este turno suponiendo -- [ ";
 		for (Jugadita jugadita : pMano)
@@ -609,12 +609,6 @@ public class BackTraking
 		System.out.println(out+"]");
 	}
 
-	public void showJugadas(List<Jugada> pJugadas)
-	{
-		for (Jugada pPlay : pJugadas) {
-			showArrayPlay(pPlay.jugaditas);
-		}
-	}
 
 	/*
 

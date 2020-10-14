@@ -94,7 +94,7 @@ class Qwirkle
 	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo)
 	{
 		tablero.procesarJugada(jugada);
-		int cantPuntos = tablero.getPuntos(jugada);
+		int cantPuntos = tablero.getPuntosQwirkle(jugada);
 		jugador.procesarJugada(jugada,cantPuntos,tiempo);
 		
 		
