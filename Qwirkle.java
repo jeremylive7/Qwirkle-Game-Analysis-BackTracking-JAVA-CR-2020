@@ -38,8 +38,10 @@ class Qwirkle
 
 	public static void main(String[] args)
 	{
-		Qwirkle q=new Qwirkle();
-		q.iniciarJuego();
+		for(int i=0;i<20;i++){
+			Qwirkle q=new Qwirkle();
+			q.iniciarJuego();
+		}
 	}
 	
 	public void iniciarJuego()
@@ -53,7 +55,7 @@ class Qwirkle
 			System.out.println("\n-------------------------------------------");
 			System.out.println("\nEstado del jugador mejorado: \n"+jugador3);
 			if(jugadorHumanoHizoSuJugada()){
-				//seTerminoElJuego();
+				seTerminoElJuego();
 				break;
 			}
 		}	
@@ -75,18 +77,19 @@ class Qwirkle
 		// juega algoritmo básico
 		if(turno(jugador2))
 			return true;
-		imprimirTablero();
+		//imprimirTablero();
 		if(turno(jugador3))
 			return true;
-		imprimirTablero();
+		//imprimirTablero();
 		return false;
 		
 	}
-	/*private void seTerminoElJuego() {
+	private void seTerminoElJuego() {
 		FileOperations.finDeTurno(jugador2.getNombre(),jugador2.tiempo,jugador2.score);
 		FileOperations.finDeTurno(jugador3.getNombre(),jugador3.tiempo,jugador3.score);
 		imprimirTablero();
-	}*/
+	}
+
 	private boolean procesarJugada(Jugador jugador, Jugada jugada,long tiempo)
 	{
 		System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -104,7 +107,7 @@ class Qwirkle
 		System.out.println("\n-------------------------------------------");
 		System.out.println("Y el jugador "+jugador.getNombre()+" gano un total de "+cantPuntos+" PUNTOS.");
 
-		FileOperations.createdFileXRound(jugador.getNombre(), jugador.getScore() + "", tiempo + "");
+		FileOperations.createdFileXRound(jugador.getNombre(), cantPuntos + "", tiempo + "");
 
 		if(jugador.getMano().isEmpty()&&bolsa_fichas.isEmpty())
 		{
